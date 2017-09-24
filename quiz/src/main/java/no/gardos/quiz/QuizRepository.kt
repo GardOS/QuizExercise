@@ -4,4 +4,4 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface QuizRepository : CrudRepository<QuizEntity, Long>{}
+interface QuizRepository : CrudRepository<QuizEntity, Long>
