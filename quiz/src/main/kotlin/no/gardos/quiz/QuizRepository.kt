@@ -9,5 +9,5 @@ interface QuizRepository : CrudRepository<QuizEntity, Long>, QuizRepositoryCusto
 
 @Transactional
 interface QuizRepositoryCustom{
-	fun findByCategoryName(categoryName: String) : List<QuizEntity>
+	fun findQuizByCategoryName(categoryName: String) : List<QuizEntity>
 }

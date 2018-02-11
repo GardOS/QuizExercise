@@ -34,8 +34,8 @@ class QuizRepositoryTest {
 	}
 
 	private fun createTestQuizAndTestCategory(): QuizEntity {
-		var category = createTestCategory()
-		var quiz = createTestQuiz(category)
+		val category = createTestCategory()
+		val quiz = createTestQuiz(category)
 		categoryCrud.save(category)
 		return quiz
 	}
@@ -68,7 +68,7 @@ class QuizRepositoryTest {
 
 	@Test
 	fun testUpdateQuiz() {
-		var quiz = createTestQuizAndTestCategory()
+		val quiz = createTestQuizAndTestCategory()
 		assertEquals(questionText, quiz.questionText)
 		quizCrud.save(quiz)
 
@@ -76,13 +76,13 @@ class QuizRepositoryTest {
 		quiz.questionText = newQuestionText
 		quizCrud.save(quiz)
 
-		var updatedQuiz = quizCrud.findOne(quiz.id)
+		val updatedQuiz = quizCrud.findOne(quiz.id)
 		assertEquals(newQuestionText, updatedQuiz.questionText)
 	}
 
 	@Test
 	fun testUpdateCategory() {
-		var category = createTestCategory()
+		val category = createTestCategory()
 		assertEquals(categoryName, category.name)
 		categoryCrud.save(category)
 
@@ -90,13 +90,13 @@ class QuizRepositoryTest {
 		category.name = newCategoryName
 		categoryCrud.save(category)
 
-		var updatedQuiz = categoryCrud.findOne(category.id)
+		val updatedQuiz = categoryCrud.findOne(category.id)
 		assertEquals(newCategoryName, updatedQuiz.name)
 	}
 
 	@Test
 	fun testDeleteQuiz() {
-		var quiz = createTestQuizAndTestCategory()
+		val quiz = createTestQuizAndTestCategory()
 
 		assertNotNull(quizCrud.findOne(quiz.id))
 
@@ -107,7 +107,7 @@ class QuizRepositoryTest {
 
 	@Test
 	fun testDeleteCategory() {
-		var category = createTestCategory()
+		val category = createTestCategory()
 
 		assertNotNull(categoryCrud.findOne(category.id))
 
@@ -119,21 +119,21 @@ class QuizRepositoryTest {
 	@Test
 	fun testFindCategoryByName(){
 		val categoryName = "Sports"
-		var category = CategoryEntity(categoryName)
+		val category = CategoryEntity(categoryName)
 		categoryCrud.save(category)
 
 		assertEquals(category.id, categoryCrud.findByName(categoryName).id)
 	}
 
 	@Test
-	fun testGetQuizWithCategory() {
-		var letterCategory = categoryCrud.save(CategoryEntity("Letters"))
-		var numberCategory = categoryCrud.save(CategoryEntity("Numbers"))
+	fun testFindQuizByCategoryName() {
+		val letterCategory = categoryCrud.save(CategoryEntity("Letters"))
+		val numberCategory = categoryCrud.save(CategoryEntity("Numbers"))
 		quizCrud.save(QuizEntity("Which is B?", arrayOf("A", "B", "C", "D"), 1, letterCategory))
 		quizCrud.save(QuizEntity("Which is D?", arrayOf("A", "B", "C", "D"), 3, letterCategory))
 		quizCrud.save(QuizEntity("Which is 2?", arrayOf("0", "1", "2", "3"), 2, numberCategory))
 
-		var a = quizCrud.findByCategoryName("Letters")
+		val a = quizCrud.findQuizByCategoryName("Letters")
 		assertEquals(2, a.count())
 	}
 }
