@@ -1,22 +1,19 @@
 package no.gardos.quiz
 
 import javax.persistence.*
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
-import javax.validation.constraints.Size
+import javax.validation.constraints.*
 
 @Entity
 class QuizEntity(
         var questionText: String,
 
-        @get:Size(min = 1, max = 4)
+        @get:Size(min = 1, max = 4) @get:NotNull
         var answers: Array<String>,
 
-        @get:Min(1) @get:Max(4)
+        @get:Min(0) @get:Max(3)
         var correctAnswer: Int,
 
-        @get:ManyToOne
-        @JoinColumn(name = "CategoryEntity_id", nullable = false)
+        @get:OneToOne @get:NotNull
         var category: CategoryEntity,
 
         @get:Id @get:GeneratedValue
