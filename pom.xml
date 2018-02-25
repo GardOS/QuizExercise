@@ -23,6 +23,9 @@
         <version.junit>4.12</version.junit>
         <version.springboot>1.5.7.RELEASE</version.springboot>
         <version.h2>1.4.196</version.h2>
+        <version.springfox>2.6.1</version.springfox>
+        <version.jackson>2.8.9</version.jackson>
+        <version.springcloud>Dalston.SR3</version.springcloud>
     </properties>
 
     <dependencyManagement>
@@ -67,6 +70,43 @@
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${version.springboot}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${version.springcloud}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+
+            <!--SpringFox-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${version.springfox}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${version.springfox}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-spring-web</artifactId>
+                <version>${version.springfox}</version>
+            </dependency>
+
+            <!--Jackson-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${version.jackson}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>${version.jackson}</version>
+            </dependency>
 
             <!--Test-->
             <dependency>
@@ -79,7 +119,6 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${version.h2}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
