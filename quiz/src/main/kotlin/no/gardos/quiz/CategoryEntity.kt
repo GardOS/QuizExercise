@@ -4,9 +4,9 @@ import javax.persistence.*
 
 @Entity
 class CategoryEntity(
-        @Column(unique = true)
-        var name: String,
+		@get:Column(unique = true)
+		var name: String,
 
-        @get:Id @get:GeneratedValue
-        var id: Long? = null
+		@get:Id @get:GeneratedValue
+		var id: Long? = null
 )

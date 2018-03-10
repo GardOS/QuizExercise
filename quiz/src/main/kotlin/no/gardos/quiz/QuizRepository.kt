@@ -8,6 +8,6 @@ import javax.transaction.Transactional
 interface QuizRepository : CrudRepository<QuizEntity, Long>, QuizRepositoryCustom
 
 @Transactional
-interface QuizRepositoryCustom{
-	fun findQuizByCategoryName(categoryName: String) : List<QuizEntity>
+interface QuizRepositoryCustom {
+	fun findQuizByCategoryName(categoryName: String): List<QuizEntity>
 }
