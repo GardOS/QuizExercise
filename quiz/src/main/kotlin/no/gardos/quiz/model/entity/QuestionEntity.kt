@@ -5,6 +5,9 @@ import javax.validation.constraints.*
 
 @Entity
 class QuestionEntity(
+		@get:Id @get:GeneratedValue
+		var id: Long? = null,
+
 		@get:NotNull
 		var questionText: String? = null,
 
@@ -17,8 +20,5 @@ class QuestionEntity(
 		var correctAnswer: Int? = null,
 
 		@get:OneToOne
-		var category: CategoryEntity? = null,
-
-		@get:Id @get:GeneratedValue
-		var id: Long? = null
+		var category: CategoryEntity? = null
 )

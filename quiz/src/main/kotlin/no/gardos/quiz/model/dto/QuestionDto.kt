@@ -21,7 +21,7 @@ data class QuestionDto(
 		var correctAnswer: Int? = null,
 
 		@ApiModelProperty("The category of the question")
-		var category: CategoryEntity? = null
+		var category: Long? = null
 )
 
 class QuestionConverter {
@@ -32,7 +32,7 @@ class QuestionConverter {
 					questionText = question.questionText,
 					answers = question.answers,
 					correctAnswer = question.correctAnswer,
-					category = question.category
+					category = question.category!!.id
 			)
 		}
 

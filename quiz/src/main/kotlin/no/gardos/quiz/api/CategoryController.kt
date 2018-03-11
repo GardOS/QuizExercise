@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponse
 import no.gardos.quiz.model.repository.CategoryRepository
 import no.gardos.quiz.model.dto.CategoryConverter
 import no.gardos.quiz.model.dto.CategoryDto
+import no.gardos.quiz.model.entity.CategoryEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -18,7 +19,7 @@ import org.hibernate.exception.ConstraintViolationException
 @Api(value = "/categories", description = "API for categories.")
 @RequestMapping(
 		path = ["/categories"],
-		produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+		produces = [(MediaType.APPLICATION_JSON_VALUE)]
 )
 @RestController
 @Validated
@@ -28,14 +29,14 @@ class CategoryController {
 
 	@ApiOperation("Get all the categories")
 	@GetMapping
-	fun get(): ResponseEntity<List<CategoryDto>> {
+	fun getAllCategories(): ResponseEntity<List<CategoryDto>> {
 		return ResponseEntity.ok(CategoryConverter.transform(repo.findAll()))
 	}
 
 	@ApiOperation("Create a category")
 	@PostMapping(consumes = [(MediaType.APPLICATION_JSON_VALUE)])
 	@ApiResponse(code = 201, message = "The id of newly created category")
-	fun createNews(
+	fun createCategory(
 			@ApiParam("Category name. Should not specify id")
 			@RequestBody
 			dto: CategoryDto): ResponseEntity<Long> {
@@ -49,14 +50,14 @@ class CategoryController {
 			return ResponseEntity.status(400).build()
 		}
 
-		val id: Long?
+		val category: CategoryEntity?
 		try {
-			id = repo.createCategory(dto.name!!)
+			category = repo.save(CategoryEntity(name = dto.name!!))
 		} catch (e: ConstraintViolationException) {
 			return ResponseEntity.status(409).build()
 		}
 
-		return ResponseEntity.status(201).body(id)
+		return ResponseEntity.status(201).body(category.id)
 	}
 
 	/*

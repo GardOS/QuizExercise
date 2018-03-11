@@ -6,9 +6,9 @@ import org.springframework.stereotype.Repository
 import javax.transaction.Transactional
 
 @Repository
-interface QuestionRepository : CrudRepository<QuestionEntity, Long>, QuestionRepositoryCustom
-
-@Transactional
-interface QuestionRepositoryCustom {
+interface QuestionRepository : CrudRepository<QuestionEntity, Long>, QuestionRepositoryCustom{
 	fun findQuizByCategoryName(categoryName: String): List<QuestionEntity>
 }
+
+@Transactional
+interface QuestionRepositoryCustom
