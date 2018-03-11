@@ -1,4 +1,4 @@
-package no.gardos.quiz
+package no.gardos.quiz.model.entity
 
 import javax.persistence.*
 

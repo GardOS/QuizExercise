@@ -1,5 +1,6 @@
-package no.gardos.quiz
+package no.gardos.quiz.model.repository
 
+import no.gardos.quiz.model.entity.CategoryEntity
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import javax.persistence.EntityManager

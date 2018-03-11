@@ -1,9 +1,12 @@
-package no.gardos.quiz
+package no.gardos.quiz.api
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
+import no.gardos.quiz.model.repository.CategoryRepository
+import no.gardos.quiz.model.dto.CategoryConverter
+import no.gardos.quiz.model.dto.CategoryDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
