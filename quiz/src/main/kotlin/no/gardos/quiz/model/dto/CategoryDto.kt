@@ -6,12 +6,11 @@ import no.gardos.quiz.model.entity.CategoryEntity
 
 @ApiModel("DTO for Category. It represent a Category entity")
 data class CategoryDto(
+		@ApiModelProperty("The name of the Category")
+		var name: String? = null,
 
 		@ApiModelProperty("Category id")
-		var id: Long? = null,
-
-		@ApiModelProperty("The name of the Category")
-		var name: String? = null
+		var id: Long? = null
 )
 
 class CategoryConverter {
