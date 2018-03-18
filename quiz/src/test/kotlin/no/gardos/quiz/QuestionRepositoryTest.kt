@@ -9,6 +9,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
+import javax.validation.ConstraintViolationException
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
@@ -20,8 +21,13 @@ class QuestionRepositoryTest {
 	var answers = listOf("Wrong", "Wrong", "Correct", "Wrong")
 	var correctAnswer = 2 //Don't set to above 3
 
-	private fun createTestQuestion(): QuestionEntity {
-		return questionCrud.save(QuestionEntity(questionText, answers, correctAnswer, null))
+	private fun createTestQuestion(
+			questionText: String? = this.questionText,
+			answers: List<String>? = this.answers,
+			correctAnswer: Int? = this.correctAnswer,
+			id: Long? = null)
+			: QuestionEntity {
+		return questionCrud.save(QuestionEntity(questionText, answers, correctAnswer, null, id))
 	}
 
 	@Before
@@ -29,7 +35,7 @@ class QuestionRepositoryTest {
 		questionCrud.deleteAll()
 	}
 
-	@Test
+	@Before
 	fun testInit() {
 		assertNotNull(questionCrud)
 	}
@@ -42,7 +48,7 @@ class QuestionRepositoryTest {
 	}
 
 	@Test
-	fun save_ValidQuestion_QuestionUpdated() {
+	fun save_ExistingQuestion_QuestionUpdated() {
 		val question = createTestQuestion()
 		assertEquals(questionText, question.questionText)
 		questionCrud.save(question)
@@ -56,7 +62,7 @@ class QuestionRepositoryTest {
 	}
 
 	@Test
-	fun delete_ValidQuestion_QuestionDeleted() {
+	fun delete_ExistingQuestion_QuestionDeleted() {
 		val question = createTestQuestion()
 
 		assertNotNull(questionCrud.findOne(question.id))
@@ -64,6 +70,54 @@ class QuestionRepositoryTest {
 		questionCrud.delete(question.id)
 
 		assertNull(questionCrud.findOne(question.id))
+	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun notEmptyConstraint_NullQuestionText_ConstraintViolationException() {
+		val question = createTestQuestion(questionText = null)
+		questionCrud.save(question)
+	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun notEmptyConstraint_BlankQuestionText_ConstraintViolationException() {
+		val question = createTestQuestion(questionText = "")
+		questionCrud.save(question)
+	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun notEmptyConstraint_NullAnswers_ConstraintViolationException() {
+		val question = createTestQuestion(answers = null)
+		questionCrud.save(question)
+	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun notEmptyConstraint_NoAnswers_ConstraintViolationException() {
+		val question = createTestQuestion(answers = listOf())
+		questionCrud.save(question)
+	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun sizeConstraint_TooManyAnswers_ConstraintViolationException() {
+		val question = createTestQuestion(answers = listOf("1", "2", "3", "4", "5"))
+		questionCrud.save(question)
+	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun minConstraint_CorrectAnswerTooSmall_ConstraintViolationException() {
+		val question = createTestQuestion(correctAnswer = -1)
+		questionCrud.save(question)
+	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun minConstraint_CorrectAnswerTooBig_ConstraintViolationException() {
+		val question = createTestQuestion(correctAnswer = 4)
+		questionCrud.save(question)
+	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun idConstraint_IdIsSpecified_ConstraintViolationException() {
+		val question = createTestQuestion(id = 4)
+		questionCrud.save(question)
 	}
 
 	//Todo: test this from APIs with restAssured

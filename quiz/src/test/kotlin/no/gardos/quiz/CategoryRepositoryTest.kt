@@ -9,6 +9,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
+import javax.validation.ConstraintViolationException
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
@@ -76,5 +77,12 @@ class CategoryRepositoryTest {
 	@Test
 	fun findByName_NoCategory_ReturnNull() {
 		assertEquals(null, categoryCrud.findByName(categoryName))
+	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun sizeConstraint_NameTooLong_ConstraintViolationException() {
+		val categoryName = "123456789012345678901234567890123" //33 length
+		val category = CategoryEntity(categoryName)
+		categoryCrud.save(category)
 	}
 }
