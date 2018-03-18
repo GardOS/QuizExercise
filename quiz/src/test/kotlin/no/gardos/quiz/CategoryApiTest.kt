@@ -1,6 +1,5 @@
 package no.gardos.quiz
 
-import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import no.gardos.quiz.model.dto.CategoryDto
@@ -33,7 +32,7 @@ class CategoryApiTest : ApiTestBase() {
 	fun createCategory_IdSpecified_BadRequest() {
 		val category = CategoryDto("Name", id = 1)
 
-		RestAssured.given().contentType(ContentType.JSON)
+		given().contentType(ContentType.JSON)
 				.body(category)
 				.post(CATEGORY_PATH)
 				.then()
@@ -44,7 +43,7 @@ class CategoryApiTest : ApiTestBase() {
 	fun createCategory_NullName_BadRequest() {
 		val category = CategoryDto(null)
 
-		RestAssured.given().contentType(ContentType.JSON)
+		given().contentType(ContentType.JSON)
 				.body(category)
 				.post(CATEGORY_PATH)
 				.then()
@@ -55,7 +54,7 @@ class CategoryApiTest : ApiTestBase() {
 	fun createCategory_EmptyName_BadRequest() {
 		val category = CategoryDto("")
 
-		RestAssured.given().contentType(ContentType.JSON)
+		given().contentType(ContentType.JSON)
 				.body(category)
 				.post(CATEGORY_PATH)
 				.then()
@@ -67,7 +66,7 @@ class CategoryApiTest : ApiTestBase() {
 		createGenericCategory("Category")
 		val category = CategoryDto("Category")
 
-		RestAssured.given().contentType(ContentType.JSON)
+		given().contentType(ContentType.JSON)
 				.body(category)
 				.post(CATEGORY_PATH)
 				.then()
@@ -78,7 +77,7 @@ class CategoryApiTest : ApiTestBase() {
 	fun createCategory_ConstraintError_BadRequest() {
 		val category = CategoryDto("123456789012345678901234567890123") //33 in length
 
-		RestAssured.given().contentType(ContentType.JSON)
+		given().contentType(ContentType.JSON)
 				.body(category)
 				.post(CATEGORY_PATH)
 				.then()
@@ -89,8 +88,7 @@ class CategoryApiTest : ApiTestBase() {
 	fun getCategory_CategoryExists_Ok() {
 		val category = createGenericCategory("Category")
 
-		RestAssured.given()
-				.pathParam("id", category)
+		given().pathParam("id", category)
 				.get("$CATEGORY_PATH/{id}")
 				.then()
 				.statusCode(200)
@@ -98,8 +96,7 @@ class CategoryApiTest : ApiTestBase() {
 
 	@Test
 	fun getCategory_InvalidId_BadRequest() {
-		RestAssured.given()
-				.pathParam("id", " ")
+		given().pathParam("id", " ")
 				.get("$CATEGORY_PATH/{id}")
 				.then()
 				.statusCode(400)
@@ -107,8 +104,7 @@ class CategoryApiTest : ApiTestBase() {
 
 	@Test
 	fun getCategory_CategoryDoesNotExist_NotFound() {
-		RestAssured.given()
-				.pathParam("id", 1234)
+		given().pathParam("id", 1234)
 				.get("$CATEGORY_PATH/{id}")
 				.then()
 				.statusCode(404)
@@ -118,8 +114,7 @@ class CategoryApiTest : ApiTestBase() {
 	fun updateCategory_CategoryExists_Ok() {
 		val category = createGenericCategory("Category")
 
-		RestAssured.given()
-				.pathParam("id", category)
+		given().pathParam("id", category)
 				.body("NewCategory")
 				.put("$CATEGORY_PATH/{id}/name")
 				.then()
@@ -128,8 +123,7 @@ class CategoryApiTest : ApiTestBase() {
 
 	@Test
 	fun updateCategory_InvalidId_BadRequest() {
-		RestAssured.given()
-				.pathParam("id", " ")
+		given().pathParam("id", " ")
 				.body("NewCategory")
 				.put("$CATEGORY_PATH/{id}/name")
 				.then()
@@ -138,8 +132,7 @@ class CategoryApiTest : ApiTestBase() {
 
 	@Test
 	fun updateCategory_CategoryDoesNotExist_NotFound() {
-		RestAssured.given()
-				.pathParam("id", 1234)
+		given().pathParam("id", 1234)
 				.body("NewCategory")
 				.put("$CATEGORY_PATH/{id}/name")
 				.then()
@@ -151,8 +144,7 @@ class CategoryApiTest : ApiTestBase() {
 		val category = createGenericCategory("Category1")
 		createGenericCategory("Category2")
 
-		RestAssured.given()
-				.pathParam("id", category)
+		given().pathParam("id", category)
 				.body("Category2")
 				.put("$CATEGORY_PATH/{id}/name")
 				.then()

@@ -58,7 +58,7 @@ abstract class ApiTestBase {
 		RestAssured.port = port
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
-		removeCategories()
+		removeCategories() //Todo: remove foreign keys before deletion
 	}
 
 	fun removeCategories() {
