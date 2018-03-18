@@ -33,14 +33,14 @@ class CategoryRepositoryTest {
 	}
 
 	@Test
-	fun testCreateCategory() {
+	fun save_ValidCategory_CategoryCreated() {
 		assertEquals(0, categoryCrud.count())
 		createTestCategory()
 		assertEquals(1, categoryCrud.count())
 	}
 
 	@Test
-	fun testUpdateCategory() {
+	fun save_ValidCategory_CategoryUpdated() {
 		val category = createTestCategory()
 		assertEquals(categoryName, category.name)
 		categoryCrud.save(category)
@@ -54,7 +54,7 @@ class CategoryRepositoryTest {
 	}
 
 	@Test
-	fun testDeleteCategory() {
+	fun delete_ExistingCategory_CategoryDeleted() {
 		val category = createTestCategory()
 
 		assertNotNull(categoryCrud.findOne(category.id))
@@ -65,11 +65,16 @@ class CategoryRepositoryTest {
 	}
 
 	@Test
-	fun testFindCategoryByName() {
+	fun findByName_ExistingCategory_CategoryFound() {
 		val categoryName = "Sports"
 		val category = CategoryEntity(categoryName)
 		categoryCrud.save(category)
 
-		assertEquals(category.id, categoryCrud.findByName(categoryName).id)
+		assertEquals(category.id, categoryCrud.findByName(categoryName)?.id)
+	}
+
+	@Test
+	fun findByName_NoCategory_ReturnNull() {
+		assertEquals(null, categoryCrud.findByName(categoryName))
 	}
 }

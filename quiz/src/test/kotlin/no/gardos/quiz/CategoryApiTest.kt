@@ -7,7 +7,7 @@ import org.junit.Test
 class CategoryApiTest : ApiTestBase() {
 
 	@Test
-	fun testAddCategory() {
+	fun createCategory_ValidCategory_CategoryCreated() {
 		given().get(CATEGORY_PATH)
 				.then()
 				.statusCode(200)

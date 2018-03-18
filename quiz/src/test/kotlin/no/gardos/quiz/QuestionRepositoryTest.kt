@@ -35,14 +35,14 @@ class QuestionRepositoryTest {
 	}
 
 	@Test
-	fun testCreateQuiz() {
+	fun save_ValidQuestion_QuestionCreated() {
 		assertEquals(0, questionCrud.count())
 		createTestQuestion()
 		assertEquals(1, questionCrud.count())
 	}
 
 	@Test
-	fun testUpdateQuiz() {
+	fun save_ValidQuestion_QuestionUpdated() {
 		val question = createTestQuestion()
 		assertEquals(questionText, question.questionText)
 		questionCrud.save(question)
@@ -56,7 +56,7 @@ class QuestionRepositoryTest {
 	}
 
 	@Test
-	fun testDeleteQuiz() {
+	fun delete_ValidQuestion_QuestionDeleted() {
 		val question = createTestQuestion()
 
 		assertNotNull(questionCrud.findOne(question.id))

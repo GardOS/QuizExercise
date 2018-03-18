@@ -7,7 +7,7 @@ import org.junit.Test
 class QuestionApiTest : ApiTestBase() {
 
 	@Test
-	fun testAddQuestion() {
+	fun createQuestion_ValidQuestion_QuestionCreated() {
 		given().get(QUESTION_PATH)
 				.then()
 				.statusCode(200)
