@@ -12,18 +12,3 @@ data class CategoryDto(
 		@ApiModelProperty("Category id")
 		var id: Long? = null
 )
-
-class CategoryConverter {
-	companion object {
-		private fun transform(category: CategoryEntity): CategoryDto {
-			return CategoryDto(
-					id = category.id,
-					name = category.name
-			)
-		}
-
-		fun transform(categories: Iterable<CategoryEntity>): List<CategoryDto> {
-			return categories.map { transform(it) }
-		}
-	}
-}

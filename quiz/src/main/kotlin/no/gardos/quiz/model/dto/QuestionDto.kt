@@ -23,21 +23,3 @@ data class QuestionDto(
 		@ApiModelProperty("The category of the question")
 		var category: Long? = null
 )
-
-class QuestionConverter {
-	companion object {
-		private fun transform(question: QuestionEntity): QuestionDto {
-			return QuestionDto(
-					id = question.id,
-					questionText = question.questionText,
-					answers = question.answers,
-					correctAnswer = question.correctAnswer,
-					category = question.category!!.id
-			)
-		}
-
-		fun transform(questions: Iterable<QuestionEntity>): List<QuestionDto> {
-			return questions.map { transform(it) }
-		}
-	}
-}

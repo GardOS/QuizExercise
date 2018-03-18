@@ -7,7 +7,7 @@ import org.junit.Test
 class CategoryApiTest : ApiTestBase() {
 
 	@Test
-	fun testAddQuestion() {
+	fun testAddCategory() {
 		given().get(CATEGORY_PATH)
 				.then()
 				.statusCode(200)
@@ -20,4 +20,6 @@ class CategoryApiTest : ApiTestBase() {
 				.statusCode(200)
 				.body("size()", equalTo(1))
 	}
+
+
 }
