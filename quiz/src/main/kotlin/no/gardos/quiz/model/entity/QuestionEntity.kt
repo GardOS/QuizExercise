@@ -1,15 +1,18 @@
 package no.gardos.quiz.model.entity
 
+import org.hibernate.validator.constraints.NotEmpty
 import javax.persistence.*
-import javax.validation.constraints.*
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
+import javax.validation.constraints.Size
 
 @Entity
 class QuestionEntity(
-		@get:NotNull
+		@get:NotEmpty
 		var questionText: String? = null,
 
-		@get:Size(min = 1, max = 4)
-		@get:NotNull
+		@get:Size(max = 4)
+		@get:NotEmpty
 		@get:ElementCollection(targetClass = String::class)
 		var answers: List<String>? = null,
 
