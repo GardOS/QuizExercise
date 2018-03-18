@@ -1,9 +1,11 @@
 package no.gardos.quiz
 
 import io.restassured.RestAssured
+import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import no.gardos.quiz.model.dto.CategoryDto
 import no.gardos.quiz.model.dto.QuestionDto
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
@@ -21,7 +23,7 @@ abstract class ApiTestBase {
 	val QUESTION_PATH = "/questions"
 	val CATEGORY_PATH = "/categories"
 
-	fun createGenericCategory(name:String) : Long{
+	fun createGenericCategory(name: String): Long {
 		val category = CategoryDto(name)
 
 		return RestAssured.given().contentType(ContentType.JSON)
@@ -32,7 +34,7 @@ abstract class ApiTestBase {
 				.extract().asString().toLong()
 	}
 
-	fun createGenericQuestion(categoryId : Long): Long {
+	fun createGenericQuestion(categoryId: Long): Long {
 		val question = QuestionDto(
 				questionText = "What is 1+1?",
 				answers = listOf("0", "1", "2", "3"),
@@ -55,7 +57,28 @@ abstract class ApiTestBase {
 		RestAssured.basePath = "/quizrest/api"
 		RestAssured.port = port
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
+
+		removeCategories()
 	}
 
+	fun removeCategories() {
+		val list = given().accept(ContentType.JSON).get(CATEGORY_PATH)
+				.then()
+				.statusCode(200)
+				.extract()
+				.`as`(Array<CategoryDto>::class.java)
+				.toList()
 
+		list.stream().forEach {
+			given().pathParam("id", it.id)
+					.delete("$CATEGORY_PATH/{id}")
+					.then()
+					.statusCode(204)
+		}
+
+		given().get(CATEGORY_PATH)
+				.then()
+				.statusCode(200)
+				.body("size()", equalTo(0))
+	}
 }
