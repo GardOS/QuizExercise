@@ -26,26 +26,26 @@ import javax.validation.ConstraintViolationException
 @Validated
 class QuestionController {
 	@Autowired
-	lateinit var questionRepository: QuestionRepository
+	lateinit var questionRepo: QuestionRepository
 
 	@Autowired
-	lateinit var categoryRepository: CategoryRepository
+	lateinit var categoryRepo: CategoryRepository
 
 	@ApiOperation("Retrieve all questions")
 	@GetMapping
 	fun getAllQuestions(): ResponseEntity<List<QuestionDto>> {
-		return ResponseEntity.ok(QuestionConverter.transform(questionRepository.findAll()))
+		return ResponseEntity.ok(QuestionConverter.transform(questionRepo.findAll()))
 	}
 
 	@ApiOperation("Create a question")
 	@PostMapping(consumes = [(MediaType.APPLICATION_JSON_VALUE)])
-	@ApiResponse(code = 201, message = "The id of newly created category")
+	@ApiResponse(code = 201, message = "The id of newly created question")
 	fun createQuestion(
 			@ApiParam("Should not specify id")
 			@RequestBody
 			dto: QuestionDto
 	): ResponseEntity<Long> {
-		//Auto-generated
+		//Id is auto-generated and should not be specified
 		if (dto.id != null) {
 			return ResponseEntity.status(400).build()
 		}
@@ -54,26 +54,60 @@ class QuestionController {
 			return ResponseEntity.status(400).build()
 		}
 
-		val category = categoryRepository.findOne(dto.category!!)
-		if (category == null) {
-			return ResponseEntity.status(400).build()
-		}
+		val category = categoryRepo.findOne(dto.category!!) ?: return ResponseEntity.status(400).build()
 
 		val question: QuestionEntity?
-		try {
-			question = questionRepository.save(
-					QuestionEntity(
-							questionText = dto.questionText,
-							answers = dto.answers,
-							correctAnswer = dto.correctAnswer,
-							category = category
-					)
-			)
-		} catch (e: ConstraintViolationException) {
+
+		question = questionRepo.save(
+				QuestionEntity(
+						questionText = dto.questionText,
+						answers = dto.answers,
+						correctAnswer = dto.correctAnswer,
+						category = category
+				)
+		)
+
+		return ResponseEntity.status(201).body(question.id)
+	}
+
+	@ApiOperation("Get a question by ID")
+	@GetMapping(path = ["/{id}"])
+	fun getQuestion(
+			@ApiParam("Id of question")
+			@PathVariable("id")
+			pathId: Long?
+	): ResponseEntity<QuestionDto> {
+		if (pathId == null) {
 			return ResponseEntity.status(400).build()
 		}
 
-		return ResponseEntity.status(201).body(question.id)
+		if (!questionRepo.exists(pathId)) {
+			return ResponseEntity.status(404).build()
+		}
+
+		val question = questionRepo.findOne(pathId)
+
+		return ResponseEntity.ok(QuestionConverter.transform(question))
+	}
+
+	@ApiOperation("Delete a question")
+	@DeleteMapping(path = ["/{id}"])
+	fun deleteQuestion(
+			@ApiParam("Id of question")
+			@PathVariable("id")
+			pathId: Long?
+	): ResponseEntity<QuestionDto> {
+		if (pathId == null) {
+			return ResponseEntity.status(400).build()
+		}
+
+		if (!questionRepo.exists(pathId)) {
+			return ResponseEntity.status(404).build()
+		}
+
+		questionRepo.delete(pathId)
+
+		return ResponseEntity.status(204).build()
 	}
 
 	//Catches validation errors and returns 400 instead of 500

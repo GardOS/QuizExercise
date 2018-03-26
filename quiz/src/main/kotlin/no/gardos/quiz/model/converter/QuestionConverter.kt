@@ -11,7 +11,7 @@ class QuestionConverter {
 					questionText = question.questionText,
 					answers = question.answers,
 					correctAnswer = question.correctAnswer,
-					category = question.category!!.id
+					category = question.category?.id
 			)
 		}
 

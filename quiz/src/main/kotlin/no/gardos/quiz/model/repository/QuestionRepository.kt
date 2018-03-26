@@ -7,7 +7,7 @@ import javax.transaction.Transactional
 
 @Repository
 interface QuestionRepository : CrudRepository<QuestionEntity, Long>, QuestionRepositoryCustom{
-	fun findQuizByCategoryName(categoryName: String): List<QuestionEntity>
+	fun findQuizByCategoryName(categoryName: String?): List<QuestionEntity>
 }
 
 @Transactional
