@@ -19,7 +19,7 @@ class QuestionEntity(
 		@get:Min(0) @get:Max(3)
 		var correctAnswer: Int? = null,
 
-		@get:OneToOne
+		@get:ManyToOne
 		var category: CategoryEntity? = null,
 
 		@get:Id @get:GeneratedValue
