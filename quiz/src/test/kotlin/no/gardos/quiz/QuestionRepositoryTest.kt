@@ -1,6 +1,8 @@
 package no.gardos.quiz
 
+import no.gardos.quiz.model.entity.CategoryEntity
 import no.gardos.quiz.model.entity.QuestionEntity
+import no.gardos.quiz.model.repository.CategoryRepository
 import no.gardos.quiz.model.repository.QuestionRepository
 import org.junit.Assert.*
 import org.junit.Before
@@ -17,6 +19,8 @@ class QuestionRepositoryTest {
 
 	@Autowired
 	private lateinit var questionCrud: QuestionRepository
+	@Autowired
+	private lateinit var categoryCrud: CategoryRepository
 	var questionText = "QuestionText"
 	var answers = listOf("Wrong", "Wrong", "Correct", "Wrong")
 	var correctAnswer = 2 //Don't set to above 3
@@ -120,16 +124,15 @@ class QuestionRepositoryTest {
 		questionCrud.save(question)
 	}
 
-	//Todo: test this from APIs with restAssured
-//	@Test
-//	fun testFindQuestionByCategoryName() {
-//		val letterCategory = categoryCrud.save(CategoryEntity("Letters"))
-//		val numberCategory = categoryCrud.save(CategoryEntity("Numbers"))
-//		questionCrud.save(QuestionEntity("Which is B?", arrayOf("A", "B", "C", "D"), 1, letterCategory))
-//		questionCrud.save(QuestionEntity("Which is D?", arrayOf("A", "B", "C", "D"), 3, letterCategory))
-//		questionCrud.save(QuestionEntity("Which is 2?", arrayOf("0", "1", "2", "3"), 2, numberCategory))
-//
-//		val a = questionCrud.findQuizByCategoryName("Letters")
-//		assertEquals(2, a.count())
-//	}
+	@Test
+	fun findByCategoryName_QuestionsWithCategoriesExist_QuizFound() {
+		val letterCategory = categoryCrud.save(CategoryEntity("Letters"))
+		val numberCategory = categoryCrud.save(CategoryEntity("Numbers"))
+		questionCrud.save(QuestionEntity("Which is B?", listOf("A", "B", "C", "D"), 1, letterCategory))
+		questionCrud.save(QuestionEntity("Which is D?", listOf("A", "B", "C", "D"), 3, letterCategory))
+		questionCrud.save(QuestionEntity("Which is 2?", listOf("0", "1", "2", "3"), 2, numberCategory))
+
+		val a = questionCrud.findQuizByCategoryName("Letters")
+		assertEquals(2, a.count())
+	}
 }
