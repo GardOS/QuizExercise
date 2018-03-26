@@ -5,9 +5,10 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import no.gardos.quiz.model.converter.CategoryConverter
-import no.gardos.quiz.model.repository.CategoryRepository
 import no.gardos.quiz.model.dto.CategoryDto
 import no.gardos.quiz.model.entity.CategoryEntity
+import no.gardos.quiz.model.repository.CategoryRepository
+import no.gardos.quiz.model.repository.QuestionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -25,12 +26,15 @@ import javax.validation.ConstraintViolationException
 @Validated
 class CategoryController {
 	@Autowired
-	private lateinit var repo: CategoryRepository
+	private lateinit var categoryRepo: CategoryRepository
+
+	@Autowired
+	private lateinit var questionRepo: QuestionRepository
 
 	@ApiOperation("Get all the categories")
 	@GetMapping
 	fun getCategories(): ResponseEntity<List<CategoryDto>> {
-		return ResponseEntity.ok(CategoryConverter.transform(repo.findAll()))
+		return ResponseEntity.ok(CategoryConverter.transform(categoryRepo.findAll()))
 	}
 
 	@ApiOperation("Create new category")
@@ -50,10 +54,10 @@ class CategoryController {
 			return ResponseEntity.status(400).build()
 		}
 
-		if (repo.findByName(dto.name.toString()) != null)
+		if (categoryRepo.findByName(dto.name.toString()) != null)
 			return ResponseEntity.status(409).build()
 
-		val category = repo.save(CategoryEntity(name = dto.name!!))
+		val category = categoryRepo.save(CategoryEntity(name = dto.name!!))
 
 		return ResponseEntity.status(201).body(category.id)
 	}
@@ -61,7 +65,7 @@ class CategoryController {
 	@ApiOperation("Get a category by ID")
 	@GetMapping(path = ["/{id}"])
 	fun getCategory(
-			@ApiParam("Id of Category")
+			@ApiParam("Id of category")
 			@PathVariable("id")
 			pathId: Long?
 	): ResponseEntity<CategoryDto> {
@@ -69,11 +73,11 @@ class CategoryController {
 			return ResponseEntity.status(400).build()
 		}
 
-		if (!repo.exists(pathId)) {
+		if (!categoryRepo.exists(pathId)) {
 			return ResponseEntity.status(404).build()
 		}
 
-		val category = repo.findOne(pathId)
+		val category = categoryRepo.findOne(pathId)
 
 		return ResponseEntity.ok(CategoryConverter.transform(category))
 	}
@@ -92,14 +96,14 @@ class CategoryController {
 			return ResponseEntity.status(400).build()
 		}
 
-		if (!repo.exists(pathId)) {
+		if (!categoryRepo.exists(pathId)) {
 			return ResponseEntity.status(404).build()
 		}
 
-		if (repo.findByName(newName) != null)
+		if (categoryRepo.findByName(newName) != null)
 			return ResponseEntity.status(409).build()
 
-		val newCategory = repo.save(CategoryEntity(id = pathId, name = newName))
+		val newCategory = categoryRepo.save(CategoryEntity(id = pathId, name = newName))
 
 		return ResponseEntity.ok(CategoryConverter.transform(newCategory))
 	}
@@ -115,11 +119,19 @@ class CategoryController {
 			return ResponseEntity.status(400).build()
 		}
 
-		if (!repo.exists(pathId)) {
-			return ResponseEntity.status(404).build()
+		val category = categoryRepo.findOne(pathId) ?: return ResponseEntity.status(404).build()
+
+		val questions = questionRepo.findQuizByCategoryName(category.name)
+
+		//If there any quizzes with a relation to this category then set FK-column to null before deleting
+		if (questions.any()) {
+			questions.forEach {
+				it.category = null
+				questionRepo.save(it)
+			}
 		}
 
-		repo.delete(pathId)
+		categoryRepo.delete(pathId)
 
 		return ResponseEntity.status(204).build()
 	}

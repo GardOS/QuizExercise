@@ -3,6 +3,7 @@ package no.gardos.quiz
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import no.gardos.quiz.model.dto.CategoryDto
+import org.hamcrest.CoreMatchers
 import org.junit.Test
 
 class CategoryApiTest : ApiTestBase() {
@@ -175,5 +176,27 @@ class CategoryApiTest : ApiTestBase() {
 				.delete("$CATEGORY_PATH/{id}")
 				.then()
 				.statusCode(404)
+	}
+
+
+	@Test
+	fun deleteCategory_QuestionHasRelation_NoContent() {
+		val category = createGenericCategory("Category")
+		createGenericQuestion(category)
+
+		given().get(QUESTION_PATH)
+				.then()
+				.statusCode(200)
+				.body("size()", CoreMatchers.equalTo(1))
+
+		given().pathParam("id", category)
+				.delete("$CATEGORY_PATH/{id}")
+				.then()
+				.statusCode(204)
+
+		given().get(QUESTION_PATH)
+				.then()
+				.statusCode(200)
+				.body("size()", CoreMatchers.equalTo(1))
 	}
 }
