@@ -6,7 +6,6 @@ import io.restassured.http.ContentType
 import no.gardos.quiz.model.dto.CategoryDto
 import no.gardos.quiz.model.dto.QuestionDto
 import org.hamcrest.CoreMatchers.equalTo
-import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.springframework.boot.context.embedded.LocalServerPort
@@ -51,14 +50,15 @@ abstract class ApiTestBase {
 	}
 
 	@Before
-	@After
 	fun clean() {
 		RestAssured.baseURI = "http://localhost"
 		RestAssured.basePath = "/quizrest/api"
 		RestAssured.port = port
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
-		removeCategories() //Todo: remove foreign keys before deletion
+		//Ensure that the DB has a neutral state before starting any tests
+		removeCategories()
+		removeQuizzes()
 	}
 
 	fun removeCategories() {
@@ -77,6 +77,27 @@ abstract class ApiTestBase {
 		}
 
 		given().get(CATEGORY_PATH)
+				.then()
+				.statusCode(200)
+				.body("size()", equalTo(0))
+	}
+
+	fun removeQuizzes() {
+		val list = given().accept(ContentType.JSON).get(QUESTION_PATH)
+				.then()
+				.statusCode(200)
+				.extract()
+				.`as`(Array<QuestionDto>::class.java)
+				.toList()
+
+		list.stream().forEach {
+			given().pathParam("id", it.id)
+					.delete("$QUESTION_PATH/{id}")
+					.then()
+					.statusCode(204)
+		}
+
+		given().get(QUESTION_PATH)
 				.then()
 				.statusCode(200)
 				.body("size()", equalTo(0))
