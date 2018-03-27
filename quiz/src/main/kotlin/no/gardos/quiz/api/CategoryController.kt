@@ -119,7 +119,7 @@ class CategoryController {
 
 		val questions = questionRepo.findQuizByCategoryName(category.name)
 
-		//If there any quizzes with a relation to this category then set FK-column to null before deleting
+		//If there are any questions with a relation to this category then set FK-column to null before deleting
 		if (questions.any()) {
 			questions.forEach {
 				it.category = null
