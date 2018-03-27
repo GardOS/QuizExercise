@@ -101,8 +101,20 @@ class QuestionRepositoryTest {
 	}
 
 	@Test(expected = ConstraintViolationException::class)
+	fun sizeConstraint_TooFewAnswers_ConstraintViolationException() {
+		val question = createTestQuestion(answers = listOf("1"))
+		questionCrud.save(question)
+	}
+
+	@Test(expected = ConstraintViolationException::class)
 	fun sizeConstraint_TooManyAnswers_ConstraintViolationException() {
 		val question = createTestQuestion(answers = listOf("1", "2", "3", "4", "5"))
+		questionCrud.save(question)
+	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun minConstraint_NullCorrectAnswer_ConstraintViolationException() {
+		val question = createTestQuestion(correctAnswer = null)
 		questionCrud.save(question)
 	}
 
