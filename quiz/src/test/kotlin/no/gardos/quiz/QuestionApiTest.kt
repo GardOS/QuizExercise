@@ -251,4 +251,42 @@ class QuestionApiTest : ApiTestBase() {
 				.then()
 				.statusCode(404)
 	}
+
+	@Test
+	fun updateQuestion_ExistingQuestion_Ok() {
+		val category = createGenericCategory("Category")
+		val oldQuestion = createGenericQuestion(category)
+		val question = QuestionDto(
+				questionText = "What is 1+1?",
+				answers = listOf("0", "1", "2", "3"),
+				correctAnswer = 3,
+				category = category
+		)
+
+		given().pathParam("id", oldQuestion)
+				.contentType(ContentType.JSON)
+				.body(question)
+				.put("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(200)
+	}
+
+	@Test
+	fun updateQuestion_NewQuestionInvalid_BadRequest() { //Todo: fix. Should throw constraintError on constraints errors
+		val category = createGenericCategory("Category")
+		val oldQuestion = createGenericQuestion(category)
+		val question = QuestionDto(
+				questionText = null,
+				answers = listOf("0", "1", "2", "3"),
+				correctAnswer = 3,
+				category = category
+		)
+
+		given().pathParam("id", oldQuestion)
+				.contentType(ContentType.JSON)
+				.body(question)
+				.put("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(400)
+	}
 }
