@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import no.gardos.quiz.model.converter.QuestionConverter
 import no.gardos.quiz.model.dto.QuestionDto
+import no.gardos.quiz.model.entity.CategoryEntity
 import no.gardos.quiz.model.entity.QuestionEntity
 import no.gardos.quiz.model.repository.CategoryRepository
 import no.gardos.quiz.model.repository.QuestionRepository
@@ -50,11 +51,11 @@ class QuestionController {
 			return ResponseEntity.status(400).build()
 		}
 
-		if (dto.questionText == null || dto.answers == null || dto.correctAnswer == null || dto.category == null) {
-			return ResponseEntity.status(400).build()
-		}
+		var category: CategoryEntity? = null
 
-		val category = categoryRepo.findOne(dto.category!!) ?: return ResponseEntity.status(400).build()
+		if (dto.category != null) {
+			category = categoryRepo.findOne(dto.category) ?: return ResponseEntity.status(400).build()
+		}
 
 		val question: QuestionEntity?
 
