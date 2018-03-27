@@ -16,41 +16,41 @@ import javax.validation.ConstraintViolationException
 class CategoryRepositoryTest {
 
 	@Autowired
-	private lateinit var categoryCrud: CategoryRepository
+	private lateinit var categoryRepo: CategoryRepository
 	var categoryName = "Category"
 
 	private fun createTestCategory(): CategoryEntity {
-		return categoryCrud.save(CategoryEntity(categoryName))
+		return categoryRepo.save(CategoryEntity(categoryName))
 	}
 
 	@Before
 	fun cleanDatabase() {
-		categoryCrud.deleteAll()
+		categoryRepo.deleteAll()
 	}
 
 	@Test
 	fun testInit() {
-		assertNotNull(categoryCrud)
+		assertNotNull(categoryRepo)
 	}
 
 	@Test
 	fun save_ValidCategory_CategoryCreated() {
-		assertEquals(0, categoryCrud.count())
+		assertEquals(0, categoryRepo.count())
 		createTestCategory()
-		assertEquals(1, categoryCrud.count())
+		assertEquals(1, categoryRepo.count())
 	}
 
 	@Test
 	fun save_ValidCategory_CategoryUpdated() {
 		val category = createTestCategory()
 		assertEquals(categoryName, category.name)
-		categoryCrud.save(category)
+		categoryRepo.save(category)
 
 		val newCategoryName = "NewCategoryName"
 		category.name = newCategoryName
-		categoryCrud.save(category)
+		categoryRepo.save(category)
 
-		val updatedQuiz = categoryCrud.findOne(category.id)
+		val updatedQuiz = categoryRepo.findOne(category.id)
 		assertEquals(newCategoryName, updatedQuiz.name)
 	}
 
@@ -58,45 +58,45 @@ class CategoryRepositoryTest {
 	fun delete_ExistingCategory_CategoryDeleted() {
 		val category = createTestCategory()
 
-		assertNotNull(categoryCrud.findOne(category.id))
+		assertNotNull(categoryRepo.findOne(category.id))
 
-		categoryCrud.delete(category.id)
+		categoryRepo.delete(category.id)
 
-		assertNull(categoryCrud.findOne(category.id))
+		assertNull(categoryRepo.findOne(category.id))
 	}
 
 	@Test
 	fun findByName_ExistingCategory_CategoryFound() {
 		val categoryName = "Sports"
 		val category = CategoryEntity(categoryName)
-		categoryCrud.save(category)
+		categoryRepo.save(category)
 
-		assertEquals(category.id, categoryCrud.findByName(categoryName)?.id)
+		assertEquals(category.id, categoryRepo.findByName(categoryName)?.id)
 	}
 
 	@Test
 	fun findByName_NoCategory_ReturnNull() {
-		assertEquals(null, categoryCrud.findByName(categoryName))
+		assertEquals(null, categoryRepo.findByName(categoryName))
 	}
 
 	@Test(expected = ConstraintViolationException::class)
 	fun sizeConstraint_NameTooLong_ConstraintViolationException() {
 		val categoryName = "123456789012345678901234567890123" //33 length
 		val category = CategoryEntity(categoryName)
-		categoryCrud.save(category)
+		categoryRepo.save(category)
 	}
 
 	@Test(expected = ConstraintViolationException::class)
 	fun notEmptyConstraint_NullName_ConstraintViolationException() {
 		val categoryName = null
 		val category = CategoryEntity(categoryName)
-		categoryCrud.save(category)
+		categoryRepo.save(category)
 	}
 
 	@Test(expected = ConstraintViolationException::class)
 	fun notEmptyConstraint_EmptyName_ConstraintViolationException() {
 		val categoryName = ""
 		val category = CategoryEntity(categoryName)
-		categoryCrud.save(category)
+		categoryRepo.save(category)
 	}
 }
