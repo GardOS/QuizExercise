@@ -50,14 +50,10 @@ class CategoryController {
 			return ResponseEntity.status(400).build()
 		}
 
-		if (dto.name.isNullOrEmpty()) {
-			return ResponseEntity.status(400).build()
-		}
-
 		if (categoryRepo.findByName(dto.name.toString()) != null)
 			return ResponseEntity.status(409).build()
 
-		val category = categoryRepo.save(CategoryEntity(name = dto.name!!))
+		val category = categoryRepo.save(CategoryEntity(name = dto.name))
 
 		return ResponseEntity.status(201).body(category.id)
 	}
