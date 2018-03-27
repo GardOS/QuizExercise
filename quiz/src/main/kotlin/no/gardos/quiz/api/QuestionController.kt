@@ -91,6 +91,46 @@ class QuestionController {
 		return ResponseEntity.ok(QuestionConverter.transform(question))
 	}
 
+	@ApiOperation("Update an existing question")
+	@PutMapping(path = ["/{id}"], consumes = [MediaType.APPLICATION_JSON_VALUE])
+	fun updateCategory(
+			@ApiParam("Id of question")
+			@PathVariable("id")
+			pathId: Long?,
+			@ApiParam("The new question which will replace the old one")
+			@RequestBody
+			requestDto: QuestionDto
+	): ResponseEntity<QuestionDto> {
+		if (pathId == null) {
+			return ResponseEntity.status(400).build()
+		}
+
+		if (!questionRepo.exists(pathId)) {
+			return ResponseEntity.status(404).build()
+		}
+
+		if (requestDto.id != null) {
+			return ResponseEntity.status(409).build()
+		}
+
+		//Return 400 if the new question don't exist, except if its updated to null
+		if (!categoryRepo.exists(requestDto.category) && requestDto.category != null) {
+			return ResponseEntity.status(400).build()
+		}
+
+		val newQuestion = questionRepo.save(
+				QuestionEntity(
+						id = pathId,
+						questionText = requestDto.questionText,
+						answers = requestDto.answers,
+						correctAnswer = requestDto.correctAnswer,
+						category = categoryRepo.findOne(pathId)
+				)
+		)
+
+		return ResponseEntity.ok(QuestionConverter.transform(newQuestion))
+	}
+
 	@ApiOperation("Delete a question")
 	@DeleteMapping(path = ["/{id}"])
 	fun deleteQuestion(
