@@ -197,4 +197,31 @@ class QuestionApiTest : ApiTestBase() {
 				.then()
 				.statusCode(400)
 	}
+
+	@Test
+	fun getQuestion_QuestionExists_Ok() {
+		val category = createGenericCategory("Category")
+		val question = createGenericQuestion(category)
+
+		given().pathParam("id", question)
+				.get("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(200)
+	}
+
+	@Test
+	fun getQuestion_InvalidId_BadRequest() {
+		given().pathParam("id", " ")
+				.get("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(400)
+	}
+
+	@Test
+	fun getQuestion_QuestionDoesNotExist_NotFound() {
+		given().pathParam("id", 1234)
+				.get("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(404)
+	}
 }
