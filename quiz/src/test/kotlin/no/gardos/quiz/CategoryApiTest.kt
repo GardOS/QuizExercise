@@ -20,8 +20,7 @@ class CategoryApiTest : ApiTestBase() {
 				.`as`(Array<CategoryDto>::class.java)
 				.toList()
 
-		assert(response.stream().anyMatch { c -> c.name == "Category1" })
-		assert(response.stream().anyMatch { c -> c.name == "Category2" })
+		assert(response.count() == 2)
 	}
 
 	@Test
