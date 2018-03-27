@@ -85,4 +85,18 @@ class CategoryRepositoryTest {
 		val category = CategoryEntity(categoryName)
 		categoryCrud.save(category)
 	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun notEmptyConstraint_NullName_ConstraintViolationException() {
+		val categoryName = null
+		val category = CategoryEntity(categoryName)
+		categoryCrud.save(category)
+	}
+
+	@Test(expected = ConstraintViolationException::class)
+	fun notEmptyConstraint_EmptyName_ConstraintViolationException() {
+		val categoryName = ""
+		val category = CategoryEntity(categoryName)
+		categoryCrud.save(category)
+	}
 }
