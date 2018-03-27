@@ -224,4 +224,31 @@ class QuestionApiTest : ApiTestBase() {
 				.then()
 				.statusCode(404)
 	}
+
+	@Test
+	fun deleteQuestion_QuestionExists_NoContent() {
+		val category = createGenericCategory("Category")
+		val question = createGenericQuestion(category)
+
+		given().pathParam("id", question)
+				.delete("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(204)
+	}
+
+	@Test
+	fun deleteQuestion_InvalidId_BadRequest() {
+		given().pathParam("id", " ")
+				.delete("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(400)
+	}
+
+	@Test
+	fun deleteQuestion_QuestionDoesNotExist_NotFound() {
+		given().pathParam("id", 1234)
+				.delete("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(404)
+	}
 }
