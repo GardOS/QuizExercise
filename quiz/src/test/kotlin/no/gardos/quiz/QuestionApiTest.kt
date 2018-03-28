@@ -383,4 +383,20 @@ class QuestionApiTest : ApiTestBase() {
 				.then()
 				.statusCode(400)
 	}
+
+	@Test
+	fun getQuestionsByCategoryName_ExistingQuestionWithCategory_Ok() {
+		val categoryName = "Category"
+		val category = createGenericCategory(categoryName)
+		createGenericQuestion(category)
+
+		val response = given().pathParam("name", categoryName)
+				.get("$QUESTION_PATH/category/name/{name}")
+				.then()
+				.statusCode(200)
+				.extract()
+				.`as`(Array<QuestionDto>::class.java)
+
+		assert(response.any())
+	}
 }

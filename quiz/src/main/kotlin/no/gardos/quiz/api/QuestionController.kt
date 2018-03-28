@@ -153,6 +153,16 @@ class QuestionController {
 		return ResponseEntity.status(204).build()
 	}
 
+	@ApiOperation("Get all the categories that has a relation to a question")
+	@GetMapping(path = ["/category/name/{name}"])
+	fun getQuestionsByCategoryName(
+			@ApiParam("Name of category")
+			@PathVariable("name")
+			pathName: String?
+	): ResponseEntity<List<QuestionDto>> {
+		return ResponseEntity.ok(QuestionConverter.transform(questionRepo.findQuestionByCategoryName(pathName)))
+	}
+
 	/*
 	Catches validation errors and returns 400 instead of 500
 	Although messy.. TransactionSystemException is included as there are some cases where a
