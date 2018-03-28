@@ -31,9 +31,15 @@ class CategoryController {
 	@Autowired
 	private lateinit var questionRepo: QuestionRepository
 
-	@ApiOperation("Get all the categories")
+	@ApiOperation("Get all the categories. Add param \"withQuestions\" to only get categories with questions")
 	@GetMapping
-	fun getCategories(): ResponseEntity<List<CategoryDto>> {
+	fun getCategories(
+			@RequestParam("withQuestions", required = false)
+			withQuestions: String?
+	): ResponseEntity<List<CategoryDto>> {
+		if (withQuestions != null)
+			return ResponseEntity.ok(CategoryConverter.transform(categoryRepo.findByQuestionsIsNotNull()))
+
 		return ResponseEntity.ok(CategoryConverter.transform(categoryRepo.findAll()))
 	}
 
@@ -130,12 +136,6 @@ class CategoryController {
 		categoryRepo.delete(pathId)
 
 		return ResponseEntity.status(204).build()
-	}
-
-	@ApiOperation("Get all the categories that has a relation to a question")
-	@GetMapping(path = ["/withQuestions"])
-	fun getCategoriesWithQuestions(): ResponseEntity<List<CategoryDto>> {
-		return ResponseEntity.ok(CategoryConverter.transform(categoryRepo.findByQuestionsIsNotNull()))
 	}
 
 	//Catches validation errors and returns 400 instead of 500
