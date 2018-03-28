@@ -13,7 +13,7 @@ class CategoryEntity(
 		var name: String? = null,
 
 		@get: OneToMany(mappedBy = "category")
-		var questions: MutableList<QuestionEntity> = ArrayList(), //Todo: Api-method + testing
+		var questions: MutableList<QuestionEntity> = ArrayList(),
 
 		@get:Id @get:GeneratedValue
 		var id: Long? = null
