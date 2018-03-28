@@ -253,11 +253,11 @@ class QuestionApiTest : ApiTestBase() {
 	}
 
 	@Test
-	fun updateQuestion_ExistingQuestion_Ok() {
+	fun updateQuestion_NewQuestionValid_Ok() {
 		val category = createGenericCategory("Category")
 		val oldQuestion = createGenericQuestion(category)
 		val question = QuestionDto(
-				questionText = "What is 1+1?",
+				questionText = "What is 2+1?",
 				answers = listOf("0", "1", "2", "3"),
 				correctAnswer = 3,
 				category = category
@@ -272,13 +272,107 @@ class QuestionApiTest : ApiTestBase() {
 	}
 
 	@Test
-	fun updateQuestion_NewQuestionInvalid_BadRequest() { //Todo: fix. Should throw constraintError on constraints errors
+	fun updateQuestion_InvalidId_BadRequest() {
+		val category = createGenericCategory("Category")
+		val question = QuestionDto(
+				questionText = "What is 2+1?",
+				answers = listOf("0", "1", "2", "3"),
+				correctAnswer = 3,
+				category = category
+		)
+
+		given().pathParam("id", " ")
+				.contentType(ContentType.JSON)
+				.body(question)
+				.put("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(400)
+	}
+
+	@Test
+	fun updateQuestion_QuestionDoesNotExist_NotFound() {
+		val category = createGenericCategory("Category")
+		val question = QuestionDto(
+				questionText = "What is 2+1?",
+				answers = listOf("0", "1", "2", "3"),
+				correctAnswer = 3,
+				category = category
+		)
+
+		given().pathParam("id", 1234)
+				.contentType(ContentType.JSON)
+				.body(question)
+				.put("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(404)
+	}
+
+	@Test
+	fun updateQuestion_IdInBodyIsNotNull_Conflict() {
+		val category = createGenericCategory("Category")
+		val oldQuestion = createGenericQuestion(category)
+		val question = QuestionDto(
+				id = 1234,
+				questionText = "What is 2+1?",
+				answers = listOf("0", "1", "2", "3"),
+				correctAnswer = 3,
+				category = category
+		)
+
+		given().pathParam("id", oldQuestion)
+				.contentType(ContentType.JSON)
+				.body(question)
+				.put("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(409)
+	}
+
+	@Test
+	fun updateQuestion_NewCategoryDoesNotExist_BadRequest() {
+		val category = createGenericCategory("Category")
+		val oldQuestion = createGenericQuestion(category)
+		val question = QuestionDto(
+				questionText = "What is 2+1?",
+				answers = listOf("0", "1", "2", "3"),
+				correctAnswer = 3,
+				category = 1234
+		)
+
+		given().pathParam("id", oldQuestion)
+				.contentType(ContentType.JSON)
+				.body(question)
+				.put("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(400)
+	}
+
+	@Test
+	fun updateQuestion_NewCategoryIsNull_Ok() {
+		val category = createGenericCategory("Category")
+		val oldQuestion = createGenericQuestion(category)
+		val question = QuestionDto(
+				questionText = "What is 2+1?",
+				answers = listOf("0", "1", "2", "3"),
+				correctAnswer = 3,
+				category = null
+		)
+
+		given().pathParam("id", oldQuestion)
+				.contentType(ContentType.JSON)
+				.body(question)
+				.put("$QUESTION_PATH/{id}")
+				.then()
+				.statusCode(200)
+	}
+
+	@Test
+	fun updateQuestion_NewQuestionIsInvalid_BadRequest() {
 		val category = createGenericCategory("Category")
 		val oldQuestion = createGenericQuestion(category)
 		val question = QuestionDto(
 				questionText = null,
-				answers = listOf("0", "1", "2", "3"),
-				correctAnswer = 3,
+				answers = null,
+				correctAnswer = null,
 				category = category
 		)
 
