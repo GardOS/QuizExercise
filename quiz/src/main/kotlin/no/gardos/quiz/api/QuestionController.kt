@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.TransactionSystemException
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import javax.validation.ConstraintViolationException
@@ -151,16 +152,17 @@ class QuestionController {
 		return ResponseEntity.status(204).build()
 	}
 
-	//Catches validation errors and returns 400 instead of 500
-	@ExceptionHandler(value = [(ConstraintViolationException::class)])
+	/*
+	Catches validation errors and returns 400 instead of 500
+	Although messy.. TransactionSystemException is included as there are some cases where a
+	ConstraintViolationException is thrown, but Spring interprets it as a TransactionSystemException.
+	See: https://stackoverflow.com/a/45118680
+	The downside to this "solution" is that there might be actual TransactionSystemExceptions being thrown, which
+	warrants a 500 status code instead, which is very misleading.
+	*/
+	@ExceptionHandler(value = ([ConstraintViolationException::class, TransactionSystemException::class]))
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	fun handleValidationFailure(ex: ConstraintViolationException): String {
-		val messages = StringBuilder()
-
-		for (violation in ex.constraintViolations) {
-			messages.append(violation.message + "\n")
-		}
-
-		return messages.toString()
+	fun handleValidationFailure(ex: RuntimeException): String {
+		return "Invalid request. Error:\n${ex.message ?: "Error not found"}"
 	}
 }

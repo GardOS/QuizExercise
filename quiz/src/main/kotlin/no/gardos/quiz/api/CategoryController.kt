@@ -136,12 +136,6 @@ class CategoryController {
 	@ExceptionHandler(value = [(ConstraintViolationException::class)])
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	fun handleValidationFailure(ex: ConstraintViolationException): String {
-		val messages = StringBuilder()
-
-		for (violation in ex.constraintViolations) {
-			messages.append(violation.message + "\n")
-		}
-
-		return messages.toString()
+		return "Invalid request. Error:\n${ex.message ?: "Error not found"}"
 	}
 }
