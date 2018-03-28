@@ -141,6 +141,7 @@
         <plugins>
             <!-- It is important that the Kotlin plugin is executed before the Java compiler -->
             <plugin>
+                <!--suppress KotlinMavenPluginPhase -->
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
             </plugin>
