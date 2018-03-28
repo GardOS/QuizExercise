@@ -8,6 +8,7 @@ import javax.transaction.Transactional
 @Repository
 interface CategoryRepository : CrudRepository<CategoryEntity, Long>, CategoryRepositoryCustom {
 	fun findByName(name: String): CategoryEntity?
+	fun findByQuestionsIsNotNull(): List<CategoryEntity>
 }
 
 @Transactional

@@ -132,6 +132,12 @@ class CategoryController {
 		return ResponseEntity.status(204).build()
 	}
 
+	@ApiOperation("Get all the categories that has a relation to a question")
+	@GetMapping(path = ["/withQuestions"])
+	fun getCategoriesWithQuestions(): ResponseEntity<List<CategoryDto>> {
+		return ResponseEntity.ok(CategoryConverter.transform(categoryRepo.findByQuestionsIsNotNull()))
+	}
+
 	//Catches validation errors and returns 400 instead of 500
 	@ExceptionHandler(value = [(ConstraintViolationException::class)])
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
