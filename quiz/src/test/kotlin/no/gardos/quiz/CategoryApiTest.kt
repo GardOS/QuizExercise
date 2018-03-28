@@ -116,7 +116,7 @@ class CategoryApiTest : ApiTestBase() {
 
 		given().pathParam("id", category)
 				.body("NewCategory")
-				.put("$CATEGORY_PATH/{id}/name")
+				.patch("$CATEGORY_PATH/{id}/name")
 				.then()
 				.statusCode(200)
 	}
@@ -125,7 +125,7 @@ class CategoryApiTest : ApiTestBase() {
 	fun updateCategory_InvalidId_BadRequest() {
 		given().pathParam("id", " ")
 				.body("NewCategory")
-				.put("$CATEGORY_PATH/{id}/name")
+				.patch("$CATEGORY_PATH/{id}/name")
 				.then()
 				.statusCode(400)
 	}
@@ -134,19 +134,19 @@ class CategoryApiTest : ApiTestBase() {
 	fun updateCategory_CategoryDoesNotExist_NotFound() {
 		given().pathParam("id", 1234)
 				.body("NewCategory")
-				.put("$CATEGORY_PATH/{id}/name")
+				.patch("$CATEGORY_PATH/{id}/name")
 				.then()
 				.statusCode(404)
 	}
 
 	@Test
 	fun updateCategory_NameAlreadyInUse_Conflict() {
-		val category = createGenericCategory("Category1")
-		createGenericCategory("Category2")
+		val category = createGenericCategory("FirstCategory")
+		createGenericCategory("SecondCategory")
 
 		given().pathParam("id", category)
-				.body("Category2")
-				.put("$CATEGORY_PATH/{id}/name")
+				.body("SecondCategory")
+				.patch("$CATEGORY_PATH/{id}/name")
 				.then()
 				.statusCode(409)
 	}

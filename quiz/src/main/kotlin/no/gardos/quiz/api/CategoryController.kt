@@ -79,7 +79,7 @@ class CategoryController {
 	}
 
 	@ApiOperation("Update name of a category")
-	@PutMapping(path = ["/{id}/name"], consumes = [MediaType.TEXT_PLAIN_VALUE])
+	@PatchMapping(path = ["/{id}/name"], consumes = [MediaType.TEXT_PLAIN_VALUE])
 	fun updateCategory(
 			@ApiParam("Id of Category")
 			@PathVariable("id")
