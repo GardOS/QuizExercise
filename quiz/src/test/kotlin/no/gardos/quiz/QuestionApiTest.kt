@@ -399,4 +399,19 @@ class QuestionApiTest : ApiTestBase() {
 
 		assert(response.any())
 	}
+
+	@Test
+	fun getQuestionsByCategoryId_ExistingQuestionWithCategory_Ok() {
+		val category = createGenericCategory("Category")
+		createGenericQuestion(category)
+
+		val response = given().pathParam("id", category)
+				.get("$QUESTION_PATH/category/{id}")
+				.then()
+				.statusCode(200)
+				.extract()
+				.`as`(Array<QuestionDto>::class.java)
+
+		assert(response.any())
+	}
 }

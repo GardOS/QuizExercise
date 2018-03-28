@@ -144,7 +144,19 @@ class QuestionRepositoryTest {
 		questionRepo.save(QuestionEntity("Which is D?", listOf("A", "B", "C", "D"), 3, letterCategory))
 		questionRepo.save(QuestionEntity("Which is 2?", listOf("0", "1", "2", "3"), 2, numberCategory))
 
-		val a = questionRepo.findQuestionByCategoryName("Letters")
-		assertEquals(2, a.count())
+		val questions = questionRepo.findQuestionByCategoryName(letterCategory.name)
+		assertEquals(2, questions.count())
+	}
+
+	@Test
+	fun findQuestionByCategoryId_QuestionsWithCategoriesExist_QuestionFound() {
+		val letterCategory = categoryRepo.save(CategoryEntity("Letters"))
+		val numberCategory = categoryRepo.save(CategoryEntity("Numbers"))
+		questionRepo.save(QuestionEntity("Which is B?", listOf("A", "B", "C", "D"), 1, letterCategory))
+		questionRepo.save(QuestionEntity("Which is D?", listOf("A", "B", "C", "D"), 3, letterCategory))
+		questionRepo.save(QuestionEntity("Which is 2?", listOf("0", "1", "2", "3"), 2, numberCategory))
+
+		val questions = questionRepo.findQuestionByCategoryId(letterCategory.id)
+		assertEquals(2, questions.count())
 	}
 }
