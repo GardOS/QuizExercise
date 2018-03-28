@@ -1,7 +1,9 @@
 package no.gardos.quiz
 
 import no.gardos.quiz.model.entity.CategoryEntity
+import no.gardos.quiz.model.entity.QuestionEntity
 import no.gardos.quiz.model.repository.CategoryRepository
+import no.gardos.quiz.model.repository.QuestionRepository
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -17,14 +19,17 @@ class CategoryRepositoryTest {
 
 	@Autowired
 	private lateinit var categoryRepo: CategoryRepository
+	@Autowired
+	private lateinit var questionRepo: QuestionRepository
 	var categoryName = "Category"
 
-	private fun createTestCategory(): CategoryEntity {
-		return categoryRepo.save(CategoryEntity(categoryName))
+	private fun createTestCategory(name: String = categoryName): CategoryEntity {
+		return categoryRepo.save(CategoryEntity(name))
 	}
 
 	@Before
 	fun cleanDatabase() {
+		questionRepo.deleteAll()
 		categoryRepo.deleteAll()
 	}
 
@@ -77,6 +82,28 @@ class CategoryRepositoryTest {
 	@Test
 	fun findByName_NoCategory_ReturnNull() {
 		assertEquals(null, categoryRepo.findByName(categoryName))
+	}
+
+	@Test
+	fun findByQuestionsIsNotNull_ExistingRelations_CorrectCategoriesReturned() {
+		val firstCategory = createTestCategory("firstCategory")
+		val secondCategory = createTestCategory("secondCategory")
+
+		val question = questionRepo.save(
+				QuestionEntity(
+						questionText = "What is 1+1?",
+						answers = listOf("0", "1", "2", "3"),
+						correctAnswer = 2,
+						category = firstCategory
+				)
+		)
+
+		assertEquals(firstCategory.id, categoryRepo.findByQuestionsIsNotNull().first().id)
+
+		question.category = secondCategory
+		questionRepo.save(question)
+
+		assertEquals(secondCategory.id, categoryRepo.findByQuestionsIsNotNull().first().id)
 	}
 
 	@Test(expected = ConstraintViolationException::class)
