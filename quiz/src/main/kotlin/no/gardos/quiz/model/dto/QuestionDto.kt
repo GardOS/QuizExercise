@@ -2,8 +2,6 @@ package no.gardos.quiz.model.dto
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import no.gardos.quiz.model.entity.CategoryEntity
-import no.gardos.quiz.model.entity.QuestionEntity
 
 @ApiModel("DTO for Question. It represent a Question entity")
 data class QuestionDto(
