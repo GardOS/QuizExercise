@@ -37,6 +37,7 @@ class QuestionRepositoryTest {
 	@Before
 	fun cleanDatabase() {
 		questionRepo.deleteAll()
+		categoryRepo.deleteAll()
 	}
 
 	@Before
