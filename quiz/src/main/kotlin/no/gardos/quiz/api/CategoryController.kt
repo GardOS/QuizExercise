@@ -105,7 +105,10 @@ class CategoryController {
 		if (categoryRepo.findByName(newName) != null)
 			return ResponseEntity.status(409).build()
 
-		val newCategory = categoryRepo.save(CategoryEntity(id = pathId, name = newName))
+		val category = categoryRepo.findOne(pathId)
+		category.name = newName
+
+		val newCategory = categoryRepo.save(category)
 
 		return ResponseEntity.ok(CategoryConverter.transform(newCategory))
 	}
