@@ -117,7 +117,7 @@ class CategoryController {
 
 		val category = categoryRepo.findOne(pathId) ?: return ResponseEntity.status(404).build()
 
-		val questions = questionRepo.findQuizByCategoryName(category.name)
+		val questions = questionRepo.findQuestionByCategoryName(category.name) //Todo: Do query by ID instead
 
 		//If there are any questions with a relation to this category then set FK-column to null before deleting
 		if (questions.any()) {
