@@ -114,9 +114,10 @@ class QuestionController {
 			return ResponseEntity.status(409).build()
 		}
 
-		//Return 400 if the new question don't exist, except if its updated to null
-		if (!categoryRepo.exists(requestDto.category) && requestDto.category != null) {
-			return ResponseEntity.status(400).build()
+		var newCategory: CategoryEntity? = null
+
+		if (requestDto.category != null) {
+			newCategory = categoryRepo.findOne(requestDto.category) ?: return ResponseEntity.status(400).build()
 		}
 
 		val newQuestion = questionRepo.save(
@@ -125,7 +126,7 @@ class QuestionController {
 						questionText = requestDto.questionText,
 						answers = requestDto.answers,
 						correctAnswer = requestDto.correctAnswer,
-						category = categoryRepo.findOne(pathId)
+						category = newCategory
 				)
 		)
 
