@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/GardOS/QuizExercise.svg?branch=master)](https://travis-ci.org/GardOS/QuizExercise)
+
 ## QuizExercise
 
 Exercise in subject 'Enterpriseprogramming 2'. 
