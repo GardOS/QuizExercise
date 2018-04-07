@@ -1,8 +1,13 @@
 language: java
-sudo: false
 
 jdk:
   - oraclejdk8
+
+# Required when using Docker
+sudo: true
+
+services:
+  - docker
 
 cache:
   directories:
@@ -12,4 +17,5 @@ cache:
 notifications:
   email: false
 
-script: mvn clean verify  -Dmaven.test.redirectTestOutputToFile=true
+# --quiet for less verbose logs
+script: mvn clean verify  --quiet
