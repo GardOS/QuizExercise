@@ -38,7 +38,7 @@ class CategoryController {
 			withQuestions: String?
 	): ResponseEntity<List<CategoryDto>> {
 		if (withQuestions != null)
-			return ResponseEntity.ok(CategoryConverter.transform(categoryRepo.findByQuestionsIsNotNull()))
+			return ResponseEntity.ok(CategoryConverter.transform(categoryRepo.findByQuestionsIsNotNull().distinct()))
 
 		return ResponseEntity.ok(CategoryConverter.transform(categoryRepo.findAll()))
 	}
