@@ -133,6 +133,13 @@
                 <version>${version.junit}</version>
                 <scope>test</scope>
             </dependency>
+            <!-- To use Docker from tests -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${version.testcontainers}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
