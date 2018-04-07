@@ -1,0 +1,6 @@
+server:
+  contextPath: /quizrest/api
+
+spring:
+  jpa:
+    show-sql: true
