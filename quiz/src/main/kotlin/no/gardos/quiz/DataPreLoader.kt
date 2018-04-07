@@ -17,6 +17,7 @@ class DataPreLoader(var questionRepository: QuestionRepository,
 		val lettersCategory = categoryRepository.save(CategoryEntity(name = "Letters"))
 		val numbersCategory = categoryRepository.save(CategoryEntity(name = "Numbers"))
 		val animalsCategory = categoryRepository.save(CategoryEntity(name = "Animals"))
+		categoryRepository.save(CategoryEntity(name = "Words"))
 
 		questionRepository.save(QuestionEntity(
 				questionText = "Which letter is B?",
@@ -65,6 +66,13 @@ class DataPreLoader(var questionRepository: QuestionRepository,
 				answers = listOf("ÆØÅ", "Nothing", "Hatti-ho", "DingDing"),
 				correctAnswer = 3,
 				category = animalsCategory
+		))
+
+		questionRepository.save(QuestionEntity(
+				questionText = "Yes?",
+				answers = listOf("No", "Yes", "No", "No"),
+				correctAnswer = 1,
+				category = null
 		))
 	}
 }
