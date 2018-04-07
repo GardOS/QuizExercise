@@ -153,7 +153,7 @@ class QuestionController {
 		return ResponseEntity.status(204).build()
 	}
 
-	@ApiOperation("Get all categories by Id, that has a relation to a question")
+	@ApiOperation("Get questions by category Id")
 	@GetMapping(path = ["/category/{id}"])
 	fun getQuestionsByCategoryId(
 			@ApiParam("Id of category")
@@ -163,7 +163,7 @@ class QuestionController {
 		return ResponseEntity.ok(QuestionConverter.transform(questionRepo.findQuestionByCategoryId(pathId)))
 	}
 
-	@ApiOperation("Get all categories by name, that has a relation to a question")
+	@ApiOperation("Get questions by category name")
 	@GetMapping(path = ["/category/name/{name}"])
 	fun getQuestionsByCategoryName(
 			@ApiParam("Name of category")
