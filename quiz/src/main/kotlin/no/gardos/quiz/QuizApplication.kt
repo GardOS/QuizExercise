@@ -47,8 +47,8 @@ class QuizApplication {
 	}
 }
 
-//mvn spring-boot:run
-//http://localhost:8080/quizrest/api/swagger-ui.html
+//docker-compose down && mvn package -DskipTests && docker-compose build && docker-compose up -d
+//http://localhost:8080/quizexercise/api/swagger-ui.html
 fun main(args: Array<String>) {
 	SpringApplication.run(QuizApplication::class.java, *args)
 }
