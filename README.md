@@ -23,4 +23,4 @@ In terminal:
 
 From there on you can test endpoints using a tool such as Postman.
 
-When done: `docker-compose down -d` 
+When done: `docker-compose down` 
