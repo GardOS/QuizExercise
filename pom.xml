@@ -8,7 +8,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>quiz</module>
+        <module>question</module>
     </modules>
 
     <name>QuizExercise</name>

@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  quiz:
+  question:
     build:
-      context: ./quiz
+      context: question
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
