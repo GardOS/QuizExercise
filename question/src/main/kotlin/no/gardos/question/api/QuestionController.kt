@@ -5,8 +5,8 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import no.gardos.question.model.converter.QuestionConverter
-import no.gardos.question.model.entity.CategoryEntity
-import no.gardos.question.model.entity.QuestionEntity
+import no.gardos.question.model.entity.Category
+import no.gardos.question.model.entity.Question
 import no.gardos.question.model.repository.CategoryRepository
 import no.gardos.question.model.repository.QuestionRepository
 import no.gardos.schema.QuestionDto
@@ -52,16 +52,16 @@ class QuestionController {
 			return ResponseEntity.status(400).build()
 		}
 
-		var category: CategoryEntity? = null
+		var category: Category? = null
 
 		if (dto.category != null) {
 			category = categoryRepo.findOne(dto.category) ?: return ResponseEntity.status(400).build()
 		}
 
-		val question: QuestionEntity?
+		val question: Question?
 
 		question = questionRepo.save(
-				QuestionEntity(
+				Question(
 						questionText = dto.questionText,
 						answers = dto.answers,
 						correctAnswer = dto.correctAnswer,
@@ -114,14 +114,14 @@ class QuestionController {
 			return ResponseEntity.status(409).build()
 		}
 
-		var newCategory: CategoryEntity? = null
+		var newCategory: Category? = null
 
 		if (requestDto.category != null) {
 			newCategory = categoryRepo.findOne(requestDto.category) ?: return ResponseEntity.status(400).build()
 		}
 
 		val newQuestion = questionRepo.save(
-				QuestionEntity(
+				Question(
 						id = pathId,
 						questionText = requestDto.questionText,
 						answers = requestDto.answers,

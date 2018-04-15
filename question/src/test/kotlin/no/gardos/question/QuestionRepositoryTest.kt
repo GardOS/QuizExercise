@@ -1,7 +1,7 @@
 package no.gardos.question
 
-import no.gardos.question.model.entity.CategoryEntity
-import no.gardos.question.model.entity.QuestionEntity
+import no.gardos.question.model.entity.Category
+import no.gardos.question.model.entity.Question
 import no.gardos.question.model.repository.CategoryRepository
 import no.gardos.question.model.repository.QuestionRepository
 import org.junit.Assert.*
@@ -30,8 +30,8 @@ class QuestionRepositoryTest {
 			answers: List<String>? = this.answers,
 			correctAnswer: Int? = this.correctAnswer,
 			id: Long? = null)
-			: QuestionEntity {
-		return questionRepo.save(QuestionEntity(questionText, answers, correctAnswer, null, id))
+			: Question {
+		return questionRepo.save(Question(questionText, answers, correctAnswer, null, id))
 	}
 
 	@Before
@@ -139,11 +139,11 @@ class QuestionRepositoryTest {
 
 	@Test
 	fun findQuestionByCategoryName_QuestionsWithCategoriesExist_QuestionFound() {
-		val letterCategory = categoryRepo.save(CategoryEntity("Letters"))
-		val numberCategory = categoryRepo.save(CategoryEntity("Numbers"))
-		questionRepo.save(QuestionEntity("Which is B?", listOf("A", "B", "C", "D"), 1, letterCategory))
-		questionRepo.save(QuestionEntity("Which is D?", listOf("A", "B", "C", "D"), 3, letterCategory))
-		questionRepo.save(QuestionEntity("Which is 2?", listOf("0", "1", "2", "3"), 2, numberCategory))
+		val letterCategory = categoryRepo.save(Category("Letters"))
+		val numberCategory = categoryRepo.save(Category("Numbers"))
+		questionRepo.save(Question("Which is B?", listOf("A", "B", "C", "D"), 1, letterCategory))
+		questionRepo.save(Question("Which is D?", listOf("A", "B", "C", "D"), 3, letterCategory))
+		questionRepo.save(Question("Which is 2?", listOf("0", "1", "2", "3"), 2, numberCategory))
 
 		val questions = questionRepo.findQuestionByCategoryName(letterCategory.name)
 		assertEquals(2, questions.count())
@@ -151,11 +151,11 @@ class QuestionRepositoryTest {
 
 	@Test
 	fun findQuestionByCategoryId_QuestionsWithCategoriesExist_QuestionFound() {
-		val letterCategory = categoryRepo.save(CategoryEntity("Letters"))
-		val numberCategory = categoryRepo.save(CategoryEntity("Numbers"))
-		questionRepo.save(QuestionEntity("Which is B?", listOf("A", "B", "C", "D"), 1, letterCategory))
-		questionRepo.save(QuestionEntity("Which is D?", listOf("A", "B", "C", "D"), 3, letterCategory))
-		questionRepo.save(QuestionEntity("Which is 2?", listOf("0", "1", "2", "3"), 2, numberCategory))
+		val letterCategory = categoryRepo.save(Category("Letters"))
+		val numberCategory = categoryRepo.save(Category("Numbers"))
+		questionRepo.save(Question("Which is B?", listOf("A", "B", "C", "D"), 1, letterCategory))
+		questionRepo.save(Question("Which is D?", listOf("A", "B", "C", "D"), 3, letterCategory))
+		questionRepo.save(Question("Which is 2?", listOf("0", "1", "2", "3"), 2, numberCategory))
 
 		val questions = questionRepo.findQuestionByCategoryId(letterCategory.id)
 		assertEquals(2, questions.count())

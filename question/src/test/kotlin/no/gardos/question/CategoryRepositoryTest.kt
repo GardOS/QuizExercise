@@ -1,7 +1,7 @@
 package no.gardos.question
 
-import no.gardos.question.model.entity.CategoryEntity
-import no.gardos.question.model.entity.QuestionEntity
+import no.gardos.question.model.entity.Category
+import no.gardos.question.model.entity.Question
 import no.gardos.question.model.repository.CategoryRepository
 import no.gardos.question.model.repository.QuestionRepository
 import org.junit.Assert.*
@@ -23,8 +23,8 @@ class CategoryRepositoryTest {
 	private lateinit var questionRepo: QuestionRepository
 	var categoryName = "Category"
 
-	private fun createTestCategory(name: String = categoryName): CategoryEntity {
-		return categoryRepo.save(CategoryEntity(name))
+	private fun createTestCategory(name: String = categoryName): Category {
+		return categoryRepo.save(Category(name))
 	}
 
 	@Before
@@ -73,7 +73,7 @@ class CategoryRepositoryTest {
 	@Test
 	fun findByName_ExistingCategory_CategoryFound() {
 		val categoryName = "Sports"
-		val category = CategoryEntity(categoryName)
+		val category = Category(categoryName)
 		categoryRepo.save(category)
 
 		assertEquals(category.id, categoryRepo.findByName(categoryName)?.id)
@@ -90,7 +90,7 @@ class CategoryRepositoryTest {
 		val secondCategory = createTestCategory("secondCategory")
 
 		val question = questionRepo.save(
-				QuestionEntity(
+				Question(
 						questionText = "What is 1+1?",
 						answers = listOf("0", "1", "2", "3"),
 						correctAnswer = 2,
@@ -109,21 +109,21 @@ class CategoryRepositoryTest {
 	@Test(expected = ConstraintViolationException::class)
 	fun sizeConstraint_NameTooLong_ConstraintViolationException() {
 		val categoryName = "123456789012345678901234567890123" //33 length
-		val category = CategoryEntity(categoryName)
+		val category = Category(categoryName)
 		categoryRepo.save(category)
 	}
 
 	@Test(expected = ConstraintViolationException::class)
 	fun notEmptyConstraint_NullName_ConstraintViolationException() {
 		val categoryName = null
-		val category = CategoryEntity(categoryName)
+		val category = Category(categoryName)
 		categoryRepo.save(category)
 	}
 
 	@Test(expected = ConstraintViolationException::class)
 	fun notEmptyConstraint_EmptyName_ConstraintViolationException() {
 		val categoryName = ""
-		val category = CategoryEntity(categoryName)
+		val category = Category(categoryName)
 		categoryRepo.save(category)
 	}
 }

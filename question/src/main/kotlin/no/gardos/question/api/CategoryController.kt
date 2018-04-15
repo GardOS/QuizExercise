@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import no.gardos.question.model.converter.CategoryConverter
-import no.gardos.question.model.entity.CategoryEntity
+import no.gardos.question.model.entity.Category
 import no.gardos.question.model.repository.CategoryRepository
 import no.gardos.question.model.repository.QuestionRepository
 import no.gardos.schema.CategoryDto
@@ -59,7 +59,7 @@ class CategoryController {
 		if (categoryRepo.findByName(dto.name.toString()) != null)
 			return ResponseEntity.status(409).build()
 
-		val category = categoryRepo.save(CategoryEntity(name = dto.name))
+		val category = categoryRepo.save(Category(name = dto.name))
 
 		return ResponseEntity.status(201).body(category.id)
 	}

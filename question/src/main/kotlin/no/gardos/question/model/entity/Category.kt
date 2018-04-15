@@ -5,7 +5,7 @@ import javax.persistence.*
 import javax.validation.constraints.Size
 
 @Entity
-class CategoryEntity(
+class Category(
 
 		@get:Column(unique = true)
 		@get:Size(max = 32)
@@ -13,7 +13,7 @@ class CategoryEntity(
 		var name: String? = null,
 
 		@get: OneToMany(mappedBy = "category")
-		var questions: MutableList<QuestionEntity> = ArrayList(),
+		var questions: MutableList<Question> = ArrayList(),
 
 		@get:Id @get:GeneratedValue
 		var id: Long? = null

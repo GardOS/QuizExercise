@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 @Entity
-class QuestionEntity(
+class Question(
 		@get:NotEmpty
 		var questionText: String? = null,
 
@@ -22,7 +22,7 @@ class QuestionEntity(
 		var correctAnswer: Int? = null,
 
 		@get:ManyToOne
-		var category: CategoryEntity? = null,
+		var category: Category? = null,
 
 		@get:Id @get:GeneratedValue
 		var id: Long? = null

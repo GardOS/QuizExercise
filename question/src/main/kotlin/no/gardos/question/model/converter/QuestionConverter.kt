@@ -1,11 +1,11 @@
 package no.gardos.question.model.converter
 
-import no.gardos.question.model.entity.QuestionEntity
+import no.gardos.question.model.entity.Question
 import no.gardos.schema.QuestionDto
 
 class QuestionConverter {
 	companion object {
-		fun transform(question: QuestionEntity): QuestionDto {
+		fun transform(question: Question): QuestionDto {
 			return QuestionDto(
 					id = question.id,
 					questionText = question.questionText,
@@ -15,7 +15,7 @@ class QuestionConverter {
 			)
 		}
 
-		fun transform(questions: Iterable<QuestionEntity>): List<QuestionDto> {
+		fun transform(questions: Iterable<Question>): List<QuestionDto> {
 			return questions.map { transform(it) }
 		}
 	}
