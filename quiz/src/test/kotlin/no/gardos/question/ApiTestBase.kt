@@ -1,12 +1,7 @@
 package no.gardos.question
 
 import io.restassured.RestAssured
-import io.restassured.RestAssured.given
-import io.restassured.http.ContentType
 import no.gardos.quiz.QuizApplication
-import no.gardos.schema.CategoryDto
-import no.gardos.schema.QuestionDto
-import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.springframework.boot.context.embedded.LocalServerPort
