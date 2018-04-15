@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import no.gardos.quiz.model.entity.Quiz
 import no.gardos.quiz.model.repository.QuizRepository
+import no.gardos.schema.CategoryDto
 import no.gardos.schema.QuizDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import javax.validation.ConstraintViolationException
 
@@ -43,10 +45,29 @@ class QuizController {
 			return ResponseEntity.status(400).build()
 		}
 
+		val response: ResponseEntity<CategoryDto> = try {
+			val url = "http://question-server/categories/${dto.id}" //Todo: Don't hardcode url
+
+			rest.getForEntity(url, CategoryDto::class.java)
+		} catch (e: HttpClientErrorException) {
+			return ResponseEntity.status(e.statusCode.value()).build()
+		}
 
 		val quiz = quizRepo.save(Quiz())
 
 		return ResponseEntity.status(201).body(quiz.id)
+	}
+
+	@ApiOperation("Test Eureka load handling using config values from docker container")
+	@GetMapping(path = ["/eureka"], produces = [(MediaType.TEXT_PLAIN_VALUE)])
+	fun testEureka(): ResponseEntity<String> {
+		val response = try {
+			val url = "http://question-server/categories/eureka"
+			rest.getForObject(url, String::class.java)
+		} catch (e: HttpClientErrorException) {
+			return ResponseEntity.status(e.statusCode.value()).build()
+		}
+		return ResponseEntity.ok().body(response)
 	}
 
 	//Catches validation errors and returns 400 instead of 500
