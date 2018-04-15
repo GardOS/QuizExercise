@@ -3,8 +3,8 @@ package no.gardos.question
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
-import no.gardos.question.model.dto.CategoryDto
-import no.gardos.question.model.dto.QuestionDto
+import no.gardos.schema.CategoryDto
+import no.gardos.schema.QuestionDto
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Before
 import org.junit.runner.RunWith

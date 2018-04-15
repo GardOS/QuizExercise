@@ -5,11 +5,11 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import no.gardos.question.model.converter.QuestionConverter
-import no.gardos.question.model.dto.QuestionDto
 import no.gardos.question.model.entity.CategoryEntity
 import no.gardos.question.model.entity.QuestionEntity
 import no.gardos.question.model.repository.CategoryRepository
 import no.gardos.question.model.repository.QuestionRepository
+import no.gardos.schema.QuestionDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType

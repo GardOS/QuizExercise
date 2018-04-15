@@ -4,15 +4,16 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
-import no.gardos.quiz.model.dto.QuizDto
 import no.gardos.quiz.model.entity.Quiz
 import no.gardos.quiz.model.repository.QuizRepository
+import no.gardos.schema.QuizDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.client.RestTemplate
 import javax.validation.ConstraintViolationException
 
 @Api(value = "/quiz", description = "API for quizzes.")
@@ -23,6 +24,9 @@ import javax.validation.ConstraintViolationException
 @RestController
 @Validated
 class QuizController {
+	@Autowired
+	private lateinit var rest: RestTemplate
+
 	@Autowired
 	private lateinit var quizRepo: QuizRepository
 
@@ -38,6 +42,7 @@ class QuizController {
 		if (dto.id != null) {
 			return ResponseEntity.status(400).build()
 		}
+
 
 		val quiz = quizRepo.save(Quiz())
 

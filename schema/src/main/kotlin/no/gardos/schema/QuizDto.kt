@@ -1,4 +1,4 @@
-package no.gardos.quiz.model.dto
+package no.gardos.schema
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty

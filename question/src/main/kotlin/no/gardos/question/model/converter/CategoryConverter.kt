@@ -1,7 +1,7 @@
 package no.gardos.question.model.converter
 
-import no.gardos.question.model.dto.CategoryDto
 import no.gardos.question.model.entity.CategoryEntity
+import no.gardos.schema.CategoryDto
 
 class CategoryConverter {
 	companion object {

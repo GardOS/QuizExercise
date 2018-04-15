@@ -2,7 +2,7 @@ package no.gardos.question
 
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
-import no.gardos.question.model.dto.CategoryDto
+import no.gardos.schema.CategoryDto
 import org.hamcrest.CoreMatchers
 import org.junit.Test
 

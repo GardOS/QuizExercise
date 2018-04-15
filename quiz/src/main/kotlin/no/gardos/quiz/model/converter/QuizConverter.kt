@@ -1,7 +1,7 @@
 package no.gardos.quiz.model.converter
 
-import no.gardos.quiz.model.dto.QuizDto
 import no.gardos.quiz.model.entity.Quiz
+import no.gardos.schema.QuizDto
 
 class QuizConverter {
 	companion object {

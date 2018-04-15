@@ -10,6 +10,7 @@
     <modules>
         <module>question</module>
         <module>quiz</module>
+        <module>schema</module>
     </modules>
 
     <name>QuizExercise</name>

@@ -2,7 +2,7 @@ package no.gardos.question
 
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
-import no.gardos.question.model.dto.QuestionDto
+import no.gardos.schema.QuestionDto
 import org.junit.Test
 
 class QuestionApiTest : ApiTestBase() {
