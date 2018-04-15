@@ -1,3 +1,11 @@
 package no.gardos.question
 
-class CategoryApiTest : ApiTestBase()
+import org.junit.Test
+
+class QuizApiTest : ApiTestBase(){
+
+	@Test
+	fun placeHolderTest(){
+
+	}
+}
