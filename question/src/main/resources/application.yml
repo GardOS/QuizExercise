@@ -1,6 +1,5 @@
 server:
   contextPath: /quizexercise/api
-  port: 8080
 
 #Todo: Investigate docker and DBs
 #spring:
