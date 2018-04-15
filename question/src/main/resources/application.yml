@@ -1,5 +1,15 @@
-server:
-  contextPath: /quizexercise/api
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
+
+spring:
+  application:
+    name: question-server
 
 #Todo: Investigate docker and DBs
 #spring:

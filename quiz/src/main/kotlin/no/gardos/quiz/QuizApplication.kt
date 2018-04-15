@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.cloud.client.loadbalancer.LoadBalanced
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
+import org.springframework.cloud.netflix.ribbon.RibbonClient
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Profile
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 import org.springframework.web.client.RestTemplate
 import springfox.documentation.builders.ApiInfoBuilder
@@ -19,8 +21,10 @@ import springfox.documentation.spring.web.plugins.Docket
 import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @SpringBootApplication
+@EnableEurekaClient
+@RibbonClient(name = "question-server")
 @EnableSwagger2
-class QuestionApplication {
+class QuizApplication {
 	@Bean
 	fun swaggerApi(): Docket {
 		return Docket(DocumentationType.SWAGGER_2)
@@ -47,6 +51,7 @@ class QuestionApplication {
 				.build()
 	}
 
+	@LoadBalanced
 	@Bean
 	fun restTemplate() : RestTemplate {
 		return RestTemplate()
@@ -56,5 +61,5 @@ class QuestionApplication {
 //docker-compose down && mvn package -DskipTests && docker-compose build && docker-compose up -d
 //http://localhost:8080/quizexercise/api/swagger-ui.html
 fun main(args: Array<String>) {
-	SpringApplication.run(QuestionApplication::class.java, *args)
+	SpringApplication.run(QuizApplication::class.java, *args)
 }
