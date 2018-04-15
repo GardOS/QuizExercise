@@ -31,6 +31,8 @@
         <version.jackson>2.8.9</version.jackson>
         <version.springcloud>Dalston.SR3</version.springcloud>
         <version.hystrix>1.5.12</version.hystrix>
+        <version.logback-classic>1.2.3</version.logback-classic>
+        <version.jcl-over-slf4j>1.7.25</version.jcl-over-slf4j>
     </properties>
 
     <dependencyManagement>
@@ -87,7 +89,25 @@
                 <!--RabbitMq-->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-amqp</artifactId>
-                <version>${spring.version}</version>
+                <version>${version.springboot}</version>
+            </dependency>
+            <dependency>
+                <!--Needed for Eureka-->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+                <version>${version.springboot}</version>
+            </dependency>
+
+            <!--Logging?-->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${version.logback-classic}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${version.jcl-over-slf4j}</version>
             </dependency>
 
             <!--Hystrix-->
