@@ -11,6 +11,7 @@
         <module>question</module>
         <module>quiz</module>
         <module>schema</module>
+        <module>eureka</module>
     </modules>
 
     <name>QuizExercise</name>
