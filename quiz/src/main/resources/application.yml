@@ -1,0 +1,3 @@
+server:
+  contextPath: /quizexercise/api
+  port: 8080
