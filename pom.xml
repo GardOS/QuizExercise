@@ -27,6 +27,7 @@
         <version.springfox>2.6.1</version.springfox>
         <version.jackson>2.8.9</version.jackson>
         <version.springcloud>Dalston.SR3</version.springcloud>
+        <version.hystrix>1.5.12</version.hystrix>
     </properties>
 
     <dependencyManagement>
@@ -72,13 +73,26 @@
                 <version>${version.springboot}</version>
             </dependency>
             <dependency>
+                <!--Netflix stack: Ribbon, Zuul, Eureka-->
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${version.springcloud}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <!--RabbitMq-->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-amqp</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
 
+            <!--Hystrix-->
+            <dependency>
+                <groupId>com.netflix.hystrix</groupId>
+                <artifactId>hystrix-core</artifactId>
+                <version>${version.hystrix}</version>
+            </dependency>
 
             <!--SpringFox-->
             <dependency>
@@ -109,6 +123,13 @@
                 <version>${version.jackson}</version>
             </dependency>
 
+            <!-- Postgres-->
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${version.postgres}</version>
+            </dependency>
+
             <!--Test-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -133,8 +154,15 @@
                 <version>${version.junit}</version>
                 <scope>test</scope>
             </dependency>
-            <!-- To use Docker from tests -->
             <dependency>
+                <!-- To mock web services -->
+                <groupId>com.github.tomakehurst</groupId>
+                <artifactId>wiremock-standalone</artifactId>
+                <version>${version.wiremock}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <!-- To use Docker from tests -->
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers</artifactId>
                 <version>${version.testcontainers}</version>
