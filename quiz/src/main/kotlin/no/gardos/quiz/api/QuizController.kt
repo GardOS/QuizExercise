@@ -4,23 +4,24 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
+import no.gardos.quiz.model.converter.QuizConverter
 import no.gardos.quiz.model.entity.Quiz
+import no.gardos.quiz.model.repository.QuestionRepository
 import no.gardos.quiz.model.repository.QuizRepository
-import no.gardos.schema.CategoryDto
 import no.gardos.schema.QuizDto
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import javax.validation.ConstraintViolationException
 
-@Api(value = "/quiz", description = "API for quizzes.")
+@Api(value = "/quizzes", description = "API for quizzes.")
 @RequestMapping(
-		path = ["/quiz"],
+		path = ["/quizzes"],
 		produces = [(MediaType.APPLICATION_JSON_VALUE)]
 )
 @RestController
@@ -31,6 +32,14 @@ class QuizController {
 
 	@Autowired
 	private lateinit var quizRepo: QuizRepository
+	@Autowired
+	private lateinit var questionRepo: QuestionRepository
+
+	@ApiOperation("Get all the quizzes")
+	@GetMapping
+	fun getQuizzes(): ResponseEntity<List<QuizDto>> {
+		return ResponseEntity.ok(QuizConverter.transform(quizRepo.findAll()))
+	}
 
 	@ApiOperation("Create new quiz")
 	@PostMapping(consumes = [(MediaType.APPLICATION_JSON_VALUE)])
@@ -45,35 +54,57 @@ class QuizController {
 			return ResponseEntity.status(400).build()
 		}
 
-		val response: ResponseEntity<CategoryDto> = try {
-			val url = "http://quiz-server/categories/${dto.id}" //Todo: Don't hardcode url
+		val questions = dto.questions?.map { questionRepo.findOne(it) }
 
-			rest.getForEntity(url, CategoryDto::class.java)
-		} catch (e: HttpClientErrorException) {
-			return ResponseEntity.status(e.statusCode.value()).build()
-		}
-
-		val quiz = quizRepo.save(Quiz())
+		val quiz = quizRepo.save(Quiz(name = dto.name, questions = questions))
 
 		return ResponseEntity.status(201).body(quiz.id)
 	}
 
-	@ApiOperation("Test Eureka load handling using config values from docker container")
-	@GetMapping(path = ["/eureka"], produces = [(MediaType.TEXT_PLAIN_VALUE)])
-	fun testEureka(): ResponseEntity<String> {
-		val response = try {
-			val url = "http://quiz-server/categories/eureka"
-			rest.getForObject(url, String::class.java)
-		} catch (e: HttpClientErrorException) {
-			return ResponseEntity.status(e.statusCode.value()).build()
+	@ApiOperation("Get a quiz by ID")
+	@GetMapping(path = ["/{id}"])
+	fun getQuiz(
+			@ApiParam("Id of quiz")
+			@PathVariable("id")
+			pathId: Long?
+	): ResponseEntity<QuizDto> {
+		if (pathId == null) {
+			return ResponseEntity.status(400).build()
 		}
-		return ResponseEntity.ok().body(response)
+
+		if (!quizRepo.exists(pathId)) {
+			return ResponseEntity.status(404).build()
+		}
+
+		val quiz = quizRepo.findOne(pathId)
+
+		return ResponseEntity.ok(QuizConverter.transform(quiz))
+	}
+
+	@ApiOperation("Get a quiz by ID")
+	@DeleteMapping(path = ["/{id}"])
+	fun deleteQuiz(
+			@ApiParam("Id of quiz")
+			@PathVariable("id")
+			pathId: Long?
+	): ResponseEntity<QuizDto> {
+		if (pathId == null) {
+			return ResponseEntity.status(400).build()
+		}
+
+		if (!quizRepo.exists(pathId)) {
+			return ResponseEntity.status(404).build()
+		}
+
+		quizRepo.delete(pathId)
+
+		return ResponseEntity.status(204).build()
 	}
 
 	//Catches validation errors and returns 400 instead of 500
-	@ExceptionHandler(value = [(ConstraintViolationException::class)])
+	@ExceptionHandler(value = ([ConstraintViolationException::class, DataIntegrityViolationException::class]))
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	fun handleValidationFailure(ex: ConstraintViolationException): String {
+	fun handleValidationFailure(ex: RuntimeException): String {
 		return "Invalid request. Error:\n${ex.message ?: "Error not found"}"
 	}
 }
