@@ -6,6 +6,7 @@ import io.restassured.http.ContentType
 import no.gardos.quiz.QuizApplication
 import no.gardos.schema.CategoryDto
 import no.gardos.schema.QuestionDto
+import no.gardos.schema.QuizDto
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Before
 import org.junit.runner.RunWith
@@ -20,6 +21,7 @@ abstract class ApiTestBase {
 	@LocalServerPort
 	protected var port = 0
 
+	val QUIZ_PATH = "/quizzes"
 	val QUESTION_PATH = "/questions"
 	val CATEGORY_PATH = "/categories"
 
@@ -57,8 +59,30 @@ abstract class ApiTestBase {
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
 		//Ensure that the DB has a neutral state before starting any tests
+		removeQuizzes()
 		removeCategories()
 		removeQuestions()
+	}
+
+	fun removeQuizzes() {
+		val list = given().accept(ContentType.JSON).get(QUIZ_PATH)
+				.then()
+				.statusCode(200)
+				.extract()
+				.`as`(Array<QuizDto>::class.java)
+				.toList()
+
+		list.stream().forEach {
+			given().pathParam("id", it.id)
+					.delete("$QUIZ_PATH/{id}")
+					.then()
+					.statusCode(204)
+		}
+
+		given().get(QUIZ_PATH)
+				.then()
+				.statusCode(200)
+				.body("size()", equalTo(0))
 	}
 
 	fun removeCategories() {
