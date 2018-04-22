@@ -46,7 +46,7 @@ class QuizController {
 		}
 
 		val response: ResponseEntity<CategoryDto> = try {
-			val url = "http://question-server/categories/${dto.id}" //Todo: Don't hardcode url
+			val url = "http://quiz-server/categories/${dto.id}" //Todo: Don't hardcode url
 
 			rest.getForEntity(url, CategoryDto::class.java)
 		} catch (e: HttpClientErrorException) {
@@ -62,7 +62,7 @@ class QuizController {
 	@GetMapping(path = ["/eureka"], produces = [(MediaType.TEXT_PLAIN_VALUE)])
 	fun testEureka(): ResponseEntity<String> {
 		val response = try {
-			val url = "http://question-server/categories/eureka"
+			val url = "http://quiz-server/categories/eureka"
 			rest.getForObject(url, String::class.java)
 		} catch (e: HttpClientErrorException) {
 			return ResponseEntity.status(e.statusCode.value()).build()

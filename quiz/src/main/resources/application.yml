@@ -9,12 +9,12 @@ eureka:
 
 spring:
   application:
-    name: question-server
+    name: quiz-server
 
 #Todo: Investigate docker and DBs
 #spring:
 #  application:
-#    name: question-server
+#    name: quiz-server
 #  datasource:
 #    url: "jdbc:h2:mem:"
 #    driver-class-name: "org.h2.Driver"
