@@ -1,6 +1,0 @@
-server:
-  contextPath: /quizexercise/api
-
-spring:
-  jpa:
-    show-sql: true

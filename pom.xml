@@ -8,7 +8,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>question</module>
         <module>quiz</module>
         <module>schema</module>
         <module>eureka</module>

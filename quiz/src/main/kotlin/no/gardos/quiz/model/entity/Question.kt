@@ -1,4 +1,4 @@
-package no.gardos.question.model.entity
+package no.gardos.quiz.model.entity
 
 import org.hibernate.validator.constraints.NotEmpty
 import javax.persistence.*

@@ -22,7 +22,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @SpringBootApplication
 @EnableEurekaClient
-@RibbonClient(name = "question-server")
 @EnableSwagger2
 class QuizApplication {
 	@Bean

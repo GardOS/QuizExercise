@@ -1,9 +1,10 @@
 package no.gardos.question
 
-import no.gardos.question.model.entity.Category
-import no.gardos.question.model.entity.Question
-import no.gardos.question.model.repository.CategoryRepository
-import no.gardos.question.model.repository.QuestionRepository
+import no.gardos.quiz.QuizApplication
+import no.gardos.quiz.model.entity.Category
+import no.gardos.quiz.model.entity.Question
+import no.gardos.quiz.model.repository.CategoryRepository
+import no.gardos.quiz.model.repository.QuestionRepository
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner
 import javax.validation.ConstraintViolationException
 
 @RunWith(SpringRunner::class)
-@SpringBootTest
+@SpringBootTest(classes = [(QuizApplication::class)])
 class CategoryRepositoryTest {
 
 	@Autowired

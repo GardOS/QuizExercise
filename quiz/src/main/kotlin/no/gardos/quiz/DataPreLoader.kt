@@ -1,9 +1,9 @@
-package no.gardos.question
+package no.gardos.quiz
 
-import no.gardos.question.model.entity.Category
-import no.gardos.question.model.entity.Question
-import no.gardos.question.model.repository.CategoryRepository
-import no.gardos.question.model.repository.QuestionRepository
+import no.gardos.quiz.model.entity.Category
+import no.gardos.quiz.model.entity.Question
+import no.gardos.quiz.model.repository.CategoryRepository
+import no.gardos.quiz.model.repository.QuestionRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 
