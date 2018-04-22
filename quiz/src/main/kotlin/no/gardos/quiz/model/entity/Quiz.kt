@@ -1,17 +1,17 @@
 package no.gardos.quiz.model.entity
 
-import org.jetbrains.annotations.NotNull
+import org.hibernate.validator.constraints.NotEmpty
 import javax.persistence.*
 
 @Entity
 class Quiz(
-		@get:Id @get:GeneratedValue
-		var id: Long? = null,
-
-		@NotNull
+		@get:Column(unique = true)
+		@get:NotEmpty
 		var name: String? = null,
 
-		@NotNull
 		@get: OneToMany
-		var questions: MutableList<Question>? = null
+		var questions: MutableList<Question>? = null,
+
+		@get:Id @get:GeneratedValue
+		var id: Long? = null
 )
