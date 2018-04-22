@@ -31,13 +31,6 @@ class CategoryController {
 	@Autowired
 	private lateinit var questionRepo: QuestionRepository
 
-	@ApiOperation("Test Eureka load handling using config values from docker container")
-	@GetMapping(path = ["/eureka"])
-	fun testEureka(): ResponseEntity<String> {
-		val id = (System.getenv("PRODUCER_ID") ?: "Undefined").trim()
-		return ResponseEntity.ok(id)
-	}
-
 	@ApiOperation("Get all the categories. Add param \"withQuestions\" to only get categories with questions")
 	@GetMapping
 	fun getCategories(
