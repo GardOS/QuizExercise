@@ -9,7 +9,7 @@ class QuizConverter {
 			return QuizDto(
 					id = quiz.id,
 					name = quiz.name,
-					questions = QuestionConverter.transform(quiz.questions!!)
+					questions = quiz.questions?.map { it.id }
 			)
 		}
 

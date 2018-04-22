@@ -11,6 +11,6 @@ data class QuizDto(
 		@ApiModelProperty("Name of the quiz")
 		var name: String? = null,
 
-		@ApiModelProperty("Questions in the quiz")
-		var questions: List<QuestionDto>? = null
+		@ApiModelProperty("IDs of questions in the quiz")
+		var questions: List<Long?>? = null
 )
