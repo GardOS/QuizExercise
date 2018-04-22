@@ -9,8 +9,8 @@ class Quiz(
 		@get:NotEmpty
 		var name: String? = null,
 
-		@get: OneToMany
-		var questions: MutableList<Question>? = null,
+		@get: ManyToMany
+		var questions: List<Question>? = null,
 
 		@get:Id @get:GeneratedValue
 		var id: Long? = null
