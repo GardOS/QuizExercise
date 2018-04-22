@@ -7,7 +7,9 @@ class QuizConverter {
 	companion object {
 		fun transform(quiz: Quiz): QuizDto {
 			return QuizDto(
-					id = quiz.id
+					id = quiz.id,
+					name = quiz.name,
+					questions = QuestionConverter.transform(quiz.questions!!)
 			)
 		}
 
