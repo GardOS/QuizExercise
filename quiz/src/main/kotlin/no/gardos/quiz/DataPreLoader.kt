@@ -2,13 +2,16 @@ package no.gardos.quiz
 
 import no.gardos.quiz.model.entity.Category
 import no.gardos.quiz.model.entity.Question
+import no.gardos.quiz.model.entity.Quiz
 import no.gardos.quiz.model.repository.CategoryRepository
 import no.gardos.quiz.model.repository.QuestionRepository
+import no.gardos.quiz.model.repository.QuizRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 
 @Component
-class DataPreLoader(var questionRepository: QuestionRepository,
+class DataPreLoader(var quizRepository: QuizRepository,
+                    var questionRepository: QuestionRepository,
                     var categoryRepository: CategoryRepository)
 	: CommandLineRunner {
 
@@ -19,49 +22,49 @@ class DataPreLoader(var questionRepository: QuestionRepository,
 		val animalsCategory = categoryRepository.save(Category(name = "Animals"))
 		categoryRepository.save(Category(name = "Words"))
 
-		questionRepository.save(Question(
+		val lettersQuestion1 = questionRepository.save(Question(
 				questionText = "Which letter is B?",
 				answers = listOf("A", "B", "C", "D"),
 				correctAnswer = 1,
 				category = lettersCategory
 		))
 
-		questionRepository.save(Question(
+		val lettersQuestion2 = questionRepository.save(Question(
 				questionText = "Which letter is not D?",
 				answers = listOf("L", "D", "D", "D"),
 				correctAnswer = 0,
 				category = lettersCategory
 		))
 
-		questionRepository.save(Question(
+		val numbersQuestion1 = questionRepository.save(Question(
 				questionText = "What is 1+1?",
 				answers = listOf("0", "1", "2", "3"),
 				correctAnswer = 2,
 				category = numbersCategory
 		))
 
-		questionRepository.save(Question(
+		val numbersQuestion2 = questionRepository.save(Question(
 				questionText = "What is 2-2?",
 				answers = listOf("0", "1", "2", "3"),
 				correctAnswer = 0,
 				category = numbersCategory
 		))
 
-		questionRepository.save(Question(
+		val numbersQuestion3 = questionRepository.save(Question(
 				questionText = "Why is 1+1?",
 				answers = listOf("What?", "Yes", "Because it would be embarrassing to be 2+1", "Because its not 3"),
 				correctAnswer = 2,
 				category = numbersCategory
 		))
 
-		questionRepository.save(Question(
+		val animalsQuestion1 = questionRepository.save(Question(
 				questionText = "What does the cow say?",
 				answers = listOf("Moo", "Baah", "Woof", "Meow"),
 				correctAnswer = 0,
 				category = animalsCategory
 		))
 
-		questionRepository.save(Question(
+		val animalsQuestion2 = questionRepository.save(Question(
 				questionText = "What does the fox say?",
 				answers = listOf("ÆØÅ", "Nothing", "Hatti-ho", "DingDing"),
 				correctAnswer = 3,
@@ -73,6 +76,21 @@ class DataPreLoader(var questionRepository: QuestionRepository,
 				answers = listOf("No", "Yes", "No", "No"),
 				correctAnswer = 1,
 				category = null
+		))
+
+		quizRepository.save(Quiz(
+				name = "Quiz about letters",
+				questions = listOf(lettersQuestion1, lettersQuestion2)
+		))
+
+		quizRepository.save(Quiz(
+				name = "Quiz about numbers",
+				questions = listOf(numbersQuestion1, numbersQuestion2, numbersQuestion3)
+		))
+
+		quizRepository.save(Quiz(
+				name = "Quiz about animals",
+				questions = listOf(animalsQuestion1, animalsQuestion2)
 		))
 	}
 }
