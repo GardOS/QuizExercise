@@ -308,7 +308,7 @@ class QuestionApiTest : ApiTestBase() {
 	}
 
 	@Test
-	fun updateQuestion_IdInBodyIsNotNull_Conflict() {
+	fun updateQuestion_IdInBodyIsNotNull_BadRequest() {
 		val category = createGenericCategory("Category")
 		val oldQuestion = createGenericQuestion(category)
 		val question = QuestionDto(
@@ -324,7 +324,7 @@ class QuestionApiTest : ApiTestBase() {
 				.body(question)
 				.put("$QUESTION_PATH/{id}")
 				.then()
-				.statusCode(409)
+				.statusCode(400)
 	}
 
 	@Test

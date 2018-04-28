@@ -102,16 +102,16 @@ class QuestionController {
 			@RequestBody
 			requestDto: QuestionDto
 	): ResponseEntity<QuestionDto> {
+		if (requestDto.id != null) {
+			return ResponseEntity.status(400).build()
+		}
+
 		if (pathId == null) {
 			return ResponseEntity.status(400).build()
 		}
 
 		if (!questionRepo.exists(pathId)) {
 			return ResponseEntity.status(404).build()
-		}
-
-		if (requestDto.id != null) {
-			return ResponseEntity.status(409).build()
 		}
 
 		var newCategory: Category? = null
