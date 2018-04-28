@@ -46,7 +46,21 @@ abstract class ApiTestBase {
 
 		return RestAssured.given().contentType(ContentType.JSON)
 				.body(question)
-				.post("/questions")
+				.post(QUESTION_PATH)
+				.then()
+				.statusCode(201)
+				.extract().asString().toLong()
+	}
+
+	fun createGenericQuiz(name: String): Long {
+		val quiz = QuizDto(
+				name = name,
+				questions = listOf()
+		)
+
+		return RestAssured.given().contentType(ContentType.JSON)
+				.body(quiz)
+				.post(QUIZ_PATH)
 				.then()
 				.statusCode(201)
 				.extract().asString().toLong()
