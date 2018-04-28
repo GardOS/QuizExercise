@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import no.gardos.quiz.model.converter.QuizConverter
+import no.gardos.quiz.model.entity.Question
 import no.gardos.quiz.model.entity.Quiz
 import no.gardos.quiz.model.repository.QuestionRepository
 import no.gardos.quiz.model.repository.QuizRepository
@@ -16,7 +17,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.client.RestTemplate
 import javax.validation.ConstraintViolationException
 
 @Api(value = "/quizzes", description = "API for quizzes.")
@@ -27,9 +27,6 @@ import javax.validation.ConstraintViolationException
 @RestController
 @Validated
 class QuizController {
-	@Autowired
-	private lateinit var rest: RestTemplate
-
 	@Autowired
 	private lateinit var quizRepo: QuizRepository
 	@Autowired
@@ -48,17 +45,18 @@ class QuizController {
 			@ApiParam("Quiz name. Should not specify id")
 			@RequestBody
 			dto: QuizDto
-	): ResponseEntity<Long> {
+	): ResponseEntity<Any> {
 		//Id is auto-generated and should not be specified
 		if (dto.id != null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
 		if (quizRepo.findByName(dto.name.toString()) != null)
-			return ResponseEntity.status(409).build()
+			return ResponseEntity.status(409).body("Name is already taken")
 
 		val questions = dto.questions?.map {
-			questionRepo.findOne(it) ?: return ResponseEntity.status(400).build()
+			questionRepo.findOne(it)
+					?: return ResponseEntity.status(400).body("Question with id: $it not found")
 		}
 
 		val quiz = quizRepo.save(Quiz(name = dto.name, questions = questions))
@@ -114,13 +112,13 @@ class QuizController {
 			@ApiParam("Id of quiz")
 			@PathVariable("id")
 			pathId: Long?
-	): ResponseEntity<QuizDto> {
+	): ResponseEntity<Any> {
 		if (pathId == null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
 		if (!quizRepo.exists(pathId)) {
-			return ResponseEntity.status(404).build()
+			return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
 		}
 
 		val quiz = quizRepo.findOne(pathId)
@@ -134,13 +132,13 @@ class QuizController {
 			@ApiParam("Id of quiz")
 			@PathVariable("id")
 			pathId: Long?
-	): ResponseEntity<QuizDto> {
+	): ResponseEntity<Any> {
 		if (pathId == null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
 		if (!quizRepo.exists(pathId)) {
-			return ResponseEntity.status(404).build()
+			return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
 		}
 
 		quizRepo.delete(pathId)
