@@ -50,14 +50,14 @@ class CategoryController {
 			@ApiParam("Category name. Should not specify id")
 			@RequestBody
 			dto: CategoryDto
-	): ResponseEntity<Long> {
+	): ResponseEntity<Any> {
 		//Id is auto-generated and should not be specified
 		if (dto.id != null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
 		if (categoryRepo.findByName(dto.name.toString()) != null)
-			return ResponseEntity.status(409).build()
+			return ResponseEntity.status(409).body("Name is already taken")
 
 		val category = categoryRepo.save(Category(name = dto.name))
 
@@ -70,13 +70,13 @@ class CategoryController {
 			@ApiParam("Id of category")
 			@PathVariable("id")
 			pathId: Long?
-	): ResponseEntity<CategoryDto> {
+	): ResponseEntity<Any> {
 		if (pathId == null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
 		if (!categoryRepo.exists(pathId)) {
-			return ResponseEntity.status(404).build()
+			return ResponseEntity.status(404).body("Category with id: $pathId not found")
 		}
 
 		val category = categoryRepo.findOne(pathId)
@@ -93,17 +93,17 @@ class CategoryController {
 			@ApiParam("The new name which will replace the old one")
 			@RequestBody
 			newName: String
-	): ResponseEntity<CategoryDto> {
+	): ResponseEntity<Any> {
 		if (pathId == null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
 		if (!categoryRepo.exists(pathId)) {
-			return ResponseEntity.status(404).build()
+			return ResponseEntity.status(404).body("Category with id: $pathId not found")
 		}
 
 		if (categoryRepo.findByName(newName) != null)
-			return ResponseEntity.status(409).build()
+			return ResponseEntity.status(409).body("Name is already taken")
 
 		val category = categoryRepo.findOne(pathId)
 		category.name = newName
@@ -119,12 +119,13 @@ class CategoryController {
 			@ApiParam("Id of Category")
 			@PathVariable("id")
 			pathId: Long?
-	): ResponseEntity<CategoryDto> {
+	): ResponseEntity<Any> {
 		if (pathId == null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
-		val category = categoryRepo.findOne(pathId) ?: return ResponseEntity.status(404).build()
+		val category = categoryRepo.findOne(pathId) ?: return ResponseEntity.status(404)
+				.body("Category with id: $pathId not found")
 
 		val questions = questionRepo.findQuestionByCategoryId(category.id)
 

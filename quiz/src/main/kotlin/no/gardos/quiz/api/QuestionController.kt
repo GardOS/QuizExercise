@@ -46,16 +46,17 @@ class QuestionController {
 			@ApiParam("Should not specify id")
 			@RequestBody
 			dto: QuestionDto
-	): ResponseEntity<Long> {
+	): ResponseEntity<Any> {
 		//Id is auto-generated and should not be specified
 		if (dto.id != null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
 		var category: Category? = null
 
 		if (dto.category != null) {
-			category = categoryRepo.findOne(dto.category) ?: return ResponseEntity.status(400).build()
+			category = categoryRepo.findOne(dto.category) ?: return ResponseEntity.status(400)
+					.body("Could not find category with id: ${dto.category}")
 		}
 
 		val question: Question?
@@ -78,13 +79,13 @@ class QuestionController {
 			@ApiParam("Id of question")
 			@PathVariable("id")
 			pathId: Long?
-	): ResponseEntity<QuestionDto> {
+	): ResponseEntity<Any> {
 		if (pathId == null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
 		if (!questionRepo.exists(pathId)) {
-			return ResponseEntity.status(404).build()
+			return ResponseEntity.status(404).body("Question with id: $pathId not found")
 		}
 
 		val question = questionRepo.findOne(pathId)
@@ -101,23 +102,24 @@ class QuestionController {
 			@ApiParam("The new question which will replace the old one")
 			@RequestBody
 			requestDto: QuestionDto
-	): ResponseEntity<QuestionDto> {
+	): ResponseEntity<Any> {
 		if (requestDto.id != null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
 		if (pathId == null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
 		if (!questionRepo.exists(pathId)) {
-			return ResponseEntity.status(404).build()
+			return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
 		}
 
 		var newCategory: Category? = null
 
 		if (requestDto.category != null) {
-			newCategory = categoryRepo.findOne(requestDto.category) ?: return ResponseEntity.status(400).build()
+			newCategory = categoryRepo.findOne(requestDto.category) ?: return ResponseEntity.status(400)
+							.body("Category with id: ${requestDto.category} not found")
 		}
 
 		val newQuestion = questionRepo.save(
@@ -139,13 +141,13 @@ class QuestionController {
 			@ApiParam("Id of question")
 			@PathVariable("id")
 			pathId: Long?
-	): ResponseEntity<QuestionDto> {
+	): ResponseEntity<Any> {
 		if (pathId == null) {
-			return ResponseEntity.status(400).build()
+			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
 		if (!questionRepo.exists(pathId)) {
-			return ResponseEntity.status(404).build()
+			return ResponseEntity.status(404).body("Question with id: $pathId not found")
 		}
 
 		questionRepo.delete(pathId)
@@ -159,7 +161,7 @@ class QuestionController {
 			@ApiParam("Id of category")
 			@PathVariable("id")
 			pathId: Long?
-	): ResponseEntity<List<QuestionDto>> {
+	): ResponseEntity<Any> {
 		return ResponseEntity.ok(QuestionConverter.transform(questionRepo.findQuestionByCategoryId(pathId)))
 	}
 
@@ -169,7 +171,7 @@ class QuestionController {
 			@ApiParam("Name of category")
 			@PathVariable("name")
 			pathName: String?
-	): ResponseEntity<List<QuestionDto>> {
+	): ResponseEntity<Any> {
 		return ResponseEntity.ok(QuestionConverter.transform(questionRepo.findQuestionByCategoryName(pathName)))
 	}
 
