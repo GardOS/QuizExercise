@@ -6,7 +6,9 @@ import org.springframework.stereotype.Repository
 import javax.transaction.Transactional
 
 @Repository
-interface QuizRepository : CrudRepository<Quiz, Long>, QuizRepositoryCustom
+interface QuizRepository : CrudRepository<Quiz, Long>, QuizRepositoryCustom {
+	fun findByName(name: String): Quiz?
+}
 
 @Transactional
 interface QuizRepositoryCustom

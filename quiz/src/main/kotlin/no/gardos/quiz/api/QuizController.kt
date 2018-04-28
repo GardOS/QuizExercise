@@ -54,7 +54,12 @@ class QuizController {
 			return ResponseEntity.status(400).build()
 		}
 
-		val questions = dto.questions?.map { questionRepo.findOne(it) }
+		if (quizRepo.findByName(dto.name.toString()) != null)
+			return ResponseEntity.status(409).build()
+
+		val questions = dto.questions?.map {
+			questionRepo.findOne(it) ?: return ResponseEntity.status(400).build()
+		}
 
 		val quiz = quizRepo.save(Quiz(name = dto.name, questions = questions))
 
