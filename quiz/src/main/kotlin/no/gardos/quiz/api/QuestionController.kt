@@ -94,7 +94,7 @@ class QuestionController {
 
 	@ApiOperation("Update an existing question")
 	@PutMapping(path = ["/{id}"], consumes = [MediaType.APPLICATION_JSON_VALUE])
-	fun updateCategory(
+	fun updateQuestion(
 			@ApiParam("Id of question")
 			@PathVariable("id")
 			pathId: Long?,
