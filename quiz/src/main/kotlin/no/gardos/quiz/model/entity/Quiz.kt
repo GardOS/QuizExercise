@@ -9,7 +9,7 @@ class Quiz(
 		@get:NotEmpty
 		var name: String? = null,
 
-		@get: ManyToMany
+		@get:ManyToMany
 		var questions: List<Question>? = null,
 
 		@get:Id @get:GeneratedValue

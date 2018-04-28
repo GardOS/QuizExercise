@@ -52,10 +52,10 @@ abstract class ApiTestBase {
 				.extract().asString().toLong()
 	}
 
-	fun createGenericQuiz(name: String): Long {
+	fun createGenericQuiz(name: String, questions: List<Long> = listOf()): Long {
 		val quiz = QuizDto(
 				name = name,
-				questions = listOf()
+				questions = questions
 		)
 
 		return RestAssured.given().contentType(ContentType.JSON)
