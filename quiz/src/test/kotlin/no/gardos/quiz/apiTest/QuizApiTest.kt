@@ -110,6 +110,71 @@ class QuizApiTest : ApiTestBase() {
 	}
 
 	@Test
+	fun updateQuestion_NewQuestionValid_Ok() {
+		val category = createGenericCategory("Category")
+		val question = createGenericQuestion(category)
+		val oldQuiz = createGenericQuiz("OldQuiz")
+		val newQuiz = QuizDto(name = "NewQuiz", questions = listOf(question))
+
+		RestAssured.given().pathParam("id", oldQuiz)
+				.contentType(ContentType.JSON)
+				.body(newQuiz)
+				.put("$QUIZ_PATH/{id}")
+				.then()
+				.statusCode(200)
+	}
+
+	@Test
+	fun updateQuiz_InvalidId_BadRequest() {
+		val quiz = createGenericQuiz("Quiz")
+
+		RestAssured.given().pathParam("id", " ")
+				.contentType(ContentType.JSON)
+				.body(quiz)
+				.put("$QUIZ_PATH/{id}")
+				.then()
+				.statusCode(400)
+	}
+
+	@Test
+	fun updateQuiz_QuizDoesNotExist_NotFound() {
+		val quiz = QuizDto(name = "Quiz")
+
+		RestAssured.given().pathParam("id", 1234)
+				.contentType(ContentType.JSON)
+				.body(quiz)
+				.put("$QUIZ_PATH/{id}")
+				.then()
+				.statusCode(404)
+	}
+
+	@Test
+	fun updateQuiz_IdInBodyIsNotNull_BadRequest() {
+		val oldQuiz = createGenericQuiz("OldQuiz")
+		val newQuiz = QuizDto(id = 1234, name = "NewQuiz")
+
+		RestAssured.given().pathParam("id", oldQuiz)
+				.contentType(ContentType.JSON)
+				.body(newQuiz)
+				.put("$QUIZ_PATH/{id}")
+				.then()
+				.statusCode(400)
+	}
+
+	@Test
+	fun updateQuiz_NewQuestionDoesNotExist_BadRequest() {
+		val oldQuiz = createGenericQuiz("OldQuiz")
+		val newQuiz = QuizDto(name = "NewQuiz", questions = listOf(1234))
+
+		RestAssured.given().pathParam("id", oldQuiz)
+				.contentType(ContentType.JSON)
+				.body(newQuiz)
+				.put("$QUIZ_PATH/{id}")
+				.then()
+				.statusCode(400)
+	}
+
+	@Test
 	fun deleteQuiz_QuizExists_NoContent() {
 		val quiz = createGenericQuiz("Quiz")
 

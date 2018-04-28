@@ -66,6 +66,48 @@ class QuizController {
 		return ResponseEntity.status(201).body(quiz.id)
 	}
 
+	@ApiOperation("Update an existing quiz")
+	@PutMapping(path = ["/{id}"], consumes = [MediaType.APPLICATION_JSON_VALUE])
+	fun updateQuiz(
+			@ApiParam("Id of quiz")
+			@PathVariable("id")
+			pathId: Long?,
+			@ApiParam("The new quiz which will replace the old one")
+			@RequestBody
+			requestDto: QuizDto
+	): ResponseEntity<Any> {
+		if (requestDto.id != null) {
+			return ResponseEntity.status(400).body("Id should not be specified")
+		}
+
+		if (pathId == null) {
+			return ResponseEntity.status(400).body("Invalid Id in path")
+		}
+
+		if (!quizRepo.exists(pathId)) {
+			return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
+		}
+
+		var newQuestions: List<Question>? = null
+
+		if (requestDto.questions != null) {
+			newQuestions = requestDto.questions?.map {
+				questionRepo.findOne(it)
+						?: return ResponseEntity.status(400).body("Question with id: $it not found")
+			}
+		}
+
+		val newQuestion = quizRepo.save(
+				Quiz(
+						id = pathId,
+						name = requestDto.name,
+						questions = newQuestions
+				)
+		)
+
+		return ResponseEntity.ok(QuizConverter.transform(newQuestion))
+	}
+
 	@ApiOperation("Get a quiz by ID")
 	@GetMapping(path = ["/{id}"])
 	fun getQuiz(
