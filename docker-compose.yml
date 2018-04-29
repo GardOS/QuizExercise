@@ -15,3 +15,13 @@ services:
       - "8080:8080"
     depends_on:
       - eureka
+      - game
+  game:
+    build:
+      context: game
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    depends_on:
+      - eureka
+      - quiz
