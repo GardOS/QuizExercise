@@ -5,7 +5,7 @@ import no.gardos.quiz.model.entity.Question
 import org.junit.Assert.*
 import org.junit.Test
 import org.springframework.dao.DataIntegrityViolationException
-import javax.validation.ConstraintViolationException
+import org.springframework.transaction.TransactionSystemException
 
 class CategoryRepositoryTest : RepositoryTestBase() {
 
@@ -31,7 +31,7 @@ class CategoryRepositoryTest : RepositoryTestBase() {
 		category.name = newCategoryName
 		categoryRepo.save(category)
 
-		val updatedQuestion = categoryRepo.findOne(category.id)
+		val updatedQuestion = categoryRepo.getOne(category.id!!)
 		assertEquals(newCategoryName, updatedQuestion.name)
 	}
 
@@ -39,11 +39,11 @@ class CategoryRepositoryTest : RepositoryTestBase() {
 	fun delete_ExistingCategory_CategoryDeleted() {
 		val category = createTestCategory()
 
-		assertNotNull(categoryRepo.findOne(category.id))
+		assertNotNull(categoryRepo.getOne(category.id!!))
 
-		categoryRepo.delete(category.id)
+		categoryRepo.deleteById(category.id!!)
 
-		assertNull(categoryRepo.findOne(category.id))
+		assertFalse(categoryRepo.existsById(category.id!!))
 	}
 
 	@Test
@@ -82,21 +82,21 @@ class CategoryRepositoryTest : RepositoryTestBase() {
 		assertEquals(secondCategory.id, categoryRepo.findByQuestionsIsNotNull().first().id)
 	}
 
-	@Test(expected = ConstraintViolationException::class)
+	@Test(expected = TransactionSystemException::class)
 	fun sizeConstraint_NameTooLong_ConstraintViolationException() {
 		val categoryName = "123456789012345678901234567890123" //33 length
 		val category = Category(categoryName)
 		categoryRepo.save(category)
 	}
 
-	@Test(expected = ConstraintViolationException::class)
+	@Test(expected = TransactionSystemException::class)
 	fun notEmptyConstraint_NullName_ConstraintViolationException() {
 		val categoryName = null
 		val category = Category(categoryName)
 		categoryRepo.save(category)
 	}
 
-	@Test(expected = ConstraintViolationException::class)
+	@Test(expected = TransactionSystemException::class)
 	fun notEmptyConstraint_EmptyName_ConstraintViolationException() {
 		val categoryName = ""
 		val category = Category(categoryName)

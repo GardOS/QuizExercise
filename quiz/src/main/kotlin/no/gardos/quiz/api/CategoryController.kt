@@ -10,9 +10,11 @@ import no.gardos.quiz.model.repository.CategoryRepository
 import no.gardos.quiz.model.repository.QuestionRepository
 import no.gardos.schema.CategoryDto
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.TransactionSystemException
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import javax.validation.ConstraintViolationException
@@ -75,13 +77,13 @@ class CategoryController {
 			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
-		if (!categoryRepo.exists(pathId)) {
+		val optCategory = categoryRepo.findById(pathId)
+
+		if (!optCategory.isPresent) {
 			return ResponseEntity.status(404).body("Category with id: $pathId not found")
 		}
 
-		val category = categoryRepo.findOne(pathId)
-
-		return ResponseEntity.ok(CategoryConverter.transform(category))
+		return ResponseEntity.ok(CategoryConverter.transform(optCategory.get()))
 	}
 
 	@ApiOperation("Update name of a category")
@@ -98,14 +100,17 @@ class CategoryController {
 			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
-		if (!categoryRepo.exists(pathId)) {
+		val optCategory = categoryRepo.findById(pathId)
+
+		if (!optCategory.isPresent) {
 			return ResponseEntity.status(404).body("Category with id: $pathId not found")
 		}
+
+		val category = optCategory.get()
 
 		if (categoryRepo.findByName(newName) != null)
 			return ResponseEntity.status(409).body("Name is already taken")
 
-		val category = categoryRepo.findOne(pathId)
 		category.name = newName
 
 		val newCategory = categoryRepo.save(category)
@@ -124,8 +129,13 @@ class CategoryController {
 			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
-		val category = categoryRepo.findOne(pathId) ?: return ResponseEntity.status(404)
-				.body("Category with id: $pathId not found")
+		val optCategory = categoryRepo.findById(pathId)
+
+		if (!optCategory.isPresent) {
+			return ResponseEntity.status(404).body("Category with id: $pathId not found")
+		}
+
+		val category = optCategory.get()
 
 		val questions = questionRepo.findQuestionByCategoryId(category.id)
 
@@ -137,15 +147,24 @@ class CategoryController {
 			}
 		}
 
-		categoryRepo.delete(pathId)
+		categoryRepo.deleteById(pathId)
 
 		return ResponseEntity.status(204).build()
 	}
 
-	//Catches validation errors and returns 400 instead of 500
-	@ExceptionHandler(value = [(ConstraintViolationException::class)])
+	/*
+	Catches validation errors and returns 400 instead of 500
+	Because of wrapping and black-boxing beyond my understanding and patience, whenever a
+	ConstraintViolationException is thrown it might be wrapped to something else based on the context.
+	Although messy.. below is the best effort to keep this in check.
+	See: https://stackoverflow.com/a/45118680
+	The downside to this "solution" is that there might be Exceptions which are not from constraints being thrown, which
+	warrants a 500 status code instead, which is very misleading.
+	*/
+	@ExceptionHandler(value = ([ConstraintViolationException::class, DataIntegrityViolationException::class,
+		TransactionSystemException::class]))
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	fun handleValidationFailure(ex: ConstraintViolationException): String {
+	fun handleValidationFailure(ex: RuntimeException): String {
 		return "Invalid request. Error:\n${ex.message ?: "Error not found"}"
 	}
 }

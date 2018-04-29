@@ -46,17 +46,19 @@ class GameController {
 			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
-		if(dto.Quiz == null || dto.PlayerOne == null || dto.PlayerTwo == null){
+		if (dto.Quiz == null || dto.PlayerOne == null || dto.PlayerTwo == null) {
 			return ResponseEntity.status(400).body("Invalid request. References is invalid")
 		}
 
 //		WebClient
 
 		try {
-			val response = rest.getForEntity("$quizServerPath/${dto.Quiz}", QuizDto::class.java)
-		}catch (ex: HttpClientErrorException){
+			val url = "http://quiz-server/quizzes/1"
+			val generatedUrl = "$quizServerPath/${dto.Quiz}"
+			val response = rest.getForEntity(url, QuizDto::class.java)
+		} catch (ex: HttpClientErrorException) {
 			val status = if (ex.statusCode.value() == 400) 400 else 500
-			return ResponseEntity.status(status).build()
+			return ResponseEntity.status(status).body(ex.message)
 		}
 
 		return ResponseEntity.ok().build()

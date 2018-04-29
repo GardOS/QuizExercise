@@ -15,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.TransactionSystemException
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import javax.validation.ConstraintViolationException
@@ -55,7 +56,7 @@ class QuizController {
 			return ResponseEntity.status(409).body("Name is already taken")
 
 		val questions = dto.questions?.map {
-			questionRepo.findOne(it)
+			questionRepo.findById(it!!).orElse(null)
 					?: return ResponseEntity.status(400).body("Question with id: $it not found")
 		}
 
@@ -82,7 +83,7 @@ class QuizController {
 			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
-		if (!quizRepo.exists(pathId)) {
+		if (!quizRepo.existsById(pathId)) {
 			return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
 		}
 
@@ -90,7 +91,7 @@ class QuizController {
 
 		if (requestDto.questions != null) {
 			newQuestions = requestDto.questions?.map {
-				questionRepo.findOne(it)
+				questionRepo.findById(it!!).orElse(null)
 						?: return ResponseEntity.status(400).body("Question with id: $it not found")
 			}
 		}
@@ -117,13 +118,13 @@ class QuizController {
 			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
-		if (!quizRepo.exists(pathId)) {
+		val optQuiz = quizRepo.findById(pathId)
+
+		if (!optQuiz.isPresent) {
 			return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
 		}
 
-		val quiz = quizRepo.findOne(pathId)
-
-		return ResponseEntity.ok(QuizConverter.transform(quiz))
+		return ResponseEntity.ok(QuizConverter.transform(optQuiz.get()))
 	}
 
 	@ApiOperation("Get a quiz by ID")
@@ -137,17 +138,28 @@ class QuizController {
 			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
-		if (!quizRepo.exists(pathId)) {
+		val optQuiz = quizRepo.findById(pathId)
+
+		if (!optQuiz.isPresent) {
 			return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
 		}
 
-		quizRepo.delete(pathId)
+		quizRepo.deleteById(pathId)
 
 		return ResponseEntity.status(204).build()
 	}
 
-	//Catches validation errors and returns 400 instead of 500
-	@ExceptionHandler(value = ([ConstraintViolationException::class, DataIntegrityViolationException::class]))
+	/*
+	Catches validation errors and returns 400 instead of 500
+	Because of wrapping and black-boxing beyond my understanding and patience, whenever a
+	ConstraintViolationException is thrown it might be wrapped to something else based on the context.
+	Although messy.. below is the best effort to keep this in check.
+	See: https://stackoverflow.com/a/45118680
+	The downside to this "solution" is that there might be Exceptions which are not from constraints being thrown, which
+	warrants a 500 status code instead, which is very misleading.
+	*/
+	@ExceptionHandler(value = ([ConstraintViolationException::class, DataIntegrityViolationException::class,
+		TransactionSystemException::class]))
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	fun handleValidationFailure(ex: RuntimeException): String {
 		return "Invalid request. Error:\n${ex.message ?: "Error not found"}"

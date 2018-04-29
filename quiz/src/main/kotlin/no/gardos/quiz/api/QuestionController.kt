@@ -11,6 +11,7 @@ import no.gardos.quiz.model.repository.CategoryRepository
 import no.gardos.quiz.model.repository.QuestionRepository
 import no.gardos.schema.QuestionDto
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -55,8 +56,13 @@ class QuestionController {
 		var category: Category? = null
 
 		if (dto.category != null) {
-			category = categoryRepo.findOne(dto.category) ?: return ResponseEntity.status(400)
-					.body("Could not find category with id: ${dto.category}")
+			val optCategory = categoryRepo.findById(dto.category!!)
+
+			if (!optCategory.isPresent) {
+				return ResponseEntity.status(400).body("Category with id: ${dto.category} not found")
+			}
+
+			category = optCategory.get()
 		}
 
 		val question: Question?
@@ -84,13 +90,13 @@ class QuestionController {
 			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
-		if (!questionRepo.exists(pathId)) {
+		val optQuestion = questionRepo.findById(pathId)
+
+		if (!optQuestion.isPresent) {
 			return ResponseEntity.status(404).body("Question with id: $pathId not found")
 		}
 
-		val question = questionRepo.findOne(pathId)
-
-		return ResponseEntity.ok(QuestionConverter.transform(question))
+		return ResponseEntity.ok(QuestionConverter.transform(optQuestion.get()))
 	}
 
 	@ApiOperation("Update an existing question")
@@ -108,18 +114,25 @@ class QuestionController {
 		}
 
 		if (pathId == null) {
-			return ResponseEntity.status(400).body("Invalid Id in path")
+			return ResponseEntity.status(400).body("Invalid Id in path") //Todo: Pointless?
 		}
 
-		if (!questionRepo.exists(pathId)) {
-			return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
+		val optQuestion = questionRepo.findById(pathId)
+
+		if (!optQuestion.isPresent) {
+			return ResponseEntity.status(404).body("Question with id: $pathId not found")
 		}
 
-		var newCategory: Category? = null
+		var category: Category? = null
 
 		if (requestDto.category != null) {
-			newCategory = categoryRepo.findOne(requestDto.category) ?: return ResponseEntity.status(400)
-							.body("Category with id: ${requestDto.category} not found")
+			val optCategory = categoryRepo.findById(requestDto.category!!)
+
+			if (!optCategory.isPresent) {
+				return ResponseEntity.status(400).body("Category with id: ${requestDto.category} not found")
+			}
+
+			category = optCategory.get()
 		}
 
 		val newQuestion = questionRepo.save(
@@ -128,7 +141,7 @@ class QuestionController {
 						questionText = requestDto.questionText,
 						answers = requestDto.answers,
 						correctAnswer = requestDto.correctAnswer,
-						category = newCategory
+						category = category
 				)
 		)
 
@@ -146,11 +159,13 @@ class QuestionController {
 			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
-		if (!questionRepo.exists(pathId)) {
+		val optQuestion = questionRepo.findById(pathId)
+
+		if (!optQuestion.isPresent) {
 			return ResponseEntity.status(404).body("Question with id: $pathId not found")
 		}
 
-		questionRepo.delete(pathId)
+		questionRepo.deleteById(pathId)
 
 		return ResponseEntity.status(204).build()
 	}
@@ -177,13 +192,15 @@ class QuestionController {
 
 	/*
 	Catches validation errors and returns 400 instead of 500
-	Although messy.. TransactionSystemException is included as there are some cases where a
-	ConstraintViolationException is thrown, but Spring interprets it as a TransactionSystemException.
+	Because of wrapping and black-boxing beyond my understanding and patience, whenever a
+	ConstraintViolationException is thrown it might be wrapped to something else based on the context.
+	Although messy.. below is the best effort to keep this in check.
 	See: https://stackoverflow.com/a/45118680
-	The downside to this "solution" is that there might be actual TransactionSystemExceptions being thrown, which
+	The downside to this "solution" is that there might be Exceptions which are not from constraints being thrown, which
 	warrants a 500 status code instead, which is very misleading.
 	*/
-	@ExceptionHandler(value = ([ConstraintViolationException::class, TransactionSystemException::class]))
+	@ExceptionHandler(value = ([ConstraintViolationException::class, DataIntegrityViolationException::class,
+		TransactionSystemException::class]))
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	fun handleValidationFailure(ex: RuntimeException): String {
 		return "Invalid request. Error:\n${ex.message ?: "Error not found"}"
