@@ -3,6 +3,7 @@ package no.gardos.game.api
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
+import no.gardos.game.model.entity.GameState
 import no.gardos.game.model.repository.GameStateRepository
 import no.gardos.schema.GameStateDto
 import no.gardos.schema.QuizDto
@@ -50,18 +51,29 @@ class GameController {
 			return ResponseEntity.status(400).body("Invalid request. References is invalid")
 		}
 
-//		WebClient
+		val quiz: QuizDto?
 
 		try {
-			val url = "http://quiz-server/quizzes/1"
-			val generatedUrl = "$quizServerPath/${dto.Quiz}"
-			val response = rest.getForEntity(url, QuizDto::class.java)
+			val url = "$quizServerPath/${dto.Quiz}"
+			quiz = rest.getForObject(url, QuizDto::class.java)
 		} catch (ex: HttpClientErrorException) {
-			val status = if (ex.statusCode.value() == 400) 400 else 500
-			return ResponseEntity.status(status).body(ex.message)
+			return ResponseEntity.status(ex.statusCode).body("Error when querying Quiz:\n ${ex.responseBodyAsString}")
 		}
 
-		return ResponseEntity.ok().build()
+		//Todo: Logic for finding players
+
+		val gameState = gameStateRepo.save(
+				GameState(
+						Quiz = quiz!!.id,
+						PlayerOne = 1, //Temp
+						PlayerTwo = 2, //Temp
+						PlayerOneScore = 0,
+						PlayerTwoScore = 0,
+						RoundNumber = 0
+				)
+		)
+
+		return ResponseEntity.ok().body(gameState)
 	}
 
 	//Catches validation errors and returns 400 instead of 500
