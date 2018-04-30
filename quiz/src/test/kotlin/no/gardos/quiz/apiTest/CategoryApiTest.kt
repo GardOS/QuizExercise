@@ -209,7 +209,7 @@ class CategoryApiTest : ApiTestBase() {
 				.statusCode(200)
 				.body("size()", CoreMatchers.equalTo(2))
 
-		given().get("$CATEGORY_PATH?withQuestions")
+		given().get("$CATEGORY_PATH?with-questions")
 				.then()
 				.statusCode(200)
 				.body("size()", CoreMatchers.equalTo(0))
@@ -217,7 +217,7 @@ class CategoryApiTest : ApiTestBase() {
 		//Category is returned only when a quiz has a relation to a category
 		createGenericQuestion(category)
 
-		given().get("$CATEGORY_PATH?withQuestions")
+		given().get("$CATEGORY_PATH?with-questions")
 				.then()
 				.statusCode(200)
 				.body("size()", CoreMatchers.equalTo(1))
