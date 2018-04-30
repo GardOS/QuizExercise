@@ -37,7 +37,7 @@ class GameController {
 	private lateinit var quizServerPath: String
 
 	@ApiOperation("Starts a new game. Initializes a GameState object for tracking the game")
-	@PostMapping
+	@PostMapping(path = ["/new-game"])
 	fun newGame(
 			@ApiParam
 			@RequestBody

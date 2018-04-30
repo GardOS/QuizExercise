@@ -33,10 +33,10 @@ class CategoryController {
 	@Autowired
 	private lateinit var questionRepo: QuestionRepository
 
-	@ApiOperation("Get all the categories. Add param \"withQuestions\" to only get categories with questions")
+	@ApiOperation("Get all the categories. Add param \"with-questions\" to only get categories with questions")
 	@GetMapping
 	fun getCategories(
-			@RequestParam("withQuestions", required = false)
+			@RequestParam("with-questions", required = false)
 			withQuestions: String?
 	): ResponseEntity<List<CategoryDto>> {
 		if (withQuestions != null)
