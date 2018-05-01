@@ -7,6 +7,7 @@ import no.gardos.game.model.converter.GameStateConverter
 import no.gardos.game.model.entity.GameState
 import no.gardos.game.model.repository.GameStateRepository
 import no.gardos.schema.GameStateDto
+import no.gardos.schema.GuessDto
 import no.gardos.schema.QuizDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -70,7 +71,52 @@ class GameController {
 				)
 		)
 
-		return ResponseEntity.ok().body(gameState)
+		//Todo: Return first question of the quiz? How are players starting the game?
+//		val question: QuestionDto?
+//		try {
+//			val url = "$quizServerPath/${dto.Quiz}"
+//			question = rest.getForObject(url, QuestionDto::class.java)
+//		} catch (ex: HttpClientErrorException) {
+//			return ResponseEntity.status(ex.statusCode).body("Error when querying Question:\n ${ex
+//					.responseBodyAsString}")
+//		}
+
+		return ResponseEntity.ok(GameStateConverter.transform(gameState))
+	}
+
+	@ApiOperation("")
+	@PatchMapping(path = ["/guess"])
+	fun guess(
+			@ApiParam
+			@RequestBody
+			dto: GuessDto
+	): ResponseEntity<Any> {
+		if (dto.Game == null || dto.Answer == null) {
+			return ResponseEntity.status(400).body("Invalid request. References invalid")
+		}
+
+		val optGame = gameStateRepo.findById(dto.Game!!)
+		if (!optGame.isPresent) {
+			return ResponseEntity.status(404).body("Game with id: ${dto.Game} not found")
+		}
+		val game = optGame.get()
+
+		//Todo: Check if the correct player is playing
+
+		val quiz: QuizDto?
+		try {
+			val url = "$quizServerPath/${game.Quiz}"
+			quiz = rest.getForObject(url, QuizDto::class.java)
+		} catch (ex: HttpClientErrorException) {
+			return ResponseEntity.status(ex.statusCode).body("Error when querying Quiz:\n ${ex.responseBodyAsString}")
+		}
+
+		val question = quiz?.questions?.getOrNull(game.RoundNumber)
+
+		if (question?.correctAnswer == dto.Answer) {
+			return ResponseEntity.ok().body("Correct")
+		}
+		return ResponseEntity.ok().body("Wrong")
 	}
 
 	//Catches validation errors and returns 400 instead of 500
