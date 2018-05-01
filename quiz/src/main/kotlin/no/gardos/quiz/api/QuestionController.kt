@@ -56,7 +56,7 @@ class QuestionController {
 		var category: Category? = null
 
 		if (dto.category != null) {
-			val optCategory = categoryRepo.findById(dto.category!!)
+			val optCategory = categoryRepo.findById(dto.category!!.id!!)
 
 			if (!optCategory.isPresent) {
 				return ResponseEntity.status(400).body("Category with id: ${dto.category} not found")
@@ -126,7 +126,7 @@ class QuestionController {
 		var category: Category? = null
 
 		if (requestDto.category != null) {
-			val optCategory = categoryRepo.findById(requestDto.category!!)
+			val optCategory = categoryRepo.findById(requestDto.category!!.id!!)
 
 			if (!optCategory.isPresent) {
 				return ResponseEntity.status(400).body("Category with id: ${requestDto.category} not found")

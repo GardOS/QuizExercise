@@ -25,18 +25,20 @@ abstract class ApiTestBase {
 	val QUESTION_PATH = "/questions"
 	val CATEGORY_PATH = "/categories"
 
-	fun createGenericCategory(name: String): Long {
+	fun createGenericCategory(name: String): CategoryDto {
 		val category = CategoryDto(name)
 
-		return RestAssured.given().contentType(ContentType.JSON)
+		category.id = RestAssured.given().contentType(ContentType.JSON)
 				.body(category)
 				.post(CATEGORY_PATH)
 				.then()
 				.statusCode(201)
 				.extract().asString().toLong()
+
+		return category
 	}
 
-	fun createGenericQuestion(categoryId: Long): Long {
+	fun createGenericQuestion(categoryId: CategoryDto): QuestionDto {
 		val question = QuestionDto(
 				questionText = "What is 1+1?",
 				answers = listOf("0", "1", "2", "3"),
@@ -44,15 +46,17 @@ abstract class ApiTestBase {
 				category = categoryId
 		)
 
-		return RestAssured.given().contentType(ContentType.JSON)
+		question.id = RestAssured.given().contentType(ContentType.JSON)
 				.body(question)
 				.post(QUESTION_PATH)
 				.then()
 				.statusCode(201)
 				.extract().asString().toLong()
+
+		return question
 	}
 
-	fun createGenericQuiz(name: String, questions: List<Long> = listOf()): Long {
+	fun createGenericQuiz(name: String, questions: List<QuestionDto> = listOf()): Long {
 		val quiz = QuizDto(
 				name = name,
 				questions = questions

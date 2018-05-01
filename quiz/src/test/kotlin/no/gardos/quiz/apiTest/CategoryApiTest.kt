@@ -88,7 +88,7 @@ class CategoryApiTest : ApiTestBase() {
 	fun getCategory_CategoryExists_Ok() {
 		val category = createGenericCategory("Category")
 
-		given().pathParam("id", category)
+		given().pathParam("id", category.id)
 				.get("$CATEGORY_PATH/{id}")
 				.then()
 				.statusCode(200)
@@ -114,7 +114,7 @@ class CategoryApiTest : ApiTestBase() {
 	fun updateCategory_CategoryExists_Ok() {
 		val category = createGenericCategory("Category")
 
-		given().pathParam("id", category)
+		given().pathParam("id", category.id)
 				.body("NewCategory")
 				.patch("$CATEGORY_PATH/{id}/name")
 				.then()
@@ -144,7 +144,7 @@ class CategoryApiTest : ApiTestBase() {
 		val category = createGenericCategory("FirstCategory")
 		createGenericCategory("SecondCategory")
 
-		given().pathParam("id", category)
+		given().pathParam("id", category.id)
 				.body("SecondCategory")
 				.patch("$CATEGORY_PATH/{id}/name")
 				.then()
@@ -155,7 +155,7 @@ class CategoryApiTest : ApiTestBase() {
 	fun deleteCategory_CategoryExists_NoContent() {
 		val category = createGenericCategory("Category")
 
-		given().pathParam("id", category)
+		given().pathParam("id", category.id)
 				.delete("$CATEGORY_PATH/{id}")
 				.then()
 				.statusCode(204)
@@ -188,7 +188,7 @@ class CategoryApiTest : ApiTestBase() {
 				.statusCode(200)
 				.body("size()", CoreMatchers.equalTo(1))
 
-		given().pathParam("id", category)
+		given().pathParam("id", category.id)
 				.delete("$CATEGORY_PATH/{id}")
 				.then()
 				.statusCode(204)

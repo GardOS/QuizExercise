@@ -2,6 +2,7 @@ package no.gardos.quiz.apiTest
 
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import no.gardos.schema.CategoryDto
 import no.gardos.schema.QuestionDto
 import org.junit.Test
 
@@ -188,7 +189,7 @@ class QuestionApiTest : ApiTestBase() {
 				questionText = "What is 1+1?",
 				answers = listOf("0", "1", "2", "3"),
 				correctAnswer = 2,
-				category = 1234
+				category = CategoryDto(name = "Category", id = 1234)
 		)
 
 		given().contentType(ContentType.JSON)
@@ -203,7 +204,7 @@ class QuestionApiTest : ApiTestBase() {
 		val category = createGenericCategory("Category")
 		val question = createGenericQuestion(category)
 
-		given().pathParam("id", question)
+		given().pathParam("id", question.id)
 				.get("$QUESTION_PATH/{id}")
 				.then()
 				.statusCode(200)
@@ -230,7 +231,7 @@ class QuestionApiTest : ApiTestBase() {
 		val category = createGenericCategory("Category")
 		val question = createGenericQuestion(category)
 
-		given().pathParam("id", question)
+		given().pathParam("id", question.id)
 				.delete("$QUESTION_PATH/{id}")
 				.then()
 				.statusCode(204)
@@ -263,7 +264,7 @@ class QuestionApiTest : ApiTestBase() {
 				category = category
 		)
 
-		given().pathParam("id", oldQuestion)
+		given().pathParam("id", oldQuestion.id)
 				.contentType(ContentType.JSON)
 				.body(question)
 				.put("$QUESTION_PATH/{id}")
@@ -319,7 +320,7 @@ class QuestionApiTest : ApiTestBase() {
 				category = category
 		)
 
-		given().pathParam("id", oldQuestion)
+		given().pathParam("id", oldQuestion.id)
 				.contentType(ContentType.JSON)
 				.body(question)
 				.put("$QUESTION_PATH/{id}")
@@ -335,10 +336,10 @@ class QuestionApiTest : ApiTestBase() {
 				questionText = "What is 2+1?",
 				answers = listOf("0", "1", "2", "3"),
 				correctAnswer = 3,
-				category = 1234
+				category = CategoryDto(name = "NewCategory", id = 1234)
 		)
 
-		given().pathParam("id", oldQuestion)
+		given().pathParam("id", oldQuestion.id)
 				.contentType(ContentType.JSON)
 				.body(question)
 				.put("$QUESTION_PATH/{id}")
@@ -357,7 +358,7 @@ class QuestionApiTest : ApiTestBase() {
 				category = null
 		)
 
-		given().pathParam("id", oldQuestion)
+		given().pathParam("id", oldQuestion.id)
 				.contentType(ContentType.JSON)
 				.body(question)
 				.put("$QUESTION_PATH/{id}")
@@ -376,7 +377,7 @@ class QuestionApiTest : ApiTestBase() {
 				category = category
 		)
 
-		given().pathParam("id", oldQuestion)
+		given().pathParam("id", oldQuestion.id)
 				.contentType(ContentType.JSON)
 				.body(question)
 				.put("$QUESTION_PATH/{id}")
@@ -405,7 +406,7 @@ class QuestionApiTest : ApiTestBase() {
 		val category = createGenericCategory("Category")
 		createGenericQuestion(category)
 
-		val response = given().pathParam("id", category)
+		val response = given().pathParam("id", category.id)
 				.get("$QUESTION_PATH/category/{id}")
 				.then()
 				.statusCode(200)

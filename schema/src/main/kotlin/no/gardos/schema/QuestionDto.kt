@@ -19,5 +19,5 @@ data class QuestionDto(
 		var correctAnswer: Int? = null,
 
 		@ApiModelProperty("The category of the question")
-		var category: Long? = null
+		var category: CategoryDto? = null
 )

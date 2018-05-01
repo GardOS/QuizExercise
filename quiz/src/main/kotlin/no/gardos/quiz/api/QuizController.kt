@@ -56,7 +56,7 @@ class QuizController {
 			return ResponseEntity.status(409).body("Name is already taken")
 
 		val questions = dto.questions?.map {
-			questionRepo.findById(it!!).orElse(null)
+			questionRepo.findById(it!!.id!!).orElse(null)
 					?: return ResponseEntity.status(400).body("Question with id: $it not found")
 		}
 
@@ -91,12 +91,12 @@ class QuizController {
 
 		if (requestDto.questions != null) {
 			newQuestions = requestDto.questions?.map {
-				questionRepo.findById(it!!).orElse(null)
+				questionRepo.findById(it!!.id!!).orElse(null)
 						?: return ResponseEntity.status(400).body("Question with id: $it not found")
 			}
 		}
 
-		val newQuestion = quizRepo.save(
+		val newQuiz = quizRepo.save(
 				Quiz(
 						id = pathId,
 						name = requestDto.name,
@@ -104,7 +104,7 @@ class QuizController {
 				)
 		)
 
-		return ResponseEntity.ok(QuizConverter.transform(newQuestion))
+		return ResponseEntity.ok(QuizConverter.transform(newQuiz))
 	}
 
 	@ApiOperation("Get a quiz by ID")

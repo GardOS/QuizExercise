@@ -1,6 +1,7 @@
 package no.gardos.quiz.model.converter
 
 import no.gardos.quiz.model.entity.Question
+import no.gardos.schema.CategoryDto
 import no.gardos.schema.QuestionDto
 
 class QuestionConverter {
@@ -11,7 +12,7 @@ class QuestionConverter {
 					questionText = question.questionText,
 					answers = question.answers,
 					correctAnswer = question.correctAnswer,
-					category = question.category?.id
+					category = CategoryDto(name = question.category?.name, id = question.category?.id)
 			)
 		}
 

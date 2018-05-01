@@ -2,6 +2,7 @@ package no.gardos.quiz.apiTest
 
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
+import no.gardos.schema.QuestionDto
 import no.gardos.schema.QuizDto
 import org.junit.Test
 
@@ -74,7 +75,7 @@ class QuizApiTest : ApiTestBase() {
 
 	@Test
 	fun createQuiz_QuestionDoNotExist_BadRequest() {
-		val quiz = QuizDto(name = "Quiz", questions = listOf(1234, 4321))
+		val quiz = QuizDto(name = "Quiz", questions = listOf(QuestionDto(id = 1234)))
 
 		RestAssured.given().contentType(ContentType.JSON)
 				.body(quiz)
@@ -164,7 +165,16 @@ class QuizApiTest : ApiTestBase() {
 	@Test
 	fun updateQuiz_NewQuestionDoesNotExist_BadRequest() {
 		val oldQuiz = createGenericQuiz("OldQuiz")
-		val newQuiz = QuizDto(name = "NewQuiz", questions = listOf(1234))
+
+		val question = QuestionDto(
+				id = 1234,
+				questionText = "What is 1+1?",
+				answers = listOf("0", "1", "2", "3"),
+				correctAnswer = 2,
+				category = null
+		)
+
+		val newQuiz = QuizDto(name = "NewQuiz", questions = listOf(question))
 
 		RestAssured.given().pathParam("id", oldQuiz)
 				.contentType(ContentType.JSON)
