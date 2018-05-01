@@ -10,15 +10,11 @@ class GameState(
 		@get:NotNull
 		var Quiz: Long? = null,
 		@get:NotNull
-		var PlayerOne: Long? = null,
+		var Player: Long? = null,
 		@get:NotNull
-		var PlayerTwo: Long? = null,
+		var Score: Int = 0,
 		@get:NotNull
-		var PlayerOneScore: Int? = null,
-		@get:NotNull
-		var PlayerTwoScore: Int? = null,
-		@get:NotNull
-		var RoundNumber: Int? = null,
+		var RoundNumber: Int = 0,
 		@get:Id @get:GeneratedValue
 		var id: Long? = null
 )

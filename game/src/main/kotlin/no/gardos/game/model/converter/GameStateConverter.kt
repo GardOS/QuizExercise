@@ -9,8 +9,7 @@ class GameStateConverter {
 			return GameStateDto(
 					id = gameState.id,
 					Quiz = gameState.Quiz,
-					PlayerOne = gameState.PlayerOne,
-					PlayerTwo = gameState.PlayerTwo
+					Player = gameState.Player
 			)
 		}
 

@@ -3,6 +3,7 @@ package no.gardos.game.api
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
+import no.gardos.game.model.converter.GameStateConverter
 import no.gardos.game.model.entity.GameState
 import no.gardos.game.model.repository.GameStateRepository
 import no.gardos.schema.GameStateDto
@@ -47,8 +48,8 @@ class GameController {
 			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
-		if (dto.Quiz == null || dto.PlayerOne == null || dto.PlayerTwo == null) {
-			return ResponseEntity.status(400).body("Invalid request. References is invalid")
+		if (dto.Quiz == null || dto.Player == null) {
+			return ResponseEntity.status(400).body("Invalid request. References invalid")
 		}
 
 		val quiz: QuizDto?
@@ -65,11 +66,7 @@ class GameController {
 		val gameState = gameStateRepo.save(
 				GameState(
 						Quiz = quiz!!.id,
-						PlayerOne = 1, //Temp
-						PlayerTwo = 2, //Temp
-						PlayerOneScore = 0,
-						PlayerTwoScore = 0,
-						RoundNumber = 0
+						Player = 1 //Temp
 				)
 		)
 
