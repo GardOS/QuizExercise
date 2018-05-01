@@ -38,6 +38,21 @@ class GameController {
 	@Value("\${quizServerPath}")
 	private lateinit var quizServerPath: String
 
+	@ApiOperation("Get a game by ID")
+	@GetMapping(path = ["/{id}"])
+	fun getGame(
+			@ApiParam("Id of the game")
+			@PathVariable("id")
+			pathId: Long
+	): ResponseEntity<Any> {
+		val optGame = gameStateRepo.findById(pathId)
+		if (!optGame.isPresent) {
+			return ResponseEntity.status(404).body("Game with id: $pathId not found")
+		}
+
+		return ResponseEntity.ok(optGame.get())
+	}
+
 	@ApiOperation("Starts a new game. Initializes a GameState object for tracking the game")
 	@PostMapping(path = ["/new-game"])
 	fun newGame(
