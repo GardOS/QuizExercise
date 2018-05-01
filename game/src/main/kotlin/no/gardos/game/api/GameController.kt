@@ -7,7 +7,7 @@ import no.gardos.game.model.converter.GameStateConverter
 import no.gardos.game.model.entity.GameState
 import no.gardos.game.model.repository.GameStateRepository
 import no.gardos.schema.GameStateDto
-import no.gardos.schema.GuessDto
+import no.gardos.schema.QuestionDto
 import no.gardos.schema.QuizDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -21,7 +21,7 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import javax.validation.ConstraintViolationException
 
-@Api(value = "/game", description = "API for categories.")
+@Api(value = "/game", description = "API for interacting with the game.")
 @RequestMapping(
 		path = ["/game"],
 		produces = [(MediaType.APPLICATION_JSON_VALUE)]
@@ -49,14 +49,14 @@ class GameController {
 			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
-		if (dto.Quiz == null || dto.Player == null) {
+		if (dto.quiz == null || dto.player == null) {
 			return ResponseEntity.status(400).body("Invalid request. References invalid")
 		}
 
 		val quiz: QuizDto?
 
 		try {
-			val url = "$quizServerPath/${dto.Quiz}"
+			val url = "$quizServerPath/${dto.quiz}"
 			quiz = rest.getForObject(url, QuizDto::class.java)
 		} catch (ex: HttpClientErrorException) {
 			return ResponseEntity.status(ex.statusCode).body("Error when querying Quiz:\n ${ex.responseBodyAsString}")
@@ -71,52 +71,90 @@ class GameController {
 				)
 		)
 
-		//Todo: Return first question of the quiz? How are players starting the game?
-//		val question: QuestionDto?
-//		try {
-//			val url = "$quizServerPath/${dto.Quiz}"
-//			question = rest.getForObject(url, QuestionDto::class.java)
-//		} catch (ex: HttpClientErrorException) {
-//			return ResponseEntity.status(ex.statusCode).body("Error when querying Question:\n ${ex
-//					.responseBodyAsString}")
-//		}
-
 		return ResponseEntity.ok(GameStateConverter.transform(gameState))
 	}
 
-	@ApiOperation("")
-	@PatchMapping(path = ["/guess"])
-	fun guess(
-			@ApiParam
-			@RequestBody
-			dto: GuessDto
+	@ApiOperation("Get current question")
+	@GetMapping(path = ["/{id}/current-question"])
+	fun currentQuestion(
+			@ApiParam("Id of the game")
+			@PathVariable("id")
+			pathId: Long
 	): ResponseEntity<Any> {
-		if (dto.Game == null || dto.Answer == null) {
-			return ResponseEntity.status(400).body("Invalid request. References invalid")
+		val optGame = gameStateRepo.findById(pathId)
+		if (!optGame.isPresent) {
+			return ResponseEntity.status(404).body("Game with id: $pathId not found")
 		}
 
-		val optGame = gameStateRepo.findById(dto.Game!!)
-		if (!optGame.isPresent) {
-			return ResponseEntity.status(404).body("Game with id: ${dto.Game} not found")
-		}
 		val game = optGame.get()
+
+		if (game.isFinished) return ResponseEntity.ok().body(game)
+
+
+		val question: QuestionDto
+		try {
+			val quizUrl = "$quizServerPath/${game.Quiz}"
+			val quiz = rest.getForObject(quizUrl, QuizDto::class.java) //Todo: Make api-method for question?
+			question = quiz?.questions?.getOrNull(game.RoundNumber)
+					?: return ResponseEntity.status(500).body("Could not find question")
+		} catch (ex: HttpClientErrorException) {
+			return ResponseEntity.status(ex.statusCode).body(ex.responseBodyAsString)
+		}
+
+		return ResponseEntity.ok(question)
+	}
+
+
+	@ApiOperation("Guess answer on the current question in the game session")
+	@PatchMapping(path = ["/{id}"])
+	fun guess(
+			@ApiParam("Id of the game")
+			@PathVariable("id")
+			pathId: Long,
+			@RequestParam("answer", required = true)
+			answer: Int?
+	): ResponseEntity<Any> {
+		if (answer == null || answer !in 0..3) {
+			return ResponseEntity.status(400).body("Invalid parameters")
+		}
 
 		//Todo: Check if the correct player is playing
 
+		val optGame = gameStateRepo.findById(pathId)
+		if (!optGame.isPresent) return ResponseEntity.status(404).body("Game with id: $pathId not found")
+		val game = optGame.get()
+
+		if (game.isFinished) return ResponseEntity.ok().body(game)
+
 		val quiz: QuizDto?
 		try {
-			val url = "$quizServerPath/${game.Quiz}"
-			quiz = rest.getForObject(url, QuizDto::class.java)
+			val quizUrl = "$quizServerPath/${game.Quiz}"
+			quiz = rest.getForObject(quizUrl, QuizDto::class.java)
 		} catch (ex: HttpClientErrorException) {
-			return ResponseEntity.status(ex.statusCode).body("Error when querying Quiz:\n ${ex.responseBodyAsString}")
+			game.RoundNumber++ //Instead of being stuck on this question, skip it
+			gameStateRepo.save(game)
+			return ResponseEntity.status(ex.statusCode).body(ex.responseBodyAsString)
 		}
 
-		val question = quiz?.questions?.getOrNull(game.RoundNumber)
+		val correctAnswer = quiz?.questions?.getOrNull(game.RoundNumber)?.correctAnswer
 
-		if (question?.correctAnswer == dto.Answer) {
-			return ResponseEntity.ok().body("Correct")
+		if (correctAnswer == null) {
+			game.RoundNumber++ //Instead of being stuck on this question, skip it
+			gameStateRepo.save(game)
+			return ResponseEntity.status(500).body("Could not find answer to question")
 		}
-		return ResponseEntity.ok().body("Wrong")
+
+		val isCorrect = answer == correctAnswer
+
+		game.RoundNumber++
+		if (isCorrect) game.Score++
+		if (game.RoundNumber >= quiz.questions!!.count()) {
+			game.isFinished = true
+		}
+
+		gameStateRepo.save(game)
+
+		return if (isCorrect) ResponseEntity.ok().body("Correct") else ResponseEntity.ok().body("Wrong")
 	}
 
 	//Catches validation errors and returns 400 instead of 500

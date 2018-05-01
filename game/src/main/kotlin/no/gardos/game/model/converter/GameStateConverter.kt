@@ -8,8 +8,9 @@ class GameStateConverter {
 		fun transform(gameState: GameState): GameStateDto {
 			return GameStateDto(
 					id = gameState.id,
-					Quiz = gameState.Quiz,
-					Player = gameState.Player
+					quiz = gameState.Quiz,
+					player = gameState.Player,
+					isFinished = gameState.isFinished
 			)
 		}
 

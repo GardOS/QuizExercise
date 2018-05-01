@@ -15,6 +15,7 @@ class GameState(
 		var Score: Int = 0,
 		@get:NotNull
 		var RoundNumber: Int = 0,
+		var isFinished: Boolean = false,
 		@get:Id @get:GeneratedValue
 		var id: Long? = null
 )
