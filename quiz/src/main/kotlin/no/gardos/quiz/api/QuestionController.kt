@@ -84,12 +84,8 @@ class QuestionController {
 	fun getQuestion(
 			@ApiParam("Id of question")
 			@PathVariable("id")
-			pathId: Long?
+			pathId: Long
 	): ResponseEntity<Any> {
-		if (pathId == null) {
-			return ResponseEntity.status(400).body("Id should not be specified")
-		}
-
 		val optQuestion = questionRepo.findById(pathId)
 
 		if (!optQuestion.isPresent) {
@@ -104,17 +100,13 @@ class QuestionController {
 	fun updateQuestion(
 			@ApiParam("Id of question")
 			@PathVariable("id")
-			pathId: Long?,
+			pathId: Long,
 			@ApiParam("The new question which will replace the old one")
 			@RequestBody
 			requestDto: QuestionDto
 	): ResponseEntity<Any> {
 		if (requestDto.id != null) {
 			return ResponseEntity.status(400).body("Id should not be specified")
-		}
-
-		if (pathId == null) {
-			return ResponseEntity.status(400).body("Invalid Id in path") //Todo: Pointless?
 		}
 
 		val optQuestion = questionRepo.findById(pathId)
@@ -153,12 +145,8 @@ class QuestionController {
 	fun deleteQuestion(
 			@ApiParam("Id of question")
 			@PathVariable("id")
-			pathId: Long?
+			pathId: Long
 	): ResponseEntity<Any> {
-		if (pathId == null) {
-			return ResponseEntity.status(400).body("Id should not be specified")
-		}
-
 		val optQuestion = questionRepo.findById(pathId)
 
 		if (!optQuestion.isPresent) {
@@ -175,7 +163,7 @@ class QuestionController {
 	fun getQuestionsByCategoryId(
 			@ApiParam("Id of category")
 			@PathVariable("id")
-			pathId: Long?
+			pathId: Long
 	): ResponseEntity<Any> {
 		return ResponseEntity.ok(QuestionConverter.transform(questionRepo.findQuestionByCategoryId(pathId)))
 	}

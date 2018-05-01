@@ -70,17 +70,13 @@ class QuizController {
 	fun updateQuiz(
 			@ApiParam("Id of quiz")
 			@PathVariable("id")
-			pathId: Long?,
+			pathId: Long,
 			@ApiParam("The new quiz which will replace the old one")
 			@RequestBody
 			requestDto: QuizDto
 	): ResponseEntity<Any> {
 		if (requestDto.id != null) {
 			return ResponseEntity.status(400).body("Id should not be specified")
-		}
-
-		if (pathId == null) {
-			return ResponseEntity.status(400).body("Invalid Id in path")
 		}
 
 		if (!quizRepo.existsById(pathId)) {
@@ -112,12 +108,8 @@ class QuizController {
 	fun getQuiz(
 			@ApiParam("Id of quiz")
 			@PathVariable("id")
-			pathId: Long?
+			pathId: Long
 	): ResponseEntity<Any> {
-		if (pathId == null) {
-			return ResponseEntity.status(400).body("Invalid Id in path")
-		}
-
 		val optQuiz = quizRepo.findById(pathId)
 
 		if (!optQuiz.isPresent) {
@@ -132,12 +124,8 @@ class QuizController {
 	fun deleteQuiz(
 			@ApiParam("Id of quiz")
 			@PathVariable("id")
-			pathId: Long?
+			pathId: Long
 	): ResponseEntity<Any> {
-		if (pathId == null) {
-			return ResponseEntity.status(400).body("Invalid Id in path")
-		}
-
 		val optQuiz = quizRepo.findById(pathId)
 
 		if (!optQuiz.isPresent) {

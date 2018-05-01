@@ -71,12 +71,8 @@ class CategoryController {
 	fun getCategory(
 			@ApiParam("Id of category")
 			@PathVariable("id")
-			pathId: Long?
+			pathId: Long
 	): ResponseEntity<Any> {
-		if (pathId == null) {
-			return ResponseEntity.status(400).body("Invalid Id in path")
-		}
-
 		val optCategory = categoryRepo.findById(pathId)
 
 		if (!optCategory.isPresent) {
@@ -91,15 +87,11 @@ class CategoryController {
 	fun updateCategory(
 			@ApiParam("Id of Category")
 			@PathVariable("id")
-			pathId: Long?,
+			pathId: Long,
 			@ApiParam("The new name which will replace the old one")
 			@RequestBody
 			newName: String
 	): ResponseEntity<Any> {
-		if (pathId == null) {
-			return ResponseEntity.status(400).body("Invalid Id in path")
-		}
-
 		val optCategory = categoryRepo.findById(pathId)
 
 		if (!optCategory.isPresent) {
@@ -123,12 +115,8 @@ class CategoryController {
 	fun deleteCategory(
 			@ApiParam("Id of Category")
 			@PathVariable("id")
-			pathId: Long?
+			pathId: Long
 	): ResponseEntity<Any> {
-		if (pathId == null) {
-			return ResponseEntity.status(400).body("Invalid Id in path")
-		}
-
 		val optCategory = categoryRepo.findById(pathId)
 
 		if (!optCategory.isPresent) {
