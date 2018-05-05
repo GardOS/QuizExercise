@@ -126,11 +126,11 @@
             </dependency>
 
             <!--Zuul-->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-netflix-core</artifactId>
-                <version>1.3.4.RELEASE</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.springframework.cloud</groupId>-->
+                <!--<artifactId>spring-cloud-netflix-core</artifactId>-->
+                <!--<version>1.3.4.RELEASE</version>-->
+            <!--</dependency>-->
 
         </dependencies>
     </dependencyManagement>
