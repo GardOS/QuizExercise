@@ -9,7 +9,7 @@ eureka:
 
 spring:
   application:
-    name: quiz-server
+    name: quiz
 
 #Todo: Investigate docker and DBs
 #spring:

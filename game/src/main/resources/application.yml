@@ -11,4 +11,4 @@ spring:
   application:
     name: game-server
 
-quizServerPath: http://quiz-server/quizzes
+quizServerPath: http://quiz/quizzes
