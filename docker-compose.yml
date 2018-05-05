@@ -1,6 +1,12 @@
-version: '3'
+version: '3.3'
 
 services:
+  gateway:
+    build:
+      context: gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
   eureka:
     build:
       context: eureka
@@ -12,7 +18,7 @@ services:
       context: game
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8082:8080"
     depends_on:
       - eureka
   player:
