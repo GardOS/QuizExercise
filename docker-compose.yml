@@ -7,19 +7,27 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8761:8761"
-  quiz:
-    build:
-      context: quiz
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - eureka
   game:
     build:
       context: game
       dockerfile: Dockerfile
     ports:
+      - "8080:8080"
+    depends_on:
+      - eureka
+  player:
+    build:
+      context: player
+      dockerfile: Dockerfile
+    ports:
       - "8081:8080"
+    depends_on:
+      - eureka
+  quiz:
+    build:
+      context: quiz
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8080"
     depends_on:
       - eureka
