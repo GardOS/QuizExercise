@@ -137,6 +137,12 @@ class QuizController {
 		return ResponseEntity.status(204).build()
 	}
 
+	@ApiOperation("Test Eureka load handling using config values from docker container")
+	@GetMapping(path = ["/eureka"])
+	fun testEureka(): ResponseEntity<String> {
+		return ResponseEntity.ok(System.getenv("SERVICE_ID") ?: "Undefined")
+	}
+
 	/*
 	Catches validation errors and returns 400 instead of 500
 	Because of wrapping and black-boxing beyond my understanding and patience, whenever a
