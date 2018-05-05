@@ -21,9 +21,9 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import javax.validation.ConstraintViolationException
 
-@Api(value = "/game", description = "API for interacting with the game.")
+@Api(value = "/games", description = "API for interacting with the game.")
 @RequestMapping(
-		path = ["/game"],
+		path = ["/games"],
 		produces = [(MediaType.APPLICATION_JSON_VALUE)]
 )
 @RestController
