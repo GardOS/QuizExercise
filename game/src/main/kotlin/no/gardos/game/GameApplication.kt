@@ -7,7 +7,7 @@ import org.springframework.cloud.netflix.ribbon.RibbonClient
 
 @SpringBootApplication
 @EnableEurekaClient
-@RibbonClient(name = "quiz-server")
+@RibbonClient(name = "quiz")
 class GameApplication
 
 //docker-compose down && mvn package -DskipTests && docker-compose build && docker-compose up -d

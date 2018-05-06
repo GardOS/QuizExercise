@@ -9,6 +9,6 @@ eureka:
 
 spring:
   application:
-    name: game-server
+    name: game
 
 quizServerPath: http://quiz/quizzes
