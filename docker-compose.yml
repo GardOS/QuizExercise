@@ -6,7 +6,9 @@ services:
       context: gateway
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "80:8080"
+    depends_on:
+      - eureka
   eureka:
     build:
       context: eureka
@@ -17,35 +19,35 @@ services:
     build:
       context: game
       dockerfile: Dockerfile
-    ports:
-      - "8082:8080"
+#    ports:
+#      - "8080:8080"
     depends_on:
-      - eureka
+      - gateway
   player:
     build:
       context: player
       dockerfile: Dockerfile
-    ports:
-      - "8081:8080"
+#    ports:
+#      - "8081:8080"
     depends_on:
-      - eureka
+      - gateway
   quiz1:
     build:
       context: quiz
       dockerfile: Dockerfile
-    ports:
-      - "8090:8080"
+#    ports:
+#      - "8090:8080"
     environment:
       - SERVICE_ID=quiz1
     depends_on:
-      - eureka
+      - gateway
   quiz2:
     build:
       context: quiz
       dockerfile: Dockerfile
-    ports:
-      - "8091:8080"
+#    ports:
+#      - "8091:8080"
     environment:
       - SERVICE_ID=quiz2
     depends_on:
-      - eureka
+      - gateway
