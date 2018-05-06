@@ -5,7 +5,7 @@ import no.gardos.quiz.model.entity.Question
 import org.junit.Assert.*
 import org.junit.Test
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.transaction.TransactionSystemException
+import javax.validation.ConstraintViolationException
 
 class CategoryRepositoryTest : RepositoryTestBase() {
 
@@ -41,9 +41,9 @@ class CategoryRepositoryTest : RepositoryTestBase() {
 
 		assertNotNull(categoryRepo.getOne(category.id!!))
 
-		categoryRepo.deleteById(category.id!!)
+		categoryRepo.delete(category.id!!)
 
-		assertFalse(categoryRepo.existsById(category.id!!))
+		assertFalse(categoryRepo.exists(category.id!!))
 	}
 
 	@Test
@@ -82,21 +82,21 @@ class CategoryRepositoryTest : RepositoryTestBase() {
 		assertEquals(secondCategory.id, categoryRepo.findByQuestionsIsNotNull().first().id)
 	}
 
-	@Test(expected = TransactionSystemException::class)
+	@Test(expected = ConstraintViolationException::class)
 	fun sizeConstraint_NameTooLong_ConstraintViolationException() {
 		val categoryName = "123456789012345678901234567890123" //33 length
 		val category = Category(categoryName)
 		categoryRepo.save(category)
 	}
 
-	@Test(expected = TransactionSystemException::class)
+	@Test(expected = ConstraintViolationException::class)
 	fun notEmptyConstraint_NullName_ConstraintViolationException() {
 		val categoryName = null
 		val category = Category(categoryName)
 		categoryRepo.save(category)
 	}
 
-	@Test(expected = TransactionSystemException::class)
+	@Test(expected = ConstraintViolationException::class)
 	fun notEmptyConstraint_EmptyName_ConstraintViolationException() {
 		val categoryName = ""
 		val category = Category(categoryName)

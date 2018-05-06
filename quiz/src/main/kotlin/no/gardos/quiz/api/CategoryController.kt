@@ -73,13 +73,10 @@ class CategoryController {
 			@PathVariable("id")
 			pathId: Long
 	): ResponseEntity<Any> {
-		val optCategory = categoryRepo.findById(pathId)
+		val category = categoryRepo.findOne(pathId)
+				?: return ResponseEntity.status(404).body("Category with id: $pathId not found")
 
-		if (!optCategory.isPresent) {
-			return ResponseEntity.status(404).body("Category with id: $pathId not found")
-		}
-
-		return ResponseEntity.ok(CategoryConverter.transform(optCategory.get()))
+		return ResponseEntity.ok(CategoryConverter.transform(category))
 	}
 
 	@ApiOperation("Update name of a category")
@@ -92,13 +89,8 @@ class CategoryController {
 			@RequestBody
 			newName: String
 	): ResponseEntity<Any> {
-		val optCategory = categoryRepo.findById(pathId)
-
-		if (!optCategory.isPresent) {
-			return ResponseEntity.status(404).body("Category with id: $pathId not found")
-		}
-
-		val category = optCategory.get()
+		val category = categoryRepo.findOne(pathId)
+				?: return ResponseEntity.status(404).body("Category with id: $pathId not found")
 
 		if (categoryRepo.findByName(newName) != null)
 			return ResponseEntity.status(409).body("Name is already taken")
@@ -117,13 +109,8 @@ class CategoryController {
 			@PathVariable("id")
 			pathId: Long
 	): ResponseEntity<Any> {
-		val optCategory = categoryRepo.findById(pathId)
-
-		if (!optCategory.isPresent) {
-			return ResponseEntity.status(404).body("Category with id: $pathId not found")
-		}
-
-		val category = optCategory.get()
+		val category = categoryRepo.findOne(pathId)
+				?: return ResponseEntity.status(404).body("Category with id: $pathId not found")
 
 		val questions = questionRepo.findQuestionByCategoryId(category.id)
 
@@ -135,7 +122,7 @@ class CategoryController {
 			}
 		}
 
-		categoryRepo.deleteById(pathId)
+		categoryRepo.delete(pathId)
 
 		return ResponseEntity.status(204).build()
 	}

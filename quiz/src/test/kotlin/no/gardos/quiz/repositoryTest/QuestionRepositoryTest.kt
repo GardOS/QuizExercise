@@ -5,7 +5,7 @@ import no.gardos.quiz.model.entity.Question
 import org.junit.Assert.*
 import org.junit.Ignore
 import org.junit.Test
-import org.springframework.transaction.TransactionSystemException
+import javax.validation.ConstraintViolationException
 
 class QuestionRepositoryTest : RepositoryTestBase() {
 
@@ -40,68 +40,67 @@ class QuestionRepositoryTest : RepositoryTestBase() {
 
 		assertNotNull(questionRepo.getOne(question.id!!))
 
-		questionRepo.deleteById(question.id!!)
+		questionRepo.delete(question.id!!)
 
-		assertFalse(questionRepo.existsById(question.id!!))
+		assertFalse(questionRepo.exists(question.id!!))
 	}
 
-	@Test(expected = TransactionSystemException::class)
-	fun notEmptyConstraint_NullQuestionText_TransactionSystemException() {
+	@Test(expected = ConstraintViolationException::class)
+	fun notEmptyConstraint_NullQuestionText_ConstraintViolationException() {
 		val question = createTestQuestion(questionText = null)
 		questionRepo.save(question)
 	}
 
-	@Test(expected = TransactionSystemException::class)
-	fun notEmptyConstraint_BlankQuestionText_TransactionSystemException() {
+	@Test(expected = ConstraintViolationException::class)
+	fun notEmptyConstraint_BlankQuestionText_ConstraintViolationException() {
 		val question = createTestQuestion(questionText = "")
 		questionRepo.save(question)
 	}
 
-	@Test(expected = TransactionSystemException::class)
-	fun notEmptyConstraint_NullAnswers_TransactionSystemException() {
+	@Test(expected = ConstraintViolationException::class)
+	fun notEmptyConstraint_NullAnswers_ConstraintViolationException() {
 		val question = createTestQuestion(answers = null)
 		questionRepo.save(question)
 	}
 
-	@Test(expected = TransactionSystemException::class)
-	fun notEmptyConstraint_NoAnswers_TransactionSystemException() {
+	@Test(expected = ConstraintViolationException::class)
+	fun notEmptyConstraint_NoAnswers_ConstraintViolationException() {
 		val question = createTestQuestion(answers = listOf())
 		questionRepo.save(question)
 	}
 
-	@Test(expected = TransactionSystemException::class)
-	fun sizeConstraint_TooFewAnswers_TransactionSystemException() {
+	@Test(expected = ConstraintViolationException::class)
+	fun sizeConstraint_TooFewAnswers_ConstraintViolationException() {
 		val question = createTestQuestion(answers = listOf("1"))
 		questionRepo.save(question)
 	}
 
-	@Test(expected = TransactionSystemException::class)
-	fun sizeConstraint_TooManyAnswers_TransactionSystemException() {
+	@Test(expected = ConstraintViolationException::class)
+	fun sizeConstraint_TooManyAnswers_ConstraintViolationException() {
 		val question = createTestQuestion(answers = listOf("1", "2", "3", "4", "5"))
 		questionRepo.save(question)
 	}
 
-	@Test(expected = TransactionSystemException::class)
-	fun minConstraint_NullCorrectAnswer_TransactionSystemException() {
+	@Test(expected = ConstraintViolationException::class)
+	fun minConstraint_NullCorrectAnswer_ConstraintViolationException() {
 		val question = createTestQuestion(correctAnswer = null)
 		questionRepo.save(question)
 	}
 
-	@Test(expected = TransactionSystemException::class)
-	fun minConstraint_CorrectAnswerTooSmall_TransactionSystemException() {
+	@Test(expected = ConstraintViolationException::class)
+	fun minConstraint_CorrectAnswerTooSmall_ConstraintViolationException() {
 		val question = createTestQuestion(correctAnswer = -1)
 		questionRepo.save(question)
 	}
 
-	@Test(expected = TransactionSystemException::class)
-	fun minConstraint_CorrectAnswerTooBig_TransactionSystemException() {
+	@Test(expected = ConstraintViolationException::class)
+	fun minConstraint_CorrectAnswerTooBig_ConstraintViolationException() {
 		val question = createTestQuestion(correctAnswer = 4)
 		questionRepo.save(question)
 	}
 
-	@Ignore //Todo: Suddenly okay to insert Id. Is this a problem?
-	@Test(expected = TransactionSystemException::class)
-	fun idConstraint_IdIsSpecified_TransactionSystemException() {
+	@Test(expected = ConstraintViolationException::class) //Todo: Add for other repos
+	fun idConstraint_IdIsSpecified_ConstraintViolationException() {
 		val question = createTestQuestion(id = 1234)
 		questionRepo.save(question)
 	}

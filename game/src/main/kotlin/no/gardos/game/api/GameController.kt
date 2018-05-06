@@ -45,12 +45,10 @@ class GameController {
 			@PathVariable("id")
 			pathId: Long
 	): ResponseEntity<Any> {
-		val optGame = gameStateRepo.findById(pathId)
-		if (!optGame.isPresent) {
-			return ResponseEntity.status(404).body("Game with id: $pathId not found")
-		}
+		val game = gameStateRepo.findOne(pathId)
+				?: return ResponseEntity.status(404).body("Game with id: $pathId not found")
 
-		return ResponseEntity.ok(optGame.get())
+		return ResponseEntity.ok(game)
 	}
 
 	@ApiOperation("Starts a new game. Initializes a GameState object for tracking the game")
@@ -96,12 +94,8 @@ class GameController {
 			@PathVariable("id")
 			pathId: Long
 	): ResponseEntity<Any> {
-		val optGame = gameStateRepo.findById(pathId)
-		if (!optGame.isPresent) {
-			return ResponseEntity.status(404).body("Game with id: $pathId not found")
-		}
-
-		val game = optGame.get()
+		val game = gameStateRepo.findOne(pathId)
+				?: return ResponseEntity.status(404).body("Game with id: $pathId not found")
 
 		if (game.isFinished) return ResponseEntity.ok().body(game)
 
@@ -135,9 +129,8 @@ class GameController {
 
 		//Todo: Check if the correct player is playing
 
-		val optGame = gameStateRepo.findById(pathId)
-		if (!optGame.isPresent) return ResponseEntity.status(404).body("Game with id: $pathId not found")
-		val game = optGame.get()
+		val game = gameStateRepo.findOne(pathId)
+				?: return ResponseEntity.status(404).body("Game with id: $pathId not found")
 
 		if (game.isFinished) return ResponseEntity.ok().body(game)
 

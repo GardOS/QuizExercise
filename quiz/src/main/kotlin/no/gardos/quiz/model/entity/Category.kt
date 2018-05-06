@@ -1,8 +1,8 @@
 package no.gardos.quiz.model.entity
 
 import javax.persistence.*
-import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size
+import org.hibernate.validator.constraints.NotEmpty
 
 @Entity
 class Category(

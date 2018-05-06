@@ -56,13 +56,9 @@ class QuestionController {
 		var category: Category? = null
 
 		if (dto.category != null) {
-			val optCategory = categoryRepo.findById(dto.category!!.id!!)
-
-			if (!optCategory.isPresent) {
-				return ResponseEntity.status(400).body("Category with id: ${dto.category} not found")
-			}
-
-			category = optCategory.get()
+			category = categoryRepo.findOne(dto.category!!.id!!)
+					?: return ResponseEntity.status(400)
+					.body("Category with id: ${dto.category} not found")
 		}
 
 		val question: Question?
@@ -86,13 +82,10 @@ class QuestionController {
 			@PathVariable("id")
 			pathId: Long
 	): ResponseEntity<Any> {
-		val optQuestion = questionRepo.findById(pathId)
+		val question = questionRepo.findOne(pathId)
+				?: return ResponseEntity.status(404).body("Question with id: $pathId not found")
 
-		if (!optQuestion.isPresent) {
-			return ResponseEntity.status(404).body("Question with id: $pathId not found")
-		}
-
-		return ResponseEntity.ok(QuestionConverter.transform(optQuestion.get()))
+		return ResponseEntity.ok(QuestionConverter.transform(question))
 	}
 
 	@ApiOperation("Update an existing question")
@@ -109,22 +102,15 @@ class QuestionController {
 			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
-		val optQuestion = questionRepo.findById(pathId)
-
-		if (!optQuestion.isPresent) {
+		if(!questionRepo.exists(pathId))
 			return ResponseEntity.status(404).body("Question with id: $pathId not found")
-		}
 
 		var category: Category? = null
 
 		if (requestDto.category != null) {
-			val optCategory = categoryRepo.findById(requestDto.category!!.id!!)
-
-			if (!optCategory.isPresent) {
-				return ResponseEntity.status(400).body("Category with id: ${requestDto.category} not found")
-			}
-
-			category = optCategory.get()
+			category = categoryRepo.findOne(requestDto.category!!.id!!)
+					?: return ResponseEntity.status(400)
+							.body("Category with id: ${requestDto.category} not found")
 		}
 
 		val newQuestion = questionRepo.save(
@@ -147,13 +133,10 @@ class QuestionController {
 			@PathVariable("id")
 			pathId: Long
 	): ResponseEntity<Any> {
-		val optQuestion = questionRepo.findById(pathId)
-
-		if (!optQuestion.isPresent) {
+		if(!questionRepo.exists(pathId))
 			return ResponseEntity.status(404).body("Question with id: $pathId not found")
-		}
 
-		questionRepo.deleteById(pathId)
+		questionRepo.delete(pathId)
 
 		return ResponseEntity.status(204).build()
 	}
