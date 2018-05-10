@@ -3,7 +3,6 @@ package no.gardos.quiz.repositoryTest
 import no.gardos.quiz.model.entity.Category
 import no.gardos.quiz.model.entity.Question
 import org.junit.Assert.*
-import org.junit.Ignore
 import org.junit.Test
 import javax.validation.ConstraintViolationException
 

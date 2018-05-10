@@ -7,7 +7,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.transaction.TransactionSystemException
 import javax.validation.ConstraintViolationException
 
 class QuizRepositoryTest : RepositoryTestBase() {
