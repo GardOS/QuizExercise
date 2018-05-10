@@ -56,7 +56,7 @@ class QuizController {
 			return ResponseEntity.status(409).body("Name is already taken")
 
 		val questions = dto.questions?.map {
-			questionRepo.findById(it!!.id!!).orElse(null)
+			questionRepo.findOne(it!!.id!!)
 					?: return ResponseEntity.status(400).body("Question with id: $it not found")
 		}
 
@@ -79,7 +79,7 @@ class QuizController {
 			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
-		if (!quizRepo.existsById(pathId)) {
+		if (!quizRepo.exists(pathId)) {
 			return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
 		}
 
@@ -87,7 +87,7 @@ class QuizController {
 
 		if (requestDto.questions != null) {
 			newQuestions = requestDto.questions?.map {
-				questionRepo.findById(it!!.id!!).orElse(null)
+				questionRepo.findOne(it!!.id!!)
 						?: return ResponseEntity.status(400).body("Question with id: $it not found")
 			}
 		}
@@ -110,13 +110,10 @@ class QuizController {
 			@PathVariable("id")
 			pathId: Long
 	): ResponseEntity<Any> {
-		val optQuiz = quizRepo.findById(pathId)
+		val quiz = quizRepo.findOne(pathId)
+				?: return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
 
-		if (!optQuiz.isPresent) {
-			return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
-		}
-
-		return ResponseEntity.ok(QuizConverter.transform(optQuiz.get()))
+		return ResponseEntity.ok(QuizConverter.transform(quiz))
 	}
 
 	@ApiOperation("Get a quiz by ID")
@@ -126,13 +123,11 @@ class QuizController {
 			@PathVariable("id")
 			pathId: Long
 	): ResponseEntity<Any> {
-		val optQuiz = quizRepo.findById(pathId)
-
-		if (!optQuiz.isPresent) {
+		if (!quizRepo.exists(pathId)) {
 			return ResponseEntity.status(404).body("Quiz with id: $pathId not found")
 		}
 
-		quizRepo.deleteById(pathId)
+		quizRepo.delete(pathId)
 
 		return ResponseEntity.status(204).build()
 	}

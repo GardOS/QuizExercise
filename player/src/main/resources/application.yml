@@ -9,4 +9,4 @@ eureka:
 
 spring:
   application:
-    name: player
+    name: player-server

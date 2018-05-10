@@ -7,7 +7,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.transaction.TransactionSystemException
+import javax.validation.ConstraintViolationException
 
 class QuizRepositoryTest : RepositoryTestBase() {
 
@@ -42,21 +42,21 @@ class QuizRepositoryTest : RepositoryTestBase() {
 	fun delete_ExistingQuiz_QuizDeleted() {
 		val quiz = createTestQuiz(questions = null)
 
-		Assert.assertNotNull(quizRepo.findById(quiz.id!!))
+		Assert.assertNotNull(quizRepo.findOne(quiz.id!!))
 
-		quizRepo.deleteById(quiz.id!!)
+		quizRepo.delete(quiz.id!!)
 
-		Assert.assertFalse(quizRepo.existsById(quiz.id!!))
+		Assert.assertFalse(quizRepo.exists(quiz.id!!))
 	}
 
-	@Test(expected = TransactionSystemException::class)
+	@Test(expected = ConstraintViolationException::class)
 	fun notEmptyConstraint_NullName_ConstraintViolationException() {
 		val quizName = null
 		val quiz = Quiz(quizName)
 		quizRepo.save(quiz)
 	}
 
-	@Test(expected = TransactionSystemException::class)
+	@Test(expected = ConstraintViolationException::class)
 	fun notEmptyConstraint_EmptyName_ConstraintViolationException() {
 		val quizName = ""
 		val quiz = Quiz(quizName)
