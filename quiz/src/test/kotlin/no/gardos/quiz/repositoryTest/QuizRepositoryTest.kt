@@ -5,6 +5,7 @@ import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.springframework.dao.DataIntegrityViolationException
 import javax.validation.ConstraintViolationException
@@ -70,6 +71,12 @@ class QuizRepositoryTest : RepositoryTestBase() {
 		val duplicateQuiz = Quiz(quizName)
 		quizRepo.save(quiz)
 		quizRepo.save(duplicateQuiz)
+	}
+
+	@Ignore //Hibernate don't care about id received, auto-generates anyway
+	@Test(expected = ConstraintViolationException::class)
+	fun idConstraint_IdIsSpecified_ConstraintViolationException() {
+		createTestQuiz(id = 1234)
 	}
 
 	@Test()

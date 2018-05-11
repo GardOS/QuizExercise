@@ -98,10 +98,9 @@ class QuestionRepositoryTest : RepositoryTestBase() {
 		questionRepo.save(question)
 	}
 
-	@Test(expected = ConstraintViolationException::class) //Todo: Add for other repos
+	@Test(expected = ConstraintViolationException::class)
 	fun idConstraint_IdIsSpecified_ConstraintViolationException() {
-		val question = createTestQuestion(id = 1234)
-		questionRepo.save(question)
+		createTestQuestion(id = 1234)
 	}
 
 	@Test

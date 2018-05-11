@@ -3,6 +3,7 @@ package no.gardos.quiz.repositoryTest
 import no.gardos.quiz.model.entity.Category
 import no.gardos.quiz.model.entity.Question
 import org.junit.Assert.*
+import org.junit.Ignore
 import org.junit.Test
 import org.springframework.dao.DataIntegrityViolationException
 import javax.validation.ConstraintViolationException
@@ -80,6 +81,13 @@ class CategoryRepositoryTest : RepositoryTestBase() {
 		questionRepo.save(question)
 
 		assertEquals(secondCategory.id, categoryRepo.findByQuestionsIsNotNull().first().id)
+	}
+
+	@Ignore //Hibernate don't care about id received, auto-generates anyway
+	@Test(expected = ConstraintViolationException::class)
+	fun idConstraint_IdIsSpecified_ConstraintViolationException() {
+		val category = Category(id = 1234, name = defaultCategoryName)
+		categoryRepo.save(category)
 	}
 
 	@Test(expected = ConstraintViolationException::class)
