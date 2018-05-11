@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy
 
 @SpringBootApplication
-@EnableZuulProxy //Todo: Investigate spring cloud gateway
+@EnableZuulProxy
 class GatewayApplication
 
 //docker-compose down && mvn package -DskipTests && docker-compose build && docker-compose up -d
