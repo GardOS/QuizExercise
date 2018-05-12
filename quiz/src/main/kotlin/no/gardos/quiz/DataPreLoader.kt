@@ -17,6 +17,10 @@ class DataPreLoader(var quizRepository: QuizRepository,
 
 	//For practical reasons some data is created when the application starts, since its a drag to create it yourself
 	override fun run(vararg p0: String?) {
+		//Stop if data already in DB, to avoid constraint violations
+		if ((categoryRepository.count() + questionRepository.count() + quizRepository.count()) > 0)
+			return
+
 		val lettersCategory = categoryRepository.save(Category(name = "Letters"))
 		val numbersCategory = categoryRepository.save(Category(name = "Numbers"))
 		val animalsCategory = categoryRepository.save(Category(name = "Animals"))

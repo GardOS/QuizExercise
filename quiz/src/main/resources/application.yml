@@ -10,15 +10,12 @@ eureka:
 spring:
   application:
     name: quiz-server
-
-#Todo: Investigate docker and DBs
-#spring:
-#  application:
-#    name: quiz-server
-#  datasource:
-#    url: "jdbc:h2:mem:"
-#    driver-class-name: "org.h2.Driver"
-#  jpa:
-#    database: "h2"
-#    hibernate:
-#      ddl-auto: "create-drop"
+  datasource:
+    url: "jdbc:postgresql://postgres-quiz:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.postgresql.Driver"
+  jpa:
+    database: "postgresql"
+    hibernate:
+      ddl-auto: "update"

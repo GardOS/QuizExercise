@@ -1,6 +1,17 @@
 version: '3.3'
 
 services:
+  #Data storage
+  redis:
+    image: "redis:latest"
+  postgres-quiz:
+    image: "postgres:10"
+  postgres-game:
+    image: "postgres:10"
+  postgres-player:
+    image: "postgres:10"
+
+  #Service
   gateway:
     build:
       context: gateway
@@ -21,12 +32,14 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - gateway
+      - postgres-game
   player-server:
     build:
       context: player
       dockerfile: Dockerfile
     depends_on:
       - gateway
+      - postgres-player
   quiz-server-0:
     build:
       context: quiz
@@ -35,6 +48,7 @@ services:
       - SERVICE_ID=A
     depends_on:
       - gateway
+      - postgres-quiz
   quiz-server-1:
     build:
       context: quiz
@@ -43,3 +57,4 @@ services:
       - SERVICE_ID=B
     depends_on:
       - gateway
+      - postgres-quiz

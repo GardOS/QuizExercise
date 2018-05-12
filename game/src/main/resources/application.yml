@@ -10,5 +10,14 @@ eureka:
 spring:
   application:
     name: game-server
+  datasource:
+    url: "jdbc:postgresql://postgres-game:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.postgresql.Driver"
+  jpa:
+    database: "postgresql"
+    hibernate:
+      ddl-auto: "update"
 
 quizServerPath: http://quiz-server/quizzes
