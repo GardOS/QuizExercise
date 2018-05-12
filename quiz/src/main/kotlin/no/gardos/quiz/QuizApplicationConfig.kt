@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.netflix.config.ConfigurationManager
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
+import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
@@ -20,9 +21,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @Configuration
 @EnableSwagger2
+@EnableHystrixDashboard
 class QuizApplicationConfig {
 
-	//Just a proof of concept of Hystrix being present in solution
+	//Just a proof of concept of configuring Hystrix
 	init{
 		val conf = ConfigurationManager.getConfigInstance()
 		conf.setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", 1001)
