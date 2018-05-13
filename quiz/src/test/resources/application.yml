@@ -5,3 +5,7 @@ spring:
 eureka:
   client:
     enabled: false
+
+security:
+  basic:
+    enabled: false #TODO: Remove me

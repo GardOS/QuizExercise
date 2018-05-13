@@ -1,3 +1,6 @@
+server:
+  port: 80
+
 spring:
   application:
     name: gateway
@@ -24,5 +27,5 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 
-server:
-  port: 80
+security:
+  sessions: ALWAYS

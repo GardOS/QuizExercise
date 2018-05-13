@@ -23,3 +23,6 @@ eureka:
       enabled: true
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/
+
+security:
+  sessions: ALWAYS
