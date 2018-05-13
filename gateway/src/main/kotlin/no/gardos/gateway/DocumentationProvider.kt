@@ -11,7 +11,7 @@ import java.util.*
 @Component
 @Primary
 @EnableAutoConfiguration
-class DocumentationController : SwaggerResourcesProvider {
+class DocumentationProvider : SwaggerResourcesProvider {
 
 	override fun get(): List<SwaggerResource> {
 		val resources = ArrayList<SwaggerResource>()
