@@ -20,7 +20,7 @@ import springfox.documentation.spring.web.plugins.Docket
 import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @Configuration
-@EnableSwagger2 //TODO: Investigate 406 error on swagger ui
+@EnableSwagger2
 @EnableHystrixDashboard
 class QuizApplicationConfig {
 
