@@ -10,8 +10,6 @@ import org.springframework.cloud.netflix.ribbon.RibbonClient
 @RibbonClient(name = "quiz")
 class GameApplication
 
-//docker-compose down && mvn package -DskipTests && docker-compose build && docker-compose up -d
-//http://localhost:8080/swagger-ui.html
 fun main(args: Array<String>) {
 	SpringApplication.run(GameApplication::class.java, *args)
 }

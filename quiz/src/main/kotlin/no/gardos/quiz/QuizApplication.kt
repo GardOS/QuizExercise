@@ -8,8 +8,6 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 @EnableEurekaClient
 class QuizApplication
 
-//docker-compose down && mvn package -DskipTests && docker-compose build && docker-compose up -d
-//http://localhost:8090/swagger-ui.html
 fun main(args: Array<String>) {
 	SpringApplication.run(QuizApplication::class.java, *args)
 }

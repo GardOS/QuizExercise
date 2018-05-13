@@ -27,7 +27,6 @@ class GatewayApplication {
 	}
 }
 
-//docker-compose down && mvn package -DskipTests && docker-compose build && docker-compose up -d
 fun main(args: Array<String>) {
 	SpringApplication.run(GatewayApplication::class.java, *args)
 }
