@@ -20,12 +20,16 @@ services:
       - "80:8080"
     depends_on:
       - eureka
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
   eureka:
     build:
       context: eureka
       dockerfile: Dockerfile
     ports:
       - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
   game-server:
     build:
       context: game
@@ -33,6 +37,8 @@ services:
     depends_on:
       - gateway
       - postgres-game
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
   player-server:
     build:
       context: player
@@ -40,11 +46,14 @@ services:
     depends_on:
       - gateway
       - postgres-player
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
   quiz-server-0:
     build:
       context: quiz
       dockerfile: Dockerfile
     environment:
+      - SPRING_PROFILES_ACTIVE=docker
       - SERVICE_ID=A
     depends_on:
       - gateway
@@ -54,6 +63,7 @@ services:
       context: quiz
       dockerfile: Dockerfile
     environment:
+      - SPRING_PROFILES_ACTIVE=docker
       - SERVICE_ID=B
     depends_on:
       - gateway
