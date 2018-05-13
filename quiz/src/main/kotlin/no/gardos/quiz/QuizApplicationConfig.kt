@@ -25,7 +25,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 class QuizApplicationConfig {
 
 	//Just a proof of concept of configuring Hystrix
-	init{
+	init {
 		val conf = ConfigurationManager.getConfigInstance()
 		conf.setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", 1001)
 	}

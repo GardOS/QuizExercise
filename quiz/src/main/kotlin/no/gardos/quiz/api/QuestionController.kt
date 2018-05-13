@@ -102,7 +102,7 @@ class QuestionController {
 			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
-		if(!questionRepo.exists(pathId))
+		if (!questionRepo.exists(pathId))
 			return ResponseEntity.status(404).body("Question with id: $pathId not found")
 
 		var category: Category? = null
@@ -110,7 +110,7 @@ class QuestionController {
 		if (requestDto.category != null) {
 			category = categoryRepo.findOne(requestDto.category!!.id!!)
 					?: return ResponseEntity.status(400)
-							.body("Category with id: ${requestDto.category} not found")
+					.body("Category with id: ${requestDto.category} not found")
 		}
 
 		val newQuestion = questionRepo.save(
@@ -133,7 +133,7 @@ class QuestionController {
 			@PathVariable("id")
 			pathId: Long
 	): ResponseEntity<Any> {
-		if(!questionRepo.exists(pathId))
+		if (!questionRepo.exists(pathId))
 			return ResponseEntity.status(404).body("Question with id: $pathId not found")
 
 		questionRepo.delete(pathId)
