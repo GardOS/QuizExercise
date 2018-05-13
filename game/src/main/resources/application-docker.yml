@@ -1,11 +1,4 @@
-eureka:
-  instance:
-    preferIpAddress: true
-  client:
-    healthcheck:
-      enabled: true
-    serviceUrl:
-      defaultZone: http://eureka:8761/eureka/
+quizServerPath: http://quiz-server/quizzes
 
 spring:
   application:
@@ -19,5 +12,21 @@ spring:
     database: "postgresql"
     hibernate:
       ddl-auto: "update"
+  session:
+    store-type: redis
+  redis:
+    host: redis
+    port: 6379
 
-quizServerPath: http://quiz-server/quizzes
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
+
+security:
+  sessions: NEVER
+
