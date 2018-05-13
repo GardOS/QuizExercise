@@ -19,7 +19,9 @@ Tools, Frameworks etc.:
 In terminal:
 1. Run `mvn clean install` (include -DskipTests to skip tests)  
 2. Run `docker-compose build`  
-3. Run `docker-compose up -d` 
+3. Run `docker-compose up -d`
+
+All in one: `mvn package -DskipTests && docker-compose up --build -d`
 
 From there on you can test endpoints using a tool such as Postman.
 
