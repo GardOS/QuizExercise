@@ -3,9 +3,9 @@ package no.gardos.game.api
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
-import no.gardos.game.model.converter.GameStateConverter
-import no.gardos.game.model.entity.GameState
-import no.gardos.game.model.repository.GameStateRepository
+import no.gardos.game.model.GameState
+import no.gardos.game.model.GameStateConverter
+import no.gardos.game.model.GameStateRepository
 import no.gardos.schema.GameStateDto
 import no.gardos.schema.QuestionDto
 import no.gardos.schema.QuizDto

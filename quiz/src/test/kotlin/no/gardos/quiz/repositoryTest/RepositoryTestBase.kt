@@ -1,12 +1,7 @@
 package no.gardos.quiz.repositoryTest
 
 import no.gardos.quiz.QuizApplication
-import no.gardos.quiz.model.entity.Category
-import no.gardos.quiz.model.entity.Question
-import no.gardos.quiz.model.entity.Quiz
-import no.gardos.quiz.model.repository.CategoryRepository
-import no.gardos.quiz.model.repository.QuestionRepository
-import no.gardos.quiz.model.repository.QuizRepository
+import no.gardos.quiz.model.*
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired

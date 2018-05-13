@@ -1,6 +1,5 @@
-package no.gardos.game.model.converter
+package no.gardos.game.model
 
-import no.gardos.game.model.entity.GameState
 import no.gardos.schema.GameStateDto
 
 class GameStateConverter {

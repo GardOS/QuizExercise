@@ -1,7 +1,7 @@
 package no.gardos.quiz.repositoryTest
 
-import no.gardos.quiz.model.entity.Category
-import no.gardos.quiz.model.entity.Question
+import no.gardos.quiz.model.Category
+import no.gardos.quiz.model.Question
 import org.junit.Assert.*
 import org.junit.Ignore
 import org.junit.Test

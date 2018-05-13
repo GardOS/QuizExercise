@@ -1,6 +1,5 @@
-package no.gardos.quiz.model.repository
+package no.gardos.quiz.model
 
-import no.gardos.quiz.model.entity.Question
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import javax.transaction.Transactional

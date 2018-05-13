@@ -4,11 +4,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
-import no.gardos.quiz.model.converter.QuizConverter
-import no.gardos.quiz.model.entity.Question
-import no.gardos.quiz.model.entity.Quiz
-import no.gardos.quiz.model.repository.QuestionRepository
-import no.gardos.quiz.model.repository.QuizRepository
+import no.gardos.quiz.model.*
 import no.gardos.schema.QuizDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException

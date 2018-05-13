@@ -1,6 +1,5 @@
-package no.gardos.quiz.model.converter
+package no.gardos.quiz.model
 
-import no.gardos.quiz.model.entity.Category
 import no.gardos.schema.CategoryDto
 
 class CategoryConverter {

@@ -1,4 +1,4 @@
-package no.gardos.game.model.entity
+package no.gardos.game.model
 
 import org.jetbrains.annotations.NotNull
 import javax.persistence.Entity

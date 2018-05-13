@@ -1,4 +1,4 @@
-package no.gardos.player.model.entity
+package no.gardos.player.model
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue

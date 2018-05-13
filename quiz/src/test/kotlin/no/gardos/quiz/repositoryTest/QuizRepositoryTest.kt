@@ -1,6 +1,6 @@
 package no.gardos.quiz.repositoryTest
 
-import no.gardos.quiz.model.entity.Quiz
+import no.gardos.quiz.model.Quiz
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
