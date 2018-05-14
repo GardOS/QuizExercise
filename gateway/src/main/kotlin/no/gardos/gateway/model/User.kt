@@ -4,9 +4,11 @@ import org.hibernate.validator.constraints.NotBlank
 import javax.persistence.ElementCollection
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.Table
 import javax.validation.constraints.NotNull
 
 @Entity
+@Table(name = "USERS") //TODO: Verify if needed
 class User(
 		@get:Id
 		@get:NotBlank
