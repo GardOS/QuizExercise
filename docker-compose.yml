@@ -2,8 +2,9 @@ version: '3.3'
 
 services:
   #Data storage
-  redis:
+  redis: #TODO: Verify which services need redis
     image: "redis:latest"
+  #TODO: Verify if several DB-services are needed
   postgres-quiz:
     image: "postgres:10"
   postgres-game:
@@ -20,6 +21,7 @@ services:
       - "80:8080"
     depends_on:
       - eureka
+      - redis
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   eureka:
@@ -37,6 +39,7 @@ services:
     depends_on:
       - gateway
       - postgres-game
+      - redis
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   quiz-server-0:
@@ -49,6 +52,7 @@ services:
     depends_on:
       - gateway
       - postgres-quiz
+      - redis
   quiz-server-1:
     build:
       context: quiz
@@ -59,3 +63,4 @@ services:
     depends_on:
       - gateway
       - postgres-quiz
+      - redis
