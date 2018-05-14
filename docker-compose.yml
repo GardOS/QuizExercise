@@ -39,15 +39,6 @@ services:
       - postgres-game
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-  player-server:
-    build:
-      context: player
-      dockerfile: Dockerfile
-    depends_on:
-      - gateway
-      - postgres-player
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
   quiz-server-0:
     build:
       context: quiz

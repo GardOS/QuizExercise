@@ -13,7 +13,6 @@
         <module>game</module>
         <module>eureka</module>
         <module>quiz</module>
-        <module>player</module>
         <module>gateway</module>
     </modules>
 

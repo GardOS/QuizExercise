@@ -20,9 +20,6 @@ zuul:
       path: /quizzes/**
     game:
       path: /games/**
-    player:
-      path: /players/**
-
 eureka:
   instance:
     preferIpAddress: true
