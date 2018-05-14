@@ -17,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 class GatewayApplication {
 	@Bean
 	internal fun swaggerUiConfig(): UiConfiguration {
-		return UiConfiguration("validatorUrl", "full", "alpha", "schema",
+		return UiConfiguration("validatorUrl", "list", "alpha", "schema",
 				UiConfiguration.Constants.DEFAULT_SUBMIT_METHODS, false, true, 60000L)
 	}
 
