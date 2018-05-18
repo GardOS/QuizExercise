@@ -24,9 +24,14 @@ class WebSecurityConfig(
 	}
 
 	override fun configure(http: HttpSecurity) {
-		http.authorizeRequests()
+		http.httpBasic()
+				.and()
+				.logout()
+				.and()
+				.authorizeRequests()
+				.antMatchers("/user").authenticated()
+				.antMatchers("/signIn").permitAll()
 				.antMatchers("/swagger-ui.html").permitAll()
-				.antMatchers("/**").permitAll()
 				.anyRequest().denyAll()
 				.and()
 				.csrf()
@@ -37,16 +42,10 @@ class WebSecurityConfig(
 	override fun configure(auth: AuthenticationManagerBuilder) {
 		auth.jdbcAuthentication()
 				.dataSource(dataSource)
-				.usersByUsernameQuery("""
-                     SELECT username, password, enabled
-                     FROM users
-                     WHERE username=?
-                     """)
-				.authoritiesByUsernameQuery("""
-                     SELECT x.username, y.roles
-                     FROM users x, user_entity_roles y
-                     WHERE x.username=? and y.user_entity_username=x.username
-                     """)
+				.usersByUsernameQuery("SELECT username, password, enabled FROM users WHERE username=?")
+				.authoritiesByUsernameQuery(
+						"SELECT x.username, y.roles FROM users x, user_roles y " +
+								"WHERE x.username=? and y.user_username=x.username")
 				.passwordEncoder(passwordEncoder)
 	}
 }
