@@ -20,7 +20,7 @@ import java.security.Principal
 @Api(description = "API for authentication.")
 @RestController
 @Validated
-class UserController(
+class AuthController(
 		private val service: UserService,
 		private val authenticationManager: AuthenticationManager,
 		private val userDetailsService: UserDetailsService

@@ -2,6 +2,7 @@ package no.gardos.gateway
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -29,11 +30,16 @@ class WebSecurityConfig(
 				.logout()
 				.and()
 				.authorizeRequests()
-				//Required for Swagger-ui
+				//Swagger-ui
 				.antMatchers("/swagger-resources/**", "/webjars/**", "/swagger-ui.html").permitAll()
+				//Auth
 				.antMatchers("/signIn").permitAll()
 				.antMatchers("/user").authenticated()
+				//Quiz
+				.antMatchers(HttpMethod.GET, "/quiz-server/**").permitAll()
 				.antMatchers("/quiz-server/**").authenticated()
+				//Game
+				.antMatchers(HttpMethod.GET, "/game-server/**").permitAll()
 				.antMatchers("/game-server/**").authenticated() //Todo: Admin?
 				.anyRequest().denyAll()
 				.and()
