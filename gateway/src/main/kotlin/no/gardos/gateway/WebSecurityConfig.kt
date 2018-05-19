@@ -29,9 +29,12 @@ class WebSecurityConfig(
 				.logout()
 				.and()
 				.authorizeRequests()
-				.antMatchers("/user").authenticated()
+				//Required for Swagger-ui
+				.antMatchers("/swagger-resources/**", "/webjars/**", "/swagger-ui.html").permitAll()
 				.antMatchers("/signIn").permitAll()
-				.antMatchers("/swagger-ui.html").permitAll()
+				.antMatchers("/user").authenticated()
+				.antMatchers("/quiz-server/**").authenticated()
+				.antMatchers("/game-server/**").authenticated() //Todo: Admin?
 				.anyRequest().denyAll()
 				.and()
 				.csrf()
