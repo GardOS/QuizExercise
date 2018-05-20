@@ -11,12 +11,16 @@ zuul:
   routes:
     category:
       path: /categories/**
+      sensitive-headers:
     question:
       path: /questions/**
+      sensitive-headers:
     quiz:
       path: /quizzes/**
+      sensitive-headers:
     game:
       path: /games/**
+      sensitive-headers:
 
 eureka:
   instance:
