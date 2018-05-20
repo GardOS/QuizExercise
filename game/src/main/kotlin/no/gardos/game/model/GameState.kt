@@ -10,7 +10,7 @@ class GameState(
 		@get:NotNull
 		var Quiz: Long? = null,
 		@get:NotNull
-		var Player: Long? = null,
+		var Player: String? = null,
 		@get:NotNull
 		var Score: Int = 0,
 		@get:NotNull

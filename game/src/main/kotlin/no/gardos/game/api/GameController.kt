@@ -80,7 +80,7 @@ class GameController {
 		val gameState = gameStateRepo.save(
 				GameState(
 						Quiz = quiz!!.id,
-						Player = 1 //Temp
+						Player = "username" //Temp
 				)
 		)
 
