@@ -35,3 +35,7 @@ eureka:
 
 security:
   sessions: ALWAYS
+
+logging:
+  level:
+    org.springframework.security: trace

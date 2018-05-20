@@ -30,3 +30,7 @@ eureka:
 
 security:
   sessions: NEVER
+
+logging:
+  level:
+    org.springframework:security: debug
