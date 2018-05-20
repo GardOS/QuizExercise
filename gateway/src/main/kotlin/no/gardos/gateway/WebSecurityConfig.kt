@@ -2,7 +2,6 @@ package no.gardos.gateway
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -35,11 +34,12 @@ class WebSecurityConfig(
 				//Auth
 				.antMatchers("/signIn").permitAll()
 				.antMatchers("/user").authenticated()
+				.antMatchers("/username").authenticated() //TODO: Remove when done debugging
 				//Quiz
-				.antMatchers(HttpMethod.GET, "/quiz-server/**").permitAll()
+//				.antMatchers(HttpMethod.GET, "/quiz-server/**").permitAll() //TODO: Uncomment when done debugging
 				.antMatchers("/quiz-server/**").authenticated()
 				//Game
-				.antMatchers(HttpMethod.GET, "/game-server/**").permitAll()
+//				.antMatchers(HttpMethod.GET, "/game-server/**").permitAll() //TODO: Uncomment when done debugging
 				.antMatchers("/game-server/**").authenticated() //Todo: Admin?
 				.anyRequest().denyAll()
 				.and()

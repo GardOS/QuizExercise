@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
+import java.security.Principal
 import javax.validation.ConstraintViolationException
 
 @Api(value = "/games", description = "API for interacting with the game.")
@@ -49,6 +50,13 @@ class GameController {
 				?: return ResponseEntity.status(404).body("Game with id: $pathId not found")
 
 		return ResponseEntity.ok(game)
+	}
+
+	//TODO: remove
+	@ApiOperation("Retrieves currently logged on user")
+	@GetMapping(path = ["/username"])
+	fun getUsername(user: Principal): ResponseEntity<Any> {
+		return ResponseEntity.ok().body(user.name)
 	}
 
 	@ApiOperation("Starts a new game. Initializes a GameState object for tracking the game")

@@ -1,6 +1,7 @@
 package no.gardos.gateway.api
 
 import io.swagger.annotations.Api
+import io.swagger.annotations.ApiOperation
 import no.gardos.gateway.model.UserService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -11,10 +12,7 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.security.Principal
 
 @Api(description = "API for authentication.")
@@ -25,6 +23,13 @@ class AuthController(
 		private val authenticationManager: AuthenticationManager,
 		private val userDetailsService: UserDetailsService
 ) {
+	//TODO: remove
+	@ApiOperation("Retrieves currently logged on user")
+	@GetMapping(path = ["/username"])
+	fun getUsername(user: Principal): ResponseEntity<Any> {
+		return ResponseEntity.ok().body(user.name)
+	}
+
 	@RequestMapping("/user")
 	fun user(user: Principal): ResponseEntity<Map<String, Any>> {
 		val map = mutableMapOf<String, Any>()
