@@ -44,7 +44,7 @@ internal class CommandLineAppStartupRunner : CommandLineRunner {
 	var passwordEncoder: PasswordEncoder? = null
 
 	override fun run(vararg args: String) {
-		val roles = hashSetOf("ROLE_USER", "ROLE_ADMIN")
+		val roles = hashSetOf("ROLE_USER", "ROLE_ADMIN", "ROLE_ACTUATOR")
 		userRepository!!.save(User("admin", passwordEncoder!!.encode("pwd"), roles))
 	}
 }

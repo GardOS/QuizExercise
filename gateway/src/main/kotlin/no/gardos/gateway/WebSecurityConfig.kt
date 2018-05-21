@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 import javax.sql.DataSource
 
+
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig(
@@ -33,6 +34,7 @@ class WebSecurityConfig(
 				.antMatchers("/swagger-resources/**", "/webjars/**", "/swagger-ui.html").permitAll()
 				//Auth
 				.antMatchers("/signIn").permitAll()
+				.antMatchers("/trace").authenticated()
 				.antMatchers("/user").authenticated()
 				.antMatchers("/username").authenticated() //TODO: Remove when done debugging
 				//Quiz
