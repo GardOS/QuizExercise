@@ -26,7 +26,7 @@ class AuthenticationController(
 		private val userDetailsService: UserDetailsService
 ) {
 	@RequestMapping("/user")
-	fun user(user: Principal): ResponseEntity<Map<String, Any>> {
+	fun getUser(user: Principal): ResponseEntity<Map<String, Any>> {
 		val map = mutableMapOf<String, Any>()
 		map["name"] = user.name
 		map["roles"] = AuthorityUtils.authorityListToSet((user as Authentication).authorities)

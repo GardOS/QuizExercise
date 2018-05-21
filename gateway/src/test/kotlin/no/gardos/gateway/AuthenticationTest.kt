@@ -55,14 +55,14 @@ class AuthenticationTest {
 	}
 
 	@Test
-	fun testUnauthorizedAccess() {
+	fun getUser_NoSession_Unauthorized() {
 		RestAssured.given().get("/user")
 				.then()
 				.statusCode(401)
 	}
 
 	@Test
-	fun testAuthorizedAccess() {
+	fun getUser_WithSession_Ok() {
 		val username = "username"
 		val password = "password"
 

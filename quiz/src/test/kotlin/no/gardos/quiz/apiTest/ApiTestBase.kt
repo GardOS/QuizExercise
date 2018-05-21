@@ -71,7 +71,7 @@ abstract class ApiTestBase {
 	}
 
 	@Before
-	fun clean() {
+	fun initialize() {
 		RestAssured.baseURI = "http://localhost"
 		RestAssured.port = port
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
