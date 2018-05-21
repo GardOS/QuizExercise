@@ -33,7 +33,7 @@ class GameApiTest {
 
 		given().contentType(ContentType.JSON)
 				.body(gameState)
-				.post(GAME_PATH)
+				.post("$GAME_PATH/new-game")
 				.then()
 				.statusCode(400)
 	}
