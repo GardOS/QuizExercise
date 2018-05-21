@@ -2,9 +2,8 @@ version: '3.3'
 
 services:
   #Data storage
-  redis: #TODO: Verify which services need redis
+  redis:
     image: "redis:latest"
-  #TODO: Verify if several DB-services are needed
   postgres-quiz:
     image: "postgres:10"
   postgres-game:
