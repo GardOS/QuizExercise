@@ -2,6 +2,7 @@ package no.gardos.gateway
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -32,17 +33,17 @@ class WebSecurityConfig(
 				.authorizeRequests()
 				//Swagger-ui
 				.antMatchers("/swagger-resources/**", "/webjars/**", "/swagger-ui.html").permitAll()
+				//Actuator
+				.antMatchers("/trace").authenticated()
 				//Auth
 				.antMatchers("/signIn").permitAll()
-				.antMatchers("/trace").authenticated()
 				.antMatchers("/user").authenticated()
-				.antMatchers("/username").authenticated() //TODO: Remove when done debugging
 				//Quiz
-//				.antMatchers(HttpMethod.GET, "/quiz-server/**").permitAll() //TODO: Uncomment when done debugging
+				.antMatchers(HttpMethod.GET, "/quiz-server/**").permitAll()
 				.antMatchers("/quiz-server/**").authenticated()
 				//Game
-//				.antMatchers(HttpMethod.GET, "/game-server/**").permitAll() //TODO: Uncomment when done debugging
-				.antMatchers("/game-server/**").authenticated() //Todo: Admin?
+				.antMatchers(HttpMethod.GET, "/game-server/**").permitAll()
+				.antMatchers("/game-server/**").authenticated() //Todo: Logic for admin?
 				.anyRequest().denyAll()
 				.and()
 				.csrf()
@@ -53,9 +54,9 @@ class WebSecurityConfig(
 	override fun configure(auth: AuthenticationManagerBuilder) {
 		auth.jdbcAuthentication()
 				.dataSource(dataSource)
-				.usersByUsernameQuery("SELECT username, password, enabled FROM users WHERE username=?")
+				.usersByUsernameQuery("SELECT username, password, enabled FROM user WHERE username=?")
 				.authoritiesByUsernameQuery(
-						"SELECT x.username, y.roles FROM users x, user_roles y " +
+						"SELECT x.username, y.roles FROM user x, user_roles y " +
 								"WHERE x.username=? and y.user_username=x.username")
 				.passwordEncoder(passwordEncoder)
 	}

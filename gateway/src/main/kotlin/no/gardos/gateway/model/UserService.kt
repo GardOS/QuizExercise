@@ -19,7 +19,7 @@ class UserService(
 
 			if (userCrud.exists(username)) return false
 
-			val user = User(username, hashedPassword, roles.map { "ROLE_$it" }.toSet()) //TODO: Why "ROLE_" prefix?
+			val user = User(username, hashedPassword, roles.map { "ROLE_$it" }.toSet())
 			userCrud.save(user)
 
 			return true
