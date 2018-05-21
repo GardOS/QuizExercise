@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
+import java.security.Principal
 import javax.validation.ConstraintViolationException
 
 @Api(value = "/games", description = "API for interacting with the game.")
@@ -56,15 +57,19 @@ class GameController {
 	fun newGame(
 			@ApiParam
 			@RequestBody
-			dto: GameStateDto
+			dto: GameStateDto,
+			user: Principal
 	): ResponseEntity<Any> {
 		if (dto.id != null) {
 			return ResponseEntity.status(400).body("Id should not be specified")
 		}
 
-		if (dto.quiz == null || dto.player == null) {
-			return ResponseEntity.status(400).body("Invalid request. References invalid")
+		if (dto.quiz == null) {
+			return ResponseEntity.status(400).body("Invalid request. References to quiz invalid")
 		}
+
+		if (user.name == null)
+			return ResponseEntity.status(400).body("Currently logged on user is invalid")
 
 		val quiz: QuizDto?
 
@@ -75,12 +80,10 @@ class GameController {
 			return ResponseEntity.status(ex.statusCode).body("Error when querying Quiz:\n ${ex.responseBodyAsString}")
 		}
 
-		//Todo: Logic for finding players
-
 		val gameState = gameStateRepo.save(
 				GameState(
 						Quiz = quiz!!.id,
-						Player = "username" //Temp
+						Player = user.name
 				)
 		)
 
@@ -121,16 +124,21 @@ class GameController {
 			@PathVariable("id")
 			pathId: Long,
 			@RequestParam("answer", required = true)
-			answer: Int?
+			answer: Int?,
+			user: Principal
 	): ResponseEntity<Any> {
 		if (answer == null || answer !in 0..3) {
 			return ResponseEntity.status(400).body("Invalid parameters")
 		}
 
-		//Todo: Check if the correct player is playing
+		if (user.name == null)
+			return ResponseEntity.status(400).body("Currently logged on user is invalid")
 
 		val game = gameStateRepo.findOne(pathId)
 				?: return ResponseEntity.status(404).body("Game with id: $pathId not found")
+
+		if (game.Player != user.name)
+			return ResponseEntity.status(403).body("Currently logged on user did not initiate this game")
 
 		if (game.isFinished) return ResponseEntity.ok().body(game)
 
