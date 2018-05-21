@@ -52,13 +52,6 @@ class GameController {
 		return ResponseEntity.ok(game)
 	}
 
-	//TODO: remove
-	@ApiOperation("Retrieves currently logged on user")
-	@GetMapping(path = ["/username"])
-	fun getUsername(user: Principal): ResponseEntity<Any> {
-		return ResponseEntity.ok().body(user.name)
-	}
-
 	@ApiOperation("Starts a new game. Initializes a GameState object for tracking the game")
 	@PostMapping(path = ["/new-game"])
 	fun newGame(
@@ -178,5 +171,18 @@ class GameController {
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	fun handleValidationFailure(ex: RuntimeException): String {
 		return "Invalid request. Error:\n${ex.message ?: "Error not found"}"
+	}
+
+	//Debugging methods to manually verify functionality
+	@ApiOperation("Retrieves username of currently logged on user")
+	@GetMapping(path = ["/username"])
+	fun testAuthentication(user: Principal): ResponseEntity<Any> {
+		return ResponseEntity.ok().body(user.name)
+	}
+
+	@ApiOperation("Test Eureka load handling using config values from docker container")
+	@GetMapping(path = ["/eureka"])
+	fun testEureka(): ResponseEntity<String> {
+		return ResponseEntity.ok(System.getenv("SERVICE_ID") ?: "Undefined")
 	}
 }
