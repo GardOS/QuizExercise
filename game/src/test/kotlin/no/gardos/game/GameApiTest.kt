@@ -31,7 +31,9 @@ class GameApiTest {
 	fun newGame_IdSpecified_BadRequest() {
 		val gameState = GameState(id = 1234)
 
-		given().contentType(ContentType.JSON)
+
+		given().auth().basic("testUser", "pwd")
+				.contentType(ContentType.JSON)
 				.body(gameState)
 				.post("$GAME_PATH/new-game")
 				.then()
