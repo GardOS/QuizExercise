@@ -1,32 +1,13 @@
 package no.gardos.game
 
-import io.restassured.RestAssured
+import com.github.tomakehurst.wiremock.client.WireMock
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import no.gardos.game.model.GameState
-import org.junit.Before
+import no.gardos.schema.GameStateDto
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.springframework.boot.context.embedded.LocalServerPort
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit4.SpringRunner
 
-@RunWith(SpringRunner::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [(GameApplication::class)])
-class GameApiTest {
-
-	@LocalServerPort
-	protected var port = 0
-
-	val GAME_PATH = "/games"
-
-	@Before
-	fun initialize() {
-		RestAssured.baseURI = "http://localhost"
-		RestAssured.port = port
-		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
-	}
-
+class GameApiTest : ApiTestBase() {
 	@Test
 	fun newGame_IdSpecified_BadRequest() {
 		val gameState = GameState(id = 1234)
@@ -35,8 +16,28 @@ class GameApiTest {
 		given().auth().basic("testUser", "pwd")
 				.contentType(ContentType.JSON)
 				.body(gameState)
-				.post("$GAME_PATH/new-game")
+				.post("/new-game")
 				.then()
 				.statusCode(400)
+	}
+
+	@Test
+	fun newGame_ValidQuiz_Ok() {
+		val gameState = GameStateDto(quiz = 1234)
+		val json = mockQuizJsonString()
+
+		wireMockServer.stubFor(
+				WireMock.get(
+						WireMock.urlMatching("/quizzes/.*"))
+						.willReturn(WireMock.aResponse()
+								.withHeader("Content-Type", "application/json")
+								.withBody(json)))
+
+		given().auth().basic("testUser", "pwd")
+				.contentType(ContentType.JSON)
+				.body(gameState)
+				.post("/new-game")
+				.then()
+				.statusCode(200)
 	}
 }

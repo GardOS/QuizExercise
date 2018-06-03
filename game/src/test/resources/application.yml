@@ -1,3 +1,5 @@
+quizServerPath: http://localhost:8099/quizzes
+
 spring:
   jpa:
     show-sql: true
