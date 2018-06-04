@@ -58,7 +58,7 @@ class QuizApplicationConfig {
 
 	@LoadBalanced
 	@Bean
-	fun restTemplate(): RestTemplate {
+	fun loadBalancedRestTemplate(): RestTemplate {
 		return RestTemplate()
 	}
 }

@@ -30,7 +30,7 @@ import javax.validation.ConstraintViolationException
 @Validated
 class GameController {
 	@Autowired
-	private lateinit var rest: RestTemplate
+	private lateinit var loadBalancedRestTemplate: RestTemplate
 
 	@Autowired
 	private lateinit var gameStateRepo: GameStateRepository
@@ -81,7 +81,7 @@ class GameController {
 
 		val quiz: QuizDto?
 		try {
-			quiz = rest.exchange(url, HttpMethod.GET, httpEntity, QuizDto::class.java).body
+			quiz = loadBalancedRestTemplate.exchange(url, HttpMethod.GET, httpEntity, QuizDto::class.java).body
 		} catch (ex: HttpClientErrorException) {
 			return ResponseEntity.status(ex.statusCode).body("Error when querying Quiz:\n ${ex.responseBodyAsString}")
 		}
@@ -120,7 +120,7 @@ class GameController {
 
 		val question: QuestionDto
 		try {
-			val quiz = rest.exchange(url, HttpMethod.GET, httpEntity, QuizDto::class.java).body
+			val quiz = loadBalancedRestTemplate.exchange(url, HttpMethod.GET, httpEntity, QuizDto::class.java).body
 			question = quiz?.questions?.getOrNull(game.RoundNumber)
 					?: return ResponseEntity.status(500).body("Could not find question")
 		} catch (ex: HttpClientErrorException) {
@@ -167,7 +167,7 @@ class GameController {
 
 		val quiz: QuizDto?
 		try {
-			quiz = rest.exchange(url, HttpMethod.GET, httpEntity, QuizDto::class.java).body
+			quiz = loadBalancedRestTemplate.exchange(url, HttpMethod.GET, httpEntity, QuizDto::class.java).body
 		} catch (ex: HttpClientErrorException) {
 			game.RoundNumber++ //Instead of being stuck on this question, skip it
 			gameStateRepo.save(game)
