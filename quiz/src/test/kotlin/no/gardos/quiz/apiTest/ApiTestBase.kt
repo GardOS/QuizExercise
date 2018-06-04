@@ -1,6 +1,7 @@
 package no.gardos.quiz.apiTest
 
 import io.restassured.RestAssured
+import io.restassured.RestAssured.basic
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import no.gardos.quiz.QuizApplication
@@ -75,6 +76,7 @@ abstract class ApiTestBase {
 		RestAssured.baseURI = "http://localhost"
 		RestAssured.port = port
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
+		RestAssured.authentication = basic("testUser", "pwd")
 
 		//Ensure that the DB has a neutral state before starting any tests
 		removeQuizzes()

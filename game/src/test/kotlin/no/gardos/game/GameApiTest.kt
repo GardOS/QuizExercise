@@ -12,9 +12,7 @@ class GameApiTest : ApiTestBase() {
 	fun newGame_IdSpecified_BadRequest() {
 		val gameState = GameState(id = 1234)
 
-
-		given().auth().basic("testUser", "pwd")
-				.contentType(ContentType.JSON)
+		given().contentType(ContentType.JSON)
 				.body(gameState)
 				.post("/new-game")
 				.then()
@@ -33,8 +31,7 @@ class GameApiTest : ApiTestBase() {
 								.withHeader("Content-Type", "application/json")
 								.withBody(json)))
 
-		given().auth().basic("testUser", "pwd")
-				.contentType(ContentType.JSON)
+		given().contentType(ContentType.JSON)
 				.body(gameState)
 				.post("/new-game")
 				.then()

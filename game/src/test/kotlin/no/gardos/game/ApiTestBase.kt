@@ -26,6 +26,7 @@ abstract class ApiTestBase {
 			RestAssured.port = 8080
 			RestAssured.basePath = "/games"
 			RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
+			RestAssured.authentication = RestAssured.basic("testUser", "pwd")
 
 			wireMockServer = WireMockServer(WireMockConfiguration.wireMockConfig().port(8099).notifier(ConsoleNotifier(true)))
 			wireMockServer.start()
