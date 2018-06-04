@@ -41,4 +41,11 @@ abstract class ApiTestBase {
 	fun mockQuizJsonString(): String {
 		return """{"id": "1"}"""
 	}
+
+	fun mockFullQuizJsonString(): String {
+		return """{"id":1,"name":"Quiz about letters","questions":[
+			{"id":1,"questionText":"Which letter is B?","answers":["A","B","C","D"],"correctAnswer":1,"category":{"name":"Letters","id":1}},
+			{"id":2,"questionText":"Which letter is not D?","answers":["L","D","D","D"],"correctAnswer":0,"category":{"name":"Letters","id":1}}
+			]}""".trimIndent()
+	}
 }
