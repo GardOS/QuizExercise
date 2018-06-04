@@ -7,7 +7,7 @@ import org.springframework.cloud.netflix.ribbon.RibbonClient
 
 @SpringBootApplication
 @EnableEurekaClient
-@RibbonClient(name = "quiz")
+@RibbonClient(name = "quiz-server")
 class GameApplication
 
 fun main(args: Array<String>) {

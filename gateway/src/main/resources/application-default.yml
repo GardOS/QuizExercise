@@ -12,15 +12,12 @@ spring:
 
 zuul:
   routes:
-    category:
-      path: /categories/**
-    question:
-      path: /questions/**
-    quiz:
-      path: /quizzes/**
-    game:
-      path: /games/**
+    quiz-server:
+      path: /quiz-server/**
+    game-server:
+      path: /game-server/**
   sensitive-headers:
+
 eureka:
   instance:
     preferIpAddress: true
