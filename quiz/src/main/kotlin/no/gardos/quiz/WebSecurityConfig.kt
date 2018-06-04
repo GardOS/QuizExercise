@@ -1,4 +1,4 @@
-package no.gardos.game
+package no.gardos.quiz
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
