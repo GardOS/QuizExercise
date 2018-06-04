@@ -12,14 +12,13 @@ import no.gardos.schema.QuizDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import java.security.Principal
+import javax.servlet.http.HttpSession
 import javax.validation.ConstraintViolationException
 
 @Api(value = "/games", description = "API for interacting with the game.")
@@ -58,7 +57,8 @@ class GameController {
 			@ApiParam
 			@RequestBody
 			dto: GameStateDto,
-			user: Principal
+			user: Principal,
+			session: HttpSession
 	): ResponseEntity<Any> {
 		if (dto.id != null) {
 			return ResponseEntity.status(400).body("Id should not be specified")
@@ -71,11 +71,17 @@ class GameController {
 		if (user.name == null)
 			return ResponseEntity.status(400).body("Currently logged on user is invalid")
 
-		val quiz: QuizDto?
+		if (session.id == null)
+			ResponseEntity.status(403).body("Invalid session")
 
+		val url = "$quizServerPath/${dto.quiz}"
+		val headers = HttpHeaders()
+		headers.add("cookie", "SESSION=${session.id}")
+		val httpEntity = HttpEntity(null, headers)
+
+		val quiz: QuizDto?
 		try {
-			val url = "$quizServerPath/${dto.quiz}"
-			quiz = rest.getForObject(url, QuizDto::class.java)
+			quiz = rest.exchange(url, HttpMethod.GET, httpEntity, QuizDto::class.java).body
 		} catch (ex: HttpClientErrorException) {
 			return ResponseEntity.status(ex.statusCode).body("Error when querying Quiz:\n ${ex.responseBodyAsString}")
 		}
@@ -95,7 +101,8 @@ class GameController {
 	fun currentQuestion(
 			@ApiParam("Id of the game")
 			@PathVariable("id")
-			pathId: Long
+			pathId: Long,
+			session: HttpSession
 	): ResponseEntity<Any> {
 		val game = gameStateRepo.findOne(pathId)
 				?: return ResponseEntity.status(404).body("Game with id: $pathId not found")
@@ -103,10 +110,17 @@ class GameController {
 		if (game.isFinished) return ResponseEntity.ok().body(game)
 
 
+		if (session.id == null)
+			ResponseEntity.status(403).body("Invalid session")
+
+		val url = "$quizServerPath/${game.Quiz}"
+		val headers = HttpHeaders()
+		headers.add("cookie", "SESSION=${session.id}")
+		val httpEntity = HttpEntity(null, headers)
+
 		val question: QuestionDto
 		try {
-			val quizUrl = "$quizServerPath/${game.Quiz}"
-			val quiz = rest.getForObject(quizUrl, QuizDto::class.java) //Todo: Make api-method for question?
+			val quiz = rest.exchange(url, HttpMethod.GET, httpEntity, QuizDto::class.java).body
 			question = quiz?.questions?.getOrNull(game.RoundNumber)
 					?: return ResponseEntity.status(500).body("Could not find question")
 		} catch (ex: HttpClientErrorException) {
@@ -125,7 +139,8 @@ class GameController {
 			pathId: Long,
 			@RequestParam("answer", required = true)
 			answer: Int?,
-			user: Principal
+			user: Principal,
+			session: HttpSession
 	): ResponseEntity<Any> {
 		if (answer == null || answer !in 0..3) {
 			return ResponseEntity.status(400).body("Invalid parameters")
@@ -142,10 +157,17 @@ class GameController {
 
 		if (game.isFinished) return ResponseEntity.ok().body(game)
 
+		if (session.id == null)
+			ResponseEntity.status(403).body("Invalid session")
+
+		val url = "$quizServerPath/${game.Quiz}"
+		val headers = HttpHeaders()
+		headers.add("cookie", "SESSION=${session.id}")
+		val httpEntity = HttpEntity(null, headers)
+
 		val quiz: QuizDto?
 		try {
-			val quizUrl = "$quizServerPath/${game.Quiz}"
-			quiz = rest.getForObject(quizUrl, QuizDto::class.java)
+			quiz = rest.exchange(url, HttpMethod.GET, httpEntity, QuizDto::class.java).body
 		} catch (ex: HttpClientErrorException) {
 			game.RoundNumber++ //Instead of being stuck on this question, skip it
 			gameStateRepo.save(game)
