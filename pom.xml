@@ -14,6 +14,7 @@
         <module>eureka</module>
         <module>quiz</module>
         <module>gateway</module>
+        <module>endToEnd</module>
     </modules>
 
     <name>QuizExercise</name>
@@ -35,6 +36,7 @@
         <springfox.version>2.6.1</springfox.version>
         <testcontainers.version>1.6.0</testcontainers.version>
         <wiremock.version>2.2.1</wiremock.version>
+        <awaitility.version>3.0.0</awaitility.version>
     </properties>
 
     <dependencies>
@@ -108,6 +110,13 @@
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers</artifactId>
                 <version>${testcontainers.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <!-- For handling waiting of asynchronous events -->
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>${awaitility.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
