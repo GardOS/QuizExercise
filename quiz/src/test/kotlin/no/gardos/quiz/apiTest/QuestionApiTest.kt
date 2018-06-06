@@ -34,7 +34,7 @@ class QuestionApiTest : ApiTestBase() {
 	fun createQuestion_IdSpecified_BadRequest() {
 		val category = createGenericCategory("Category")
 		val question = QuestionDto(
-				id = 1234,
+				id = "1234",
 				questionText = "What is 1+1?",
 				answers = listOf("0", "1", "2", "3"),
 				correctAnswer = 2,
@@ -189,7 +189,7 @@ class QuestionApiTest : ApiTestBase() {
 				questionText = "What is 1+1?",
 				answers = listOf("0", "1", "2", "3"),
 				correctAnswer = 2,
-				category = CategoryDto(name = "Category", id = 1234)
+				category = CategoryDto(name = "Category", id = "1234")
 		)
 
 		given().contentType(ContentType.JSON)
@@ -313,7 +313,7 @@ class QuestionApiTest : ApiTestBase() {
 		val category = createGenericCategory("Category")
 		val oldQuestion = createGenericQuestion(category)
 		val question = QuestionDto(
-				id = 1234,
+				id = "1234",
 				questionText = "What is 2+1?",
 				answers = listOf("0", "1", "2", "3"),
 				correctAnswer = 3,
@@ -336,7 +336,7 @@ class QuestionApiTest : ApiTestBase() {
 				questionText = "What is 2+1?",
 				answers = listOf("0", "1", "2", "3"),
 				correctAnswer = 3,
-				category = CategoryDto(name = "NewCategory", id = 1234)
+				category = CategoryDto(name = "NewCategory", id = "1234")
 		)
 
 		given().pathParam("id", oldQuestion.id)

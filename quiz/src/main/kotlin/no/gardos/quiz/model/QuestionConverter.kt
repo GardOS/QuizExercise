@@ -7,11 +7,11 @@ class QuestionConverter {
 	companion object {
 		fun transform(question: Question): QuestionDto {
 			return QuestionDto(
-					id = question.id,
+					id = question.id.toString(),
 					questionText = question.questionText,
 					answers = question.answers,
 					correctAnswer = question.correctAnswer,
-					category = CategoryDto(name = question.category?.name, id = question.category?.id)
+					category = CategoryDto(name = question.category?.name, id = question.category?.id.toString())
 			)
 		}
 

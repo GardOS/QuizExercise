@@ -35,7 +35,7 @@ class QuizRepositoryTest : RepositoryTestBase() {
 		quiz.name = newName
 		quizRepo.save(quiz)
 
-		val updatedQuiz = quizRepo.getOne(quiz.id!!)
+		val updatedQuiz = quizRepo.getOne(quiz.id!!.toLong())
 		assertEquals(newName, updatedQuiz.name)
 	}
 
@@ -43,11 +43,11 @@ class QuizRepositoryTest : RepositoryTestBase() {
 	fun delete_ExistingQuiz_QuizDeleted() {
 		val quiz = createTestQuiz(questions = null)
 
-		Assert.assertNotNull(quizRepo.findOne(quiz.id!!))
+		Assert.assertNotNull(quizRepo.findOne(quiz.id!!.toLong()))
 
-		quizRepo.delete(quiz.id!!)
+		quizRepo.delete(quiz.id!!.toLong())
 
-		Assert.assertFalse(quizRepo.exists(quiz.id!!))
+		Assert.assertFalse(quizRepo.exists(quiz.id!!.toLong()))
 	}
 
 	@Test(expected = ConstraintViolationException::class)

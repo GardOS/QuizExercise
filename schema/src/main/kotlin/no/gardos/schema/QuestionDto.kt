@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty
 data class QuestionDto(
 
 		@ApiModelProperty("Question id")
-		var id: Long? = null,
+		var id: String? = null,
 
 		@ApiModelProperty("The question text for the question")
 		var questionText: String? = null,

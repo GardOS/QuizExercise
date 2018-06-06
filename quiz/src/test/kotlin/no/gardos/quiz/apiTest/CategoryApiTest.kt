@@ -30,7 +30,7 @@ class CategoryApiTest : ApiTestBase() {
 
 	@Test
 	fun createCategory_IdSpecified_BadRequest() {
-		val category = CategoryDto("Name", id = 1)
+		val category = CategoryDto("Name", id = "1234")
 
 		given().contentType(ContentType.JSON)
 				.body(category)

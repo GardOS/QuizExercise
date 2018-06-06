@@ -9,5 +9,5 @@ data class CategoryDto(
 		var name: String? = null,
 
 		@ApiModelProperty("Category id")
-		var id: Long? = null
+		var id: String? = null
 )

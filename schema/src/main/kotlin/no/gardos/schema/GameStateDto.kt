@@ -12,5 +12,5 @@ data class GameStateDto(
 		@ApiModelProperty("Indication that all the questions has been attempted")
 		var isFinished: Boolean = false,
 		@ApiModelProperty("GameState id")
-		var id: Long? = null
+		var id: String? = null
 )

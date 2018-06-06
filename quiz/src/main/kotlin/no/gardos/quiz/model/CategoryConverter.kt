@@ -6,7 +6,7 @@ class CategoryConverter {
 	companion object {
 		fun transform(category: Category): CategoryDto {
 			return CategoryDto(
-					id = category.id,
+					id = category.id.toString(),
 					name = category.name
 			)
 		}

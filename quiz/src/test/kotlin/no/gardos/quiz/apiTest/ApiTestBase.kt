@@ -34,7 +34,7 @@ abstract class ApiTestBase {
 				.post(CATEGORY_PATH)
 				.then()
 				.statusCode(201)
-				.extract().asString().toLong()
+				.extract().asString()
 
 		return category
 	}
@@ -52,7 +52,7 @@ abstract class ApiTestBase {
 				.post(QUESTION_PATH)
 				.then()
 				.statusCode(201)
-				.extract().asString().toLong()
+				.extract().asString()
 
 		return question
 	}

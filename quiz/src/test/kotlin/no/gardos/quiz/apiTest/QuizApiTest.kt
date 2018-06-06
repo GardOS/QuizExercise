@@ -30,7 +30,7 @@ class QuizApiTest : ApiTestBase() {
 
 	@Test
 	fun createQuiz_IdSpecified_BadRequest() {
-		val quiz = QuizDto(id = 1, name = "Quiz")
+		val quiz = QuizDto(id = "1234", name = "Quiz")
 
 		RestAssured.given().contentType(ContentType.JSON)
 				.body(quiz)
@@ -75,7 +75,7 @@ class QuizApiTest : ApiTestBase() {
 
 	@Test
 	fun createQuiz_QuestionDoNotExist_BadRequest() {
-		val quiz = QuizDto(name = "Quiz", questions = listOf(QuestionDto(id = 1234)))
+		val quiz = QuizDto(name = "Quiz", questions = listOf(QuestionDto(id = "1234")))
 
 		RestAssured.given().contentType(ContentType.JSON)
 				.body(quiz)
@@ -152,7 +152,7 @@ class QuizApiTest : ApiTestBase() {
 	@Test
 	fun updateQuiz_IdInBodyIsNotNull_BadRequest() {
 		val oldQuiz = createGenericQuiz("OldQuiz")
-		val newQuiz = QuizDto(id = 1234, name = "NewQuiz")
+		val newQuiz = QuizDto(id = "1234", name = "NewQuiz")
 
 		RestAssured.given().pathParam("id", oldQuiz)
 				.contentType(ContentType.JSON)
@@ -167,7 +167,7 @@ class QuizApiTest : ApiTestBase() {
 		val oldQuiz = createGenericQuiz("OldQuiz")
 
 		val question = QuestionDto(
-				id = 1234,
+				id = "1234",
 				questionText = "What is 1+1?",
 				answers = listOf("0", "1", "2", "3"),
 				correctAnswer = 2,

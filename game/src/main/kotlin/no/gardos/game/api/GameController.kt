@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.*
+import org.springframework.transaction.TransactionSystemException
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import java.security.Principal
+import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 import javax.validation.ConstraintViolationException
 
@@ -88,7 +90,7 @@ class GameController {
 
 		val gameState = gameStateRepo.save(
 				GameState(
-						Quiz = quiz!!.id,
+						Quiz = quiz!!.id!!.toLong(),
 						Player = user.name
 				)
 		)
@@ -195,10 +197,19 @@ class GameController {
 		return if (isCorrect) ResponseEntity.ok().body("Correct") else ResponseEntity.ok().body("Wrong")
 	}
 
-	//Catches validation errors and returns 400 instead of 500
-	@ExceptionHandler(value = ([ConstraintViolationException::class, DataIntegrityViolationException::class]))
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	fun handleValidationFailure(ex: RuntimeException): String {
-		return "Invalid request. Error:\n${ex.message ?: "Error not found"}"
+	//Catches validation errors and returns error status based on error
+	@ExceptionHandler(value = ([ConstraintViolationException::class, org.hibernate.exception.ConstraintViolationException::class,
+		DataIntegrityViolationException::class, TransactionSystemException::class]))
+	fun handleValidationFailure(ex: Exception, response: HttpServletResponse): String {
+		var cause: Throwable? = ex
+		for (i in 0..4) { //Iterate 5 times max, since it might have infinite depth
+			if (cause is ConstraintViolationException || cause is org.hibernate.exception.ConstraintViolationException) {
+				response.status = HttpStatus.BAD_REQUEST.value()
+				return "Invalid request. Error:\n${ex.message ?: "Error not found"}"
+			}
+			cause = cause?.cause
+		}
+		response.status = HttpStatus.INTERNAL_SERVER_ERROR.value()
+		return "Something went wrong processing the request.  Error:\n${ex.message ?: "Error not found"}"
 	}
 }

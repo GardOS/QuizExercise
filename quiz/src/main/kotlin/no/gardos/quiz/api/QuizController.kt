@@ -15,7 +15,9 @@ import org.springframework.transaction.TransactionSystemException
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
-import javax.validation.ConstraintViolationException
+import javax.servlet.http.HttpServletResponse
+import org.hibernate.exception.ConstraintViolationException as HibernateConstraintViolationException
+import javax.validation.ConstraintViolationException as JavaxConstraintViolationException
 
 @Api(value = "/quizzes", description = "API for quizzes.")
 @RequestMapping(
@@ -53,7 +55,7 @@ class QuizController {
 			return ResponseEntity.status(409).body("Name is already taken")
 
 		val questions = dto.questions?.map {
-			questionRepo.findOne(it!!.id!!)
+			questionRepo.findOne(it!!.id!!.toLong())
 					?: return ResponseEntity.status(400).body("Question with id: $it not found")
 		}
 
@@ -84,7 +86,7 @@ class QuizController {
 
 		if (requestDto.questions != null) {
 			newQuestions = requestDto.questions?.map {
-				questionRepo.findOne(it!!.id!!)
+				questionRepo.findOne(it!!.id!!.toLong())
 						?: return ResponseEntity.status(400).body("Question with id: $it not found")
 			}
 		}
@@ -129,22 +131,6 @@ class QuizController {
 		return ResponseEntity.status(204).build()
 	}
 
-	/*
-	Catches validation errors and returns 400 instead of 500
-	Because of wrapping and black-boxing beyond my understanding and patience, whenever a
-	ConstraintViolationException is thrown it might be wrapped to something else based on the context.
-	Although messy.. below is the best effort to keep this in check.
-	See: https://stackoverflow.com/a/45118680
-	The downside to this "solution" is that there might be Exceptions which are not from constraints being thrown, which
-	warrants a 500 status code instead, which is very misleading.
-	*/
-	@ExceptionHandler(value = ([ConstraintViolationException::class, DataIntegrityViolationException::class, //TODO: Iterate cause
-		TransactionSystemException::class]))
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	fun handleValidationFailure(ex: RuntimeException): String {
-		return "Invalid request. Error:\n${ex.message ?: "Error not found"}"
-	}
-
 	//Debugging methods to manually verify functionality
 	@ApiOperation("Retrieves username of currently logged on user")
 	@GetMapping(path = ["/username"])
@@ -156,5 +142,21 @@ class QuizController {
 	@GetMapping(path = ["/eureka"])
 	fun testEureka(): ResponseEntity<String> {
 		return ResponseEntity.ok(System.getenv("SERVICE_ID") ?: "Undefined")
+	}
+
+	//Catches validation errors and returns error status based on error
+	@ExceptionHandler(value = ([JavaxConstraintViolationException::class, HibernateConstraintViolationException::class,
+		DataIntegrityViolationException::class, TransactionSystemException::class]))
+	fun handleValidationFailure(ex: Exception, response: HttpServletResponse): String {
+		var cause: Throwable? = ex
+		for (i in 0..4) { //Iterate 5 times max, since it might have infinite depth
+			if (cause is JavaxConstraintViolationException || cause is HibernateConstraintViolationException) {
+				response.status = HttpStatus.BAD_REQUEST.value()
+				return "Invalid request. Error:\n${ex.message ?: "Error not found"}"
+			}
+			cause = cause?.cause
+		}
+		response.status = HttpStatus.INTERNAL_SERVER_ERROR.value()
+		return "Something went wrong processing the request.  Error:\n${ex.message ?: "Error not found"}"
 	}
 }
