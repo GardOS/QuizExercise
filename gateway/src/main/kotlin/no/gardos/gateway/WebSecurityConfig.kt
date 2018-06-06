@@ -50,7 +50,6 @@ class WebSecurityConfig(
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 	}
 
-	//TODO: Understand this
 	override fun configure(auth: AuthenticationManagerBuilder) {
 		auth.jdbcAuthentication()
 				.dataSource(dataSource)
