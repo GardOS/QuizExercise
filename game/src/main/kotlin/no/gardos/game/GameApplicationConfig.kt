@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 import org.springframework.web.client.RestTemplate
 import springfox.documentation.builders.ApiInfoBuilder
@@ -44,6 +45,15 @@ class GameApplicationConfig {
 				.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 				.modules(JavaTimeModule())
 				.build()
+	}
+
+	//Although bad practice we use this bean for testing purposes
+	//The reason for this is because of complications of mocking a @LoadBalanced bean
+	//There are probably ways to disable ribbon, or inject your own test beans, but its outside scope for this course
+	@Bean
+	@Profile("test")
+	fun restTemplate(): RestTemplate {
+		return RestTemplate()
 	}
 
 	@Bean
