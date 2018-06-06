@@ -14,7 +14,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 		http.httpBasic()
 				.and()
 				.authorizeRequests()
-				.antMatchers(HttpMethod.GET, "/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/**").permitAll() //TODO: Check if username can be found here for auth
 				.anyRequest().authenticated()
 				.and()
 				.csrf().disable()

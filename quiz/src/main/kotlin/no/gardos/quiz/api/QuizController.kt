@@ -138,7 +138,7 @@ class QuizController {
 	The downside to this "solution" is that there might be Exceptions which are not from constraints being thrown, which
 	warrants a 500 status code instead, which is very misleading.
 	*/
-	@ExceptionHandler(value = ([ConstraintViolationException::class, DataIntegrityViolationException::class,
+	@ExceptionHandler(value = ([ConstraintViolationException::class, DataIntegrityViolationException::class, //TODO: Iterate cause
 		TransactionSystemException::class]))
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	fun handleValidationFailure(ex: RuntimeException): String {
