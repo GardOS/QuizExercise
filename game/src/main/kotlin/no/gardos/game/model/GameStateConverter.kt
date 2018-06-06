@@ -6,7 +6,7 @@ class GameStateConverter {
 	companion object {
 		fun transform(gameState: GameState): GameStateDto {
 			return GameStateDto(
-					id = gameState.id,
+					id = gameState.id.toString(),
 					quiz = gameState.Quiz,
 					player = gameState.Player,
 					isFinished = gameState.isFinished
