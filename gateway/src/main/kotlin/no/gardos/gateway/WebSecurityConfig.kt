@@ -34,6 +34,7 @@ class WebSecurityConfig(
 				//Swagger-ui
 				.antMatchers("/swagger-resources/**", "/webjars/**", "/swagger-ui.html").permitAll()
 				//Actuator
+				.antMatchers("/health").permitAll()
 				.antMatchers("/trace").authenticated()
 				//Auth
 				.antMatchers("/signIn").permitAll()
