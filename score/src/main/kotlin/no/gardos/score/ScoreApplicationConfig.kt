@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import org.springframework.amqp.core.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
@@ -43,5 +44,20 @@ class ScoreApplicationConfig {
 				.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 				.modules(JavaTimeModule())
 				.build()
+	}
+
+	@Bean
+	fun fanout(): FanoutExchange {
+		return FanoutExchange("game-over")
+	}
+
+	@Bean
+	fun queue(): Queue {
+		return AnonymousQueue()
+	}
+
+	@Bean
+	fun binding(fanout: FanoutExchange, queue: Queue): Binding {
+		return BindingBuilder.bind(queue).to(fanout)
 	}
 }
