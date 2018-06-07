@@ -157,7 +157,7 @@ class GameController {
 		if (game.Player != user.name)
 			return ResponseEntity.status(403).body("Currently logged on user did not initiate this game")
 
-		if (game.isFinished) return ResponseEntity.ok().body(game)
+		if (game.isFinished) return ResponseEntity.noContent().build()
 
 		if (session.id == null)
 			ResponseEntity.status(403).body("Invalid session")
