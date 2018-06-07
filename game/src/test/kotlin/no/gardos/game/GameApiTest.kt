@@ -21,7 +21,7 @@ class GameApiTest : ApiTestBase() {
 
 	@Test
 	fun newGame_ValidQuiz_Ok() {
-		val gameState = GameStateDto(quiz = 1234)
+		val gameState = GameStateDto(quiz = "1234")
 		val json = mockQuizJsonString()
 
 		wireMockServer.stubFor(

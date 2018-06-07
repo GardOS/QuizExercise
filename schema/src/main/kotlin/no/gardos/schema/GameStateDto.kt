@@ -6,9 +6,13 @@ import io.swagger.annotations.ApiModelProperty
 @ApiModel("DTO for GameState. It represent a GameState entity")
 data class GameStateDto(
 		@ApiModelProperty("Reference to the quiz which is played")
-		var quiz: Long? = null,
+		var quiz: String? = null,
 		@ApiModelProperty("Username of the player playing the game")
 		var player: String? = null,
+		@ApiModelProperty("Current score")
+		var Score: Int = 0,
+		@ApiModelProperty("Current round")
+		var RoundNumber: Int = 0,
 		@ApiModelProperty("Indication that all the questions has been attempted")
 		var isFinished: Boolean = false,
 		@ApiModelProperty("GameState id")

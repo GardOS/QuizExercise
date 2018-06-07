@@ -7,7 +7,7 @@ class GameStateConverter {
 		fun transform(gameState: GameState): GameStateDto {
 			return GameStateDto(
 					id = gameState.id.toString(),
-					quiz = gameState.Quiz,
+					quiz = gameState.Quiz.toString(),
 					player = gameState.Player,
 					isFinished = gameState.isFinished
 			)
