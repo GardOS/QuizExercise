@@ -45,6 +45,9 @@ class WebSecurityConfig(
 				//Game
 				.antMatchers(HttpMethod.GET, "/game-server/**").permitAll()
 				.antMatchers("/game-server/**").authenticated() //Todo: Logic for admin?
+				//Score
+				.antMatchers(HttpMethod.GET, "/score-server/**").permitAll()
+				.antMatchers("/score-server/**").authenticated()
 				.anyRequest().denyAll()
 				.and()
 				.csrf()
