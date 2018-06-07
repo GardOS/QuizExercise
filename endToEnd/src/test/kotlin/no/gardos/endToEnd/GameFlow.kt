@@ -1,14 +1,16 @@
 package no.gardos.endToEnd
 
 import io.restassured.RestAssured
-import io.restassured.RestAssured.get
-import io.restassured.RestAssured.given
+import io.restassured.RestAssured.*
 import io.restassured.builder.RequestSpecBuilder
 import io.restassured.http.ContentType
 import no.gardos.schema.GameStateDto
+import no.gardos.schema.QuestionDto
 import no.gardos.schema.QuizDto
 import org.awaitility.Awaitility.await
+import org.awaitility.Duration
 import org.hamcrest.CoreMatchers.equalTo
+import org.junit.Assert.*
 import org.junit.BeforeClass
 import org.junit.ClassRule
 import org.junit.Test
@@ -34,7 +36,8 @@ class GameFlow {
 			RestAssured.port = 8080
 			RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
-			await().atMost(305, TimeUnit.SECONDS)
+			await().atMost(300, TimeUnit.SECONDS)
+					.pollInterval(Duration.FIVE_SECONDS)
 					.ignoreExceptions()
 					.until({
 						// zuul and eureka is up when 200 is returned
@@ -86,25 +89,60 @@ class GameFlow {
 				.extract()
 				.path<List<Int>>("id")
 
-		val quizzes = get("/quiz-server/quizzes").`as`(Array<QuizDto>::class.java)
+		val quiz = get("/quiz-server/quizzes").`as`(Array<QuizDto>::class.java).first()
+		assertEquals("Quiz about letters", quiz.name)
+		val gameState = GameStateDto(quiz.id)
 
-		val gameState = GameStateDto(quiz = 13)
-
-		given().body(gameState)
+		val gameId = given().body(gameState)
 				.post("/game-server/games/new-game")
 				.then()
 				.statusCode(200)
-	}
+				.extract()
+				.path<String>("id")
 
-	@Test
-	fun testAuth() {
-		val gameState = GameStateDto(quiz = 14)
+		val firstQuestion = get("/game-server/games/$gameId/current-question")
+				.`as`(QuestionDto::class.java)
 
-		given().body(gameState)
-				.post("/game-server/games/new-game")
+		//Guess 1
+		val correctAnswerResponse = patch("/game-server/games/$gameId?answer=1")
 				.then()
 				.statusCode(200)
+				.extract()
+				.response()
+				.body.asString()
 
+		assertEquals("Correct", correctAnswerResponse)
 
+		val secondQuestion = get("/game-server/games/$gameId/current-question")
+				.then()
+				.statusCode(200)
+				.extract()
+				.body()
+				.`as`(QuestionDto::class.java)
+
+		assertNotEquals(firstQuestion.id, secondQuestion.id)
+
+		//Guess 2
+		val wrongAnswerResponse = patch("/game-server/games/$gameId?answer=1")
+				.then()
+				.statusCode(200)
+				.extract()
+				.response()
+				.body.asString()
+
+		assertEquals("Wrong", wrongAnswerResponse)
+
+		//Guess 3
+		patch("/game-server/games/$gameId?answer=1")
+				.then()
+				.statusCode(204)
+
+		val isDone = get("/game-server/games/$gameId/current-question")
+				.then()
+				.statusCode(200)
+				.extract()
+				.path<Boolean>("finished")
+
+		assertTrue(isDone)
 	}
 }
