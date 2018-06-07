@@ -83,12 +83,6 @@ class GameFlow {
 
 	@Test
 	fun completeGame() {
-		val quizIds = get("/quiz-server/quizzes")
-				.then()
-				.statusCode(200)
-				.extract()
-				.path<List<Int>>("id")
-
 		val quiz = get("/quiz-server/quizzes").`as`(Array<QuizDto>::class.java).first()
 		assertEquals("Quiz about letters", quiz.name)
 		val gameState = GameStateDto(quiz.id)
