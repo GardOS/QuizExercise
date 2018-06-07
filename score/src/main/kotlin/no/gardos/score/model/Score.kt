@@ -8,11 +8,11 @@ import javax.persistence.Id
 @Entity
 class Score(
 		@get:NotNull
-		var Quiz: Long? = null,
+		var quiz: Long? = null,
 		@get:NotNull
-		var Player: String? = null,
+		var player: String? = null,
 		@get:NotNull
-		var Score: Int = 0,
+		var score: Int = 0,
 		@get:Id @get:GeneratedValue
 		var id: Long? = null
 )
