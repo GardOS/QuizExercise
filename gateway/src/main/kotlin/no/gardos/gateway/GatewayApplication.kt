@@ -1,5 +1,6 @@
 package no.gardos.gateway
 
+import com.netflix.config.ConfigurationManager
 import no.gardos.gateway.model.User
 import no.gardos.gateway.model.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +21,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @EnableZuulProxy
 @EnableSwagger2
 class GatewayApplication {
+
+	init {
+		val conf = ConfigurationManager.getConfigInstance()
+		conf.setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", 5000)
+	}
+
 	@Bean
 	internal fun swaggerUiConfig(): UiConfiguration {
 		return UiConfiguration("validatorUrl", "list", "alpha", "schema",
