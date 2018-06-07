@@ -37,4 +37,6 @@ class GameApiTest : ApiTestBase() {
 				.then()
 				.statusCode(200)
 	}
+
+	//No more tests because time is limited and most of the concepts has been tried in other modules
 }

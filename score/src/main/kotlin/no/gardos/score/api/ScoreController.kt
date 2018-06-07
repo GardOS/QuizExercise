@@ -41,4 +41,6 @@ class ScoreController {
 	fun getScores(): ResponseEntity<List<ScoreDto>> {
 		return ResponseEntity.ok(ScoreConverter.transform(scoreRepo.findAll()))
 	}
+
+	//No more logic because time is limited and most of the concepts has been tried in other modules
 }
