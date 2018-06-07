@@ -8,10 +8,14 @@ services:
     image: "postgres:10"
   postgres-game:
     image: "postgres:10"
-  postgres-player:
+  postgres-score:
     image: "postgres:10"
 
-  #Service
+  #Message queue
+  rabbitmq:
+    image:  "rabbitmq:3"
+
+  #Custom service
   gateway:
     build:
       context: gateway
@@ -39,6 +43,7 @@ services:
       - gateway
       - postgres-game
       - redis
+      - rabbitmq
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   quiz-server-0:
@@ -63,3 +68,14 @@ services:
       - gateway
       - postgres-quiz
       - redis
+  score-server:
+    build:
+      context: score
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - gateway
+      - postgres-score
+      - redis
+      - rabbitmq
