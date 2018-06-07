@@ -18,11 +18,8 @@ import org.testcontainers.containers.DockerComposeContainer
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-class GameFlow {
+class GameFlowIT {
 	companion object {
-		val GAME_URL = "http://localhost/game-server/games"
-		val QUIZ_URL = "http://localhost/quiz-server/quizzes"
-
 		class KDockerComposeContainer(path: File) : DockerComposeContainer<KDockerComposeContainer>(path)
 
 		@ClassRule
