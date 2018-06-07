@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.netflix.config.ConfigurationManager
+import org.springframework.amqp.core.FanoutExchange
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -67,5 +68,10 @@ class GameApplicationConfig {
 	@LoadBalanced
 	fun loadBalancedRestTemplate(): RestTemplate {
 		return RestTemplate()
+	}
+
+	@Bean
+	fun fanout(): FanoutExchange {
+		return FanoutExchange("game-over")
 	}
 }

@@ -9,6 +9,8 @@ class GameStateConverter {
 					id = gameState.id.toString(),
 					quiz = gameState.Quiz.toString(),
 					player = gameState.Player,
+					Score = gameState.Score,
+					RoundNumber = gameState.RoundNumber,
 					isFinished = gameState.isFinished
 			)
 		}

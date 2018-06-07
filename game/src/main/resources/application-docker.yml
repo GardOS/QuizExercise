@@ -12,6 +12,8 @@ spring:
     database: "postgresql"
     hibernate:
       ddl-auto: "update"
+  rabbitmq:
+    host: rabbitmq
   session:
     store-type: redis
   redis:

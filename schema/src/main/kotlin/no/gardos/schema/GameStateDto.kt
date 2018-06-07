@@ -2,6 +2,7 @@ package no.gardos.schema
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import java.io.Serializable
 
 @ApiModel("DTO for GameState. It represent a GameState entity")
 data class GameStateDto(
@@ -17,4 +18,4 @@ data class GameStateDto(
 		var isFinished: Boolean = false,
 		@ApiModelProperty("GameState id")
 		var id: String? = null
-)
+) : Serializable

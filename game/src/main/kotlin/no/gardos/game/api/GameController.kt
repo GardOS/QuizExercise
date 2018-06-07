@@ -9,6 +9,8 @@ import no.gardos.game.model.GameStateRepository
 import no.gardos.schema.GameStateDto
 import no.gardos.schema.QuestionDto
 import no.gardos.schema.QuizDto
+import org.springframework.amqp.core.FanoutExchange
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.dao.DataIntegrityViolationException
@@ -39,6 +41,12 @@ class GameController {
 
 	@Value("\${quizServerPath}")
 	private lateinit var quizServerPath: String
+
+	@Autowired
+	private lateinit var template: RabbitTemplate
+
+	@Autowired
+	private lateinit var fanout: FanoutExchange
 
 	@ApiOperation("Get a game by ID")
 	@GetMapping(path = ["/{id}"])
@@ -190,11 +198,27 @@ class GameController {
 		if (isCorrect) game.Score++
 		if (game.RoundNumber >= quiz.questions!!.count()) {
 			game.isFinished = true
+
+			template.convertAndSend(fanout.name, "", GameStateConverter.transform(game))
 		}
 
 		gameStateRepo.save(game)
 
 		return if (isCorrect) ResponseEntity.ok().body("Correct") else ResponseEntity.ok().body("Wrong")
+	}
+
+	@ApiOperation("Easily accessible method for testing rabbitmq")
+	@GetMapping(path = ["/rabbitmq"])
+	fun rabbitmq(): ResponseEntity<Any> {
+		val game = GameStateDto(
+				quiz = "1",
+				player = "player",
+				Score = 1,
+				RoundNumber = 2,
+				isFinished = true,
+				id = "123")
+		template.convertAndSend(fanout.name, "", game)
+		return ResponseEntity.ok().build()
 	}
 
 	//Catches validation errors and returns error status based on error

@@ -13,6 +13,8 @@ spring:
     database: "h2"
     hibernate:
       ddl-auto: "create-drop"
+  rabbitmq:
+    host: localhost
   session:
     store-type: redis
   redis:
