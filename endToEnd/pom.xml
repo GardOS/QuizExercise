@@ -39,6 +39,11 @@
             <artifactId>schema</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>no.gardos</groupId>
+            <artifactId>score</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.awaitility</groupId>
