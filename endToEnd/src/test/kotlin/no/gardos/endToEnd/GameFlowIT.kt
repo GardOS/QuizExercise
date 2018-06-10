@@ -13,14 +13,13 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.*
 import org.junit.BeforeClass
 import org.junit.ClassRule
-import org.junit.Ignore
 import org.junit.Test
 import org.testcontainers.containers.DockerComposeContainer
 import java.io.File
 import java.util.concurrent.TimeUnit
 
 //FIXME
-@Ignore //Unstable test. Travis cant handle it
+//@Ignore //Unstable test. Travis cant handle it
 class GameFlowIT {
 	companion object {
 		class KDockerComposeContainer(path: File) : DockerComposeContainer<KDockerComposeContainer>(path)
@@ -116,6 +115,8 @@ class GameFlowIT {
 
 		assertNotEquals(firstQuestion.id, secondQuestion.id)
 
+		given().get("http://localhost/score-server/scores").then().body("size()", equalTo(0))
+
 		//Guess 2
 		val wrongAnswerResponse = patch("/game-server/games/$gameId?answer=1")
 				.then()
@@ -138,5 +139,11 @@ class GameFlowIT {
 				.path<Boolean>("finished")
 
 		assertTrue(isDone)
+
+		Thread.sleep(3000)
+
+		given().get("http://localhost/score-server/scores").then().body("size()", equalTo(1))
+
+
 	}
 }
